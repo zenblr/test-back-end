@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                     </div>
 
                     <div class="row">
@@ -64,7 +64,8 @@
                                 </div>
                                 <div class="col-7">
                                     <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12" readonly
+                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
+                                        readonly
                                         [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
@@ -101,6 +102,11 @@
                                                 class="kt-pointer remove-icon"
                                                 (click)="removeImages(idx, 'identityProof');">
                                         </div>
+                                    </div>
+                                    <div *ngIf="images.identityProof.length==1">
+                                        <button (click)="identity.click()" class="img-container">
+                                            <img src="../../../../../assets/media/icons/add.svg" alt="">
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +175,7 @@
                                 </div>
                             </div>
 
-                            
+
 
                             <div>
                                 <div class=" kt-margin-t-20">
@@ -181,8 +187,8 @@
                                         <div class="col-7 mb-3" *ngIf="i==0">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="Select"
-                                                    aria-label="Recipient's username"
-                                                    aria-describedby="basic-addon2" readonly
+                                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                    readonly
                                                     [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
                                                     formControlName="addressProofFileName">
                                                 <div class="input-group-append">
@@ -209,8 +215,8 @@
                                         <div class="col-7 mb-3" *ngIf="i==1">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="Select"
-                                                    aria-label="Recipient's username"
-                                                    aria-describedby="basic-addon2" readonly
+                                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                    readonly
                                                     [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
                                                     formControlName="addressProofFileName">
                                                 <div class="input-group-append">
@@ -266,13 +272,12 @@
                                                             class="kt-pointer edit-icon"
                                                             (click)="editImages(idx, 'residential');"> -->
                                                         <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
-                                                            src="../../../../../assets/media/icons/cancel.svg"
-                                                            alt="" class="kt-pointer remove-icon"
+                                                            src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                            class="kt-pointer remove-icon"
                                                             (click)="removeImages(idx, 'residential');">
                                                         <div class="iframeWrapper" (click)="previewPdf(img)">
                                                             <iframe [src]="img | safe : 'resourceUrl'" height="250"
-                                                                width="290" scrolling="no"
-                                                                *ngIf="isPdf(img)"></iframe>
+                                                                width="290" scrolling="no" *ngIf="isPdf(img)"></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -292,13 +297,12 @@
                                                             class="kt-pointer edit-icon"
                                                         (click)="editImages(idx, 'permanent');"> -->
                                                         <img *ngIf="(addressForm.controls.addressProofTypeId.value != 2 && identityForm.controls.moduleId.value == 1) || identityForm.controls.moduleId.value == 3"
-                                                            src="../../../../../assets/media/icons/cancel.svg"
-                                                            alt="" class="kt-pointer remove-icon"
+                                                            src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                            class="kt-pointer remove-icon"
                                                             (click)="removeImages(idx, 'permanent');">
                                                         <div class="iframeWrapper" (click)="previewPdf(img)">
                                                             <iframe [src]="img | safe : 'resourceUrl'" height="250"
-                                                                width="290" scrolling="no"
-                                                                *ngIf="isPdf(img)"></iframe>
+                                                                width="290" scrolling="no" *ngIf="isPdf(img)"></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -456,7 +460,7 @@
                                     </div>
                                 </div>
 
-                                
+
                             </div>
                         </div>
                     </ng-container>
