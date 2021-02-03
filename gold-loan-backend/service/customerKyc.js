@@ -37,7 +37,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber', 'internalBranchId', 'mobileNumber'],
+            , 'panCardNumber', 'internalBranchId', 'mobileNumber','customerUniqueId'],
     })
     if (check.isEmpty(getCustomerInfo)) {
         return { status: 404, success: false, message: `Your status is not confirm` }
@@ -138,7 +138,12 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
             return customerKycAdd
         })
+//pending
+if(isFromCustomerWebsite == true)
+{
+    await sms.sendMessageForKycPending(getCustomerInfo.mobileNumber, getCustomerInfo.customerUniqueId);
 
+}
         return { status: 200, success: true, message: `Success`, customerId, customerKycId: kycInfo.id }
 
     } else {
