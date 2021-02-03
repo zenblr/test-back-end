@@ -72,7 +72,13 @@ export class PartPaymentComponent implements OnInit {
 
   partAmountContinue() {
     // console.log(this.partAmount)
-    if (this.partAmount.invalid) return this.partAmount.markAsTouched()
+    if (this.partAmount.invalid || this.partAmount.value <= 0) {
+      if (this.partAmount.value <= 0) {
+        this.partAmount.setErrors({ valueZero: true })
+      }
+      this.partAmount.markAllAsTouched()
+      return
+    }
     const data = {
       paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId
@@ -144,6 +150,11 @@ export class PartPaymentComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
           this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        },
+        err => {
+          if (err.error.message)
+            this.toastr.error(err.error.message)
+          throw err
         }
       )
       return

@@ -161,6 +161,13 @@ export class PageConfig {
 					page: { title: "Customer Request List", desc: "" }
 				}
 			},
+			"transaction": {
+					page: { title: "Transaction", desc: "" },
+					id: {
+						page: { title: "Transaction", desc: "" },
+					}				
+				},
+				
 			"account": {
 				"loan-disbursement": {
 					page: { title: "Loan Disbursement", desc: "" },
@@ -311,19 +318,6 @@ export class PageConfig {
 			},
 			"applied-kyc": {
 				page: { title: "Applied KYC", desc: "" },
-			},
-			"applied-kyc-digi-gold": {
-				page: { title: "Applied KYC - Digi Gold", desc: "" },
-				"edit": {
-					id: {
-						page: { title: "Customer KYC", desc: "" },
-					}
-				},
-				"apply": {
-					id: {
-						page: { title: "Customer KYC", desc: "" },
-					}
-				},
 			},
 			"holidays": {
 				page: { title: "Holidays", desc: "" },
@@ -486,6 +480,22 @@ export class PageConfig {
 						page: { title: "SIP Trades", desc: "" },
 					},
 
+				},
+				"applied-kyc-digi-gold": {
+					page: { title: "Applied KYC - Digi Gold", desc: "" },
+					"edit": {
+						id: {
+							page: { title: "Customer KYC", desc: "" },
+						}
+					},
+					"apply": {
+						id: {
+							page: { title: "Customer KYC", desc: "" },
+						}
+					},
+				},
+				"all-customers": {
+					page: { title: "All Customers", desc: '' }
 				}
 			},
 

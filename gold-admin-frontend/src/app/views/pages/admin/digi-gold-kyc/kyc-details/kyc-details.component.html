@@ -90,7 +90,8 @@
                                             class="input-group-text bg font-weight" id="basic-addon2"
                                             (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
+                                    <input type="file" class="d-none"
+                                        accept="image/jpg, image/png, image/jpeg, application/pdf" #pan
                                         (input)="testUpload($event)">
                                 </div>
                                 <mat-error *ngIf="controls.panImage.invalid && controls.panImage.touched">
@@ -118,6 +119,9 @@
                                 <iframe [src]="images.pan['URL'] | safe : 'resourceUrl'" height="250" width="290"
                                     scrolling="no"></iframe>
                             </div>
+                        </div>
+                        <div class="kt-margin-t-20 text-color font-11">
+                            (Click to view the attachment)
                         </div>
                     </div>
                 </div>

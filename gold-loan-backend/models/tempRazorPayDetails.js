@@ -32,9 +32,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'ornament_id',
         },
-        transactionUniqueId:{
+        transactionUniqueId: {
             type: DataTypes.STRING,
             field: 'transaction_unique_id'
+        },
+        orderStatus: {
+            type: DataTypes.STRING,
+            field: 'order_status',
+            defaultValue: "pending",
         }
     }, {
         freezeTableName: true,

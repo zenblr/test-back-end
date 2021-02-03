@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         customerUniqueId: {
             type: DataTypes.STRING,
-            field: 'customer_unique_id'
+            field: 'customer_unique_id',
+            unique: true
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
@@ -236,6 +237,11 @@ module.exports = (sequelize, DataTypes) => {
         aadhaarMaskedImage2: {
             type: DataTypes.TEXT,
             field: 'aadhaar_masked_image2',
+        },
+        isAugmontCustomerCreated: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_augmont_customer_created',
+            defaultValue: false
         }
     }, {
         freezeTableName: true,

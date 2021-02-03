@@ -17,7 +17,15 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
     , schemeBasedOnPriceRange, readLoanDetails,
     readFeedBack, addFeedBack } = require('../controllers/customer/customerApp')
 
+const { customerMigration, addKycDetailsInAugmont, addPanImage } = require('../controllers/customer/customerMigration')
+
 //customer
+router.post('/customer-migration', checkAuth, customerMigration)
+
+router.post('/add-kyc-in-augmont', checkAuth, addKycDetailsInAugmont)
+
+router.post('/add-pan-image', checkAuth, wrapper(addPanImage))
+
 router.get('/get-otp', checkAuth, wrapper(getOtp));
 
 router.post('/sign-up', registerCustomerValidation, validationError, wrapper(signUpCustomer)); //Register customer from customer website

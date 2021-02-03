@@ -61,7 +61,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositBranchName: [''],
 			depositDate: [''],
 			depositAmount: [''],
-			date: ['', Validators.required],
+			approvalDate: ['', Validators.required],
 			depositStatus: ['', Validators.required],
 		});
 		this.depositForm.disable()
@@ -76,12 +76,15 @@ export class DepositRequestsEditComponent implements OnInit {
 
 	editOrder() {
 		const data = {
-			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ? this.depositInfo.transactionData.bankTransactionUniqueId : 'NA',
+			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ||
+				this.depositInfo.transactionData.razorpayPaymentId ||
+				this.depositInfo.transactionData.chequeNumber,
 			depositmodeofpayment: this.depositInfo.transactionData.paymentType,
 			depositBankName: this.depositInfo.transactionData.bankName ? this.depositInfo.transactionData.bankName : 'NA',
 			depositBranchName: this.depositInfo.transactionData.branchName ? this.depositInfo.transactionData.branchName : 'NA',
-			depositDate: this.depositInfo.transactionData.depositDate,
+			depositDate: this.depositInfo.transactionData.paymentReceivedDate,
 			depositAmount: this.depositInfo.transactionData.transactionAmount,
+			approvalDate: this.depositInfo.transactionData.depositApprovedDate,
 			depositStatus: '',
 		};
 		this.depositForm.patchValue(data);
@@ -91,7 +94,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			this.depositForm.patchValue(data);
 		}
 		else {
-			this.controls.date.enable();
+			this.controls.approvalDate.enable();
 			this.controls.depositStatus.enable();
 		}
 	}
@@ -104,7 +107,7 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (this.depositId) {
 			const depositData = {
 				depositStatus: this.controls.depositStatus.value,
-				date: this.controls.date.value,
+				date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
 			};
 			this.depositRequestsService.editDepositStatus(depositData, this.depositId).pipe(
 				map((res) => {

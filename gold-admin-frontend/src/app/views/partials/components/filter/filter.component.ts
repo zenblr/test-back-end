@@ -204,7 +204,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			bmStatus: [''],
 			otStatus: [''],
 			depositStatus: [''],
-			modulePoint: ['']
+			modulePoint: [''],
+			paymentFor: [''],
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -376,7 +377,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.depositStatus = controls['depositStatus'].value
 				this.filterObject.list.depositStatus = controls['depositStatus'].value;
 			}
-			
+			if (controls['paymentFor'].value) {
+				this.filterObject.data.paymentFor = controls['paymentFor'].value
+				this.filterObject.list.paymentFor = controls['paymentFor'].value;
+			}
+
 			return this.filterObject;
 		}
 	}
@@ -489,6 +494,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'modulePoint':
 				this.controls['modulePoint'].value.multiSelect.splice(index, 1);
 				break;
+			case 'paymentFor':
+				this.controls['paymentFor'].patchValue('');
+				break;
 			default:
 				break;
 		}
@@ -514,6 +522,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packetTracking: this.filterForm.controls['packetTracking'].value,
 			depositStatus: this.filterForm.controls['depositStatus'].value,
 			modulePoint: this.filterForm.controls['modulePoint'].value,
+			paymentFor: this.filterForm.controls['paymentFor'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -646,6 +655,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		this.controls.packets.patchValue('')
 		this.controls.packetTrackingLocation.patchValue('')
 		this.controls.packetTracking.patchValue('')
+		this.controls.paymentFor.patchValue('')
 	}
 
 	validations() {

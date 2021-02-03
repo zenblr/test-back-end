@@ -1609,7 +1609,8 @@ let digiOrEmiKyc = async (req) => {
         })
         if (result.data.statusCode === 200) {
             fs.unlinkSync(panPath)
-            await sms.sendMessageForKycUpdate(customerDetails.mobileNumber);
+
+            // await sms.sendMessageForKycUpdate(customerDetails.mobileNumber);
         }
         // return res.status(200).json(result.data);
         return { status: 200, success: true, data: { data: result.data }, customerUniqueId }

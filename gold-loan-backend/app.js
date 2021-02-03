@@ -23,8 +23,8 @@ const merchantLogin = require('./utils/merchantLogin');
 const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
 const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
-const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
-
+const { getErrorForMail } = require('./controllers/errorLogs/errorLogs');
+const { refundCron } = require('./controllers/razorpay/razorpay')
 
 //model
 const models = require('./models');
@@ -32,7 +32,7 @@ const moment = require('moment')
 
 
 var useragent = require('express-useragent');
- 
+
 var app = express();
 
 app.use(useragent.express());
@@ -169,7 +169,7 @@ cron.schedule(' 0 */30 * * * *', async function () {
 //     }
 // });
 
-// cron to update merchant token
+// // cron to update merchant token
 
 // cron.schedule('0 3 * * *', async () => {
 //     let date = moment();
@@ -245,6 +245,24 @@ cron.schedule(' 0 */30 * * * *', async function () {
 //         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
 //     }
 // });
+
+// cron.schedule(' 0 1 * * * *', async function () {
+//     await refundCron()
+//     var startTime = moment();
+
+//     try {
+//         await refundCron()
+//         var endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("refund cron", date, startTime, endTime, processingTime, "success", "success", null)
+
+//     } catch (err) {
+//         var endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("refund cron", date, startTime, endTime, processingTime, "failed", err.message, null)
+
+//     }
+// })
 
 async function cronLogger(cronType, date, startTime, endTime, processingTime, status, message, notes) {
     await models.cronLogger.create({ cronType, date, startTime, endTime, processingTime, status, message, notes })

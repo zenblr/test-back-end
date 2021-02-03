@@ -9,6 +9,7 @@ import { AppliedKycService } from '../../../../../core/digi-gold-kyc/applied-kyc
 import { ActivatedRoute, Router } from '@angular/router';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 import { CustomerClassificationService } from '../../../../../core/kyc-settings/services/customer-classification.service';
+import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-kyc-details',
@@ -43,7 +44,7 @@ export class KycDetailsComponent implements OnInit {
   ngOnInit() {
     this.initForm()
 
-    this.kycStage = (this.router.url).split('/')[3]
+    this.kycStage = (this.router.url).split('/')[4]
     if (this.kycStage == 'apply') {
       this.isEditable = true
       this.controls.status.disable()
@@ -351,7 +352,7 @@ export class KycDetailsComponent implements OnInit {
         }))
         .subscribe(res => {
           this.toastr.success(res.message)
-          this.router.navigate(['/admin/applied-kyc-digi-gold'])
+          this.router.navigate(['/admin/digi-gold/applied-kyc-digi-gold'])
         })
     }
     if (this.kycStage == 'apply') {
@@ -364,8 +365,15 @@ export class KycDetailsComponent implements OnInit {
     }
   }
 
-  previewPdf() {
-
+  previewPdf(img) {
+    this.dialog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: img,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
   }
 
   getReasonsList() {

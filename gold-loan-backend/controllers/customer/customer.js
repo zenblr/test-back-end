@@ -12,7 +12,7 @@ const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 // let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage,sendMessageOtpForLogin } = require('../../utils/SMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage, sendMessageOtpForLogin } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
@@ -69,7 +69,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image, merchantId: 1 },
       { transaction: t }
     );
 
@@ -116,7 +116,7 @@ exports.addCustomer = async (req, res, next) => {
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
       // applied
       await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
-      
+
     }
 
     // const result = await createCustomer(data)
@@ -197,10 +197,17 @@ exports.customerSignUp = async (req, res, next) => {
 
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
     var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
-    await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+    // await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+    await sendMessageOtpForLogin(mobileNumber, otp)
 
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
+
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
 
     const referenceCode = await createReferenceCode(5);
     let otp;
@@ -242,8 +249,7 @@ exports.sendOtp = async (req, res, next) => {
   if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
     otp = 1234
   } else {
-    // otp = Math.floor(1000 + Math.random() * 9000);
-    otp = 1234
+    otp = Math.floor(1000 + Math.random() * 9000);
   }
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
@@ -253,6 +259,12 @@ exports.sendOtp = async (req, res, next) => {
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
     // await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: customerExist.mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER
@@ -332,7 +344,7 @@ exports.editCustomer = async (req, res, next) => {
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
       await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
-    
+
     }
   });
   return res.status(200).json({ messgae: `User Updated` });
@@ -413,6 +425,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         pinCode: sequelize.where(
           sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
           {
@@ -800,7 +813,7 @@ exports.signUpCustomer = async (req, res) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `INVALID OTP.` });
+    return res.status(404).json({ message: `The OTP entered is incorrect.` });
   }
 
   let verifyFlag = await models.customerOtp.update(
@@ -841,7 +854,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1 },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);

@@ -13,6 +13,32 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
             if (type == "order") {
                 let merchantData = await getMerchantData();
                 for (let ele of data) {
+
+                    if(!ele.uniqueId) 
+                    {
+                        return res.status(400).json({ message: "uniqueId is required" }); 
+                    }
+    
+                    if(!ele.status)
+                    {
+                        return res.status(400).json({ message: "status is required" }); 
+                    }
+
+                    if(!ele.transactionId)
+                    {
+                        return res.status(400).json({ message: "transactionId is required" }); 
+                    }
+
+                    if(!ele.merchantTransactionId)
+                    {
+                        return res.status(400).json({ message: "merchantTransactionId is required" }); 
+                    }
+
+                    if(ele.status != 'delivered_to_client' && ele.status != 'dispatched_but_not_delivered' && ele.status != 're-dispatched' && ele.status != 'rto')
+                    {
+                        return res.status(400).json({ message: "Invalid status" }); 
+                    }
+
                     let customer = await models.customer.findOne({
                         where: { customerUniqueId: ele.uniqueId },
                         attributes: ['id', 'customerUniqueId', 'mobileNumber', 'firstName', 'lastName'],

@@ -40,7 +40,7 @@
                                     <select class="form-control" formControlName="kycStatusFromCce"
                                         (change)="conditionalValidation()"
                                         [class.isError]="cceControls.kycStatusFromCce.invalid && cceControls.kycStatusFromCce.touched">
-                                        <option [value]="null" disabled selected> Select Status
+                                        <option value="" disabled selected> Select Status
                                         </option>
                                         <option
                                             [disabled]="cceControls.kycRatingFromCce.value < 4 && status.value == 'approved' ? true: false"
