@@ -19,6 +19,7 @@ const Op = Sequelize.Op;
 const moment = require('moment');
 const { walletDelivery, customerBalance, customerNonSellableMetal } = require('../../../service/wallet');
 const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
+let AWS = require('aws-sdk');
 
 
 exports.AddOrder = async (req, res) => {
