@@ -333,6 +333,9 @@
                                     scrolling="no" *ngIf="isPdf(controls.panImg.value)"></iframe>
                             </div>
                         </div>
+                        <div class="kt-margin-t-20 text-color">
+                            (Click to view)
+                        </div>
 
                         <div class="img-container"
                             *ngIf="controls.panType.value == 'form60' && controls.form60Img.value">
@@ -351,6 +354,7 @@
                                     scrolling="no" *ngIf="isPdf(controls.form60Img.value)"></iframe>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -471,7 +475,9 @@
                                 </div>
                             </div>
                         </ng-container>
-
+                    </div>
+                    <div class="kt-margin-t-20 text-color margin">
+                        (Click to view)
                     </div>
                 </div>
             </form>
@@ -668,6 +674,9 @@
                             </div>
                         </div>
                     </ng-container>
+                </div>
+                <div class="kt-margin-t-20 text-color margin">
+                    (Click to view)
                 </div>
             </form>
 
@@ -892,9 +901,12 @@
                                         <iframe [src]="pass | safe : 'resourceUrl'" height="250" width="290"
                                             scrolling="no" *ngIf="isPdf(pass)"></iframe>
                                     </div>
-                                </div>
+                                </div>               
                             </div>
                         </ng-container>
+                    </div>
+                    <div class="kt-margin-t-20 text-color margin">
+                        (Click to view)
                     </div>
                 </form>
             </div>
@@ -1355,10 +1367,13 @@
                                         </ng-container>
                                     </ng-container>
                                 </div>
+                                <div class="kt-margin-t-20 text-color">
+                                    (Click to view)
+                                </div>
+            
                             </div>
                         </div>
-                    </div>
-
+                    </div>               
                 </form>
             </ng-template>
 

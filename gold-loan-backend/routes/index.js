@@ -286,5 +286,8 @@ router.use('/wallet', wallet)
 const webhook = require('./webHook');
 router.use('/web-hook', webhook);
 
+const appVersions = require('./appVersions');
+router.use('/app-version', appVersions);
+
 
 module.exports = router;

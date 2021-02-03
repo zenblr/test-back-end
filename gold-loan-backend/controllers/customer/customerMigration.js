@@ -276,3 +276,116 @@ let createCustomerKyc = async (options) => {
         })
     })
 }
+
+
+exports.addPanImage = async (req, res) => {
+
+    let allCustomer = await models.customer.findAll({ where: { merchantId: 1, kycStatus: 'approved', panType: 'pan' } })
+
+    const getMerchantDetails = await models.merchant.findOne({
+        where: { isActive: true, id: 1 },
+        include: {
+            model: models.digiGoldMerchantDetails,
+            as: 'digiGoldMerchantDetails',
+        }
+    });
+
+    const merchantData = {
+        id: getMerchantDetails.id,
+        merchantId: getMerchantDetails.digiGoldMerchantDetails.augmontMerchantId,
+        accessToken: getMerchantDetails.digiGoldMerchantDetails.accessToken,
+        expiresAt: getMerchantDetails.digiGoldMerchantDetails.expiresAt
+    };
+
+
+    for (let i = 0; i < allCustomer.length; i++) {
+        const element = allCustomer[i];
+        let checkKycComplete = addPanImage(element, merchantData.accessToken)
+    }
+
+    return res.status(200).json({ message: "success" })
+
+}
+
+
+let addPanImage = async (customer, accessToken) => {
+
+    let url;
+    let base64data;
+    let fullBase64Image;
+    if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+        url = process.env.BASE_URL + customer.panImage
+        const getAwsResp = await models.axios({
+            method: 'GET',
+            url: url,
+            responseType: 'arraybuffer'
+        });
+        base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+    } else {
+        url = customer.panImage
+
+        buff = fs.readFileSync(`public/${url}`);
+
+        base64data = buff.toString('base64');
+
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+
+        base64data = fullBase64Image.split(';base64,').pop();
+
+    }
+    //change
+
+    const panPath = `public/uploads/pan-${customer.customerUniqueId}.jpeg`;
+    fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
+    const data = new FormData();
+    data.append('panNumber', customer.panCardNumber);
+    data.append('panAttachment', fs.createReadStream(panPath));
+
+    const options = {
+        'method': 'POST',
+        'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`,
+        'headers': {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            ...data.getHeaders(),
+        },
+        body: data
+    }
+    const check = await createPanCustomerKyc(options);
+    fs.unlinkSync(panPath)
+
+    if (check.error) {
+        console.log(check.error, "error")
+        return { success: false, message: check.message }
+    } else {
+        console.log(check.error, "newBanaya")
+        return { success: true, message: check.message }
+    }
+
+}
+
+let createPanCustomerKyc = async (options) => {
+    return new Promise((resolve, reject) => {
+        request(options, async (err, response, body) => {
+            if (err) {
+                return resolve({ error: true })
+            }
+            const respBody = JSON.parse(body);
+            if (respBody.statusCode == 200) {
+                return resolve({ error: false, message: 'success' })
+            } else {
+                console.log(respBody)
+                if (typeof respBody.errors.status[0].code != "undefined") {
+                    if (respBody.errors.status[0].code == 4548) {
+                        return resolve({ error: false, message: 'success' })
+                    } else {
+                        return resolve({ error: true, message: respBody })
+                    }
+                } else {
+                    return resolve({ error: true, message: respBody })
+                }
+            }
+        })
+    })
+}
