@@ -265,7 +265,7 @@ exports.generateInvoice = async (req, res) => {
     let generateInvoice = await generateInvoicedata(transactionId);
     console.log(generateInvoice);
 
-    if (process.env.NODE_ENV == undefined || process.env.NODE_ENV == 'uat' || process.env.NODE_ENV == 'production') {
+    if (process.env.NODE_ENV == 'uat' || process.env.NODE_ENV == 'production') {
       // let data = await saveFileInAws(generateInvoice)
 
       AWS.config.update({
