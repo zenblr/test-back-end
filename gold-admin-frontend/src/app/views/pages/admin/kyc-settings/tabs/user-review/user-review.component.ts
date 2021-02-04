@@ -68,6 +68,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   permission: any;
   resetOnPanChange = true;
   aadharCardUserDetails: any;
+  customerData={fatherName:''};
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -327,6 +328,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.customerKycPersonal.patchValue({
         martialStatus: this.data.customerKycReview.customerKycPersonal.martialStatus == null ? '' : this.data.customerKycReview.customerKycPersonal.martialStatus
       })
+      if (this.data.customerKycReview.customerKycPersonal.martialStatus != 'married') {
+        this.customerData['fatherName'] = this.data.customerKycReview.customerKycPersonal.spouseName
+      }
     }
 
     if (this.data.moduleId == 3) {
@@ -1204,7 +1208,12 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   changeMaritalStatus() {
-    this.customerKycPersonal.controls.spouseName.reset()
+    const controls = this.customerKycPersonal.controls
+    if (this.customerKycPersonal.controls.martialStatus.value != 'married') {
+      controls.spouseName.patchValue(this.customerData.fatherName)
+    } else {
+      controls.spouseName.reset()
+    }
   }
 
   patchNullToEmptyString() {

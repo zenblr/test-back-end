@@ -299,7 +299,7 @@ export class UserDetailsComponent implements OnInit {
           this.controls[formControl.path].patchValue(res.uploadFile.path)
           this.controls[formControl.URL].patchValue(res.uploadFile.URL)
           if (this.controls.panType.value == 'pan')
-            this.getPanDetails()
+          this.getPanDetails()
 
         }
       }),
@@ -351,6 +351,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panCardNumber.patchValue(res.data.idNumber)
       this.controls.dateOfBirth.patchValue(res.dob)
       this.isPanVerified = res.data.isPanVerified
+      if (res.data.isPanVerified)
+        this.resetOnPanChange = false
       this.controls.panCardNumber.disable()
       this.controls.firstName.disable()
       this.controls.lastName.disable()
@@ -367,6 +369,7 @@ export class UserDetailsComponent implements OnInit {
     //     console.log(res)
     if (this.controls.panCardNumber.valid) {
       this.isPanVerified = true;
+      this.resetOnPanChange = false
     }
     // });
   }
