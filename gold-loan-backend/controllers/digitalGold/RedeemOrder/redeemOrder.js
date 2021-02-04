@@ -19,6 +19,7 @@ const Op = Sequelize.Op;
 const moment = require('moment');
 const { walletDelivery, customerBalance, customerNonSellableMetal } = require('../../../service/wallet');
 const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
+let AWS = require('aws-sdk');
 
 
 exports.AddOrder = async (req, res) => {
@@ -36,9 +37,9 @@ exports.AddOrder = async (req, res) => {
 
     let checkCustomerKycStatus = await checkKycStatus(id);
 
-    if(checkCustomerKycStatus){
+    if (checkCustomerKycStatus) {
       return res.status(420).json({ message: "Your KYC status is Rejected" });
-    } 
+    }
 
     if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
       return res.status(422).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
@@ -92,10 +93,10 @@ exports.AddOrder = async (req, res) => {
 
             let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-            let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
-            let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+            let newCurrentWalletBalance = checkBalance.currentWalletBalance.toFixed(2);
+            let newWalletFreeBalance = checkBalance.walletFreeBalance.toFixed(2);
 
-            await models.customer.update({ currentWalletBalance:Number(newCurrentWalletBalance) , walletFreeBalance:Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t });
+            await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t });
 
             let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
@@ -153,9 +154,9 @@ exports.AddOrder = async (req, res) => {
 
             let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId, orderTypeId: 5, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
 
-          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+            let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
-            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate, isSellableGold: true, isSellableSilver: true  }, { transaction: t });
+            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate, isSellableGold: true, isSellableSilver: true }, { transaction: t });
 
             await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
 
@@ -467,11 +468,12 @@ async function generateOrderInvoicedata(transactionId) {
       bootstrapJs: `${process.env.URL}/bootstrap.js`,
       words
     },
-    path: `./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`
+    path: `./public/uploads/invoice/${fileName}.pdf`
   };
+  let filePath = `public/uploads/invoice/${fileName}.pdf`
   const created = await pdf.create(document, options)
 
-  let data = { created: created, fileName: fileName }
+  let data = { created: created, fileName: fileName, path: filePath }
 
   return data
 }
@@ -482,19 +484,51 @@ exports.generateOrderInvoice = async (req, res) => {
     const { transactionId } = req.params;
     let invoiceData = await generateOrderInvoicedata(transactionId);
 
-    if (invoiceData.created) {
+    if (process.env.NODE_ENV == 'uat' || process.env.NODE_ENV == 'production') {
+      // let data = await saveFileInAws(generateInvoice)
 
-      res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${invoiceData.fileName}.pdf` });
+      AWS.config.update({
+        secretAccessKey: `${process.env.Secretkey}`,
+        accessKeyId: `${process.env.Accessid}`,
+        region: process.env.Region,
+      });
+      const s3 = new AWS.S3({ accessKeyId: `${process.env.Accessid}`, secretAccessKey: `${process.env.Secretkey}` });
+      // Read content from the file
+      const fileContent = fs.readFileSync(invoiceData.path);
+      // Setting up S3 upload parameters
+      const params = {
+        Bucket: process.env.Bucket,
+        Key: `${invoiceData.path}`, // File name you want to save as in S3
+        Body: fileContent,
+        ACL: 'public-read'
+      };
 
-      setTimeout(async function () {
-        fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${invoiceData.fileName}.pdf`, (err, data) => {
+      // Uploading files to the bucket
+      await s3.upload(params, function (err, data) {
+        if (err) {
+          throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+        if (data) {
+          fs.unlinkSync(invoiceData.path)
+          res.setHeader('Content-Disposition', `attachment; filename=${invoiceData.fileName}.pdf`);
+          res.status(200).json({ invoice: data.Location });
+        }
+      });
+    } else {
 
-          if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${invoiceData.fileName}.pdf`)) {
-            fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${invoiceData.fileName}.pdf`);
-          }
-        });
-      }, 500000);
+      if (invoiceData.created) {
+        res.status(200).json({ invoice: process.env.URL + `/uploads/invoice/${invoiceData.fileName}.pdf` });
+        setTimeout(async function () {
+          fs.readFile(`./public/uploads/invoice/${invoiceData.fileName}.pdf`, (err, data) => {
 
+            if (fs.existsSync(`./public/uploads/invoice/${invoiceData.fileName}.pdf`)) {
+              fs.unlinkSync(`./public/uploads/invoice/${invoiceData.fileName}.pdf`);
+            }
+          });
+        }, 500000);
+
+      }
     }
 
   } catch (err) {
