@@ -224,9 +224,14 @@ exports.updateInternalBranch = async (req, res) => {
 
 exports.deactiveInternalBranch = async (req, res) => {
     const { id, isActive } = req.query;
-    let deactiveInternalBranch = await models.internalBranch.update({ isActive: isActive }, { where: { id } });
-    if (!deactiveInternalBranch[0]) {
-        return res.status(404).json({ message: 'internal branch deleted failed' })
-    }
+
+    await sequelize.transaction(async t => {
+        await models.internalBranch.update({ isActive: isActive }, { where: { id }, transaction: t });
+        await models.schemeInternalBranch.destroy({
+            where: {
+                internalBranchId: id
+            }, transaction: t
+        });
+    })
     return res.status(200).json({ message: 'Updated' });
 }

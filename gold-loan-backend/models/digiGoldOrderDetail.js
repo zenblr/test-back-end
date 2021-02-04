@@ -73,9 +73,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'gold_balance',
         },
+        isSellableGold: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_sellable_gold',
+            defaultValue: false
+        },
         silverBalance: {
             type: DataTypes.FLOAT,
             field: 'silver_balance',
+        },
+        isSellableSilver: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_sellable_silver',
+            defaultValue: false
         },
         merchantTransactionId: {
             type: DataTypes.STRING,
@@ -85,21 +95,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'transaction_id'
         },
-        razorpayOrderId:{
+        razorpayOrderId: {
             type: DataTypes.STRING,
             field: 'razorpay_order_id'
         },
-        razorpayPaymentId:{
+        razorpayPaymentId: {
             type: DataTypes.STRING,
             field: 'razorpay_payment_id'
         },
-        razorpaySignature:{
+        razorpaySignature: {
             type: DataTypes.STRING,
             field: 'razorpay_signature'
         },
-        orderSatatus: {
+        orderStatus: {
             type: DataTypes.STRING,
-            field: 'order_satatus',
+            field: 'order_status',
             defaultValue: "pending",
         },
         deliveryShippingCharges: {
@@ -114,6 +124,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'delivery_total_weight'
         },
+        orderCreatedDate: {
+            type: DataTypes.DATE,
+            field: 'order_created_date'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -127,10 +141,10 @@ module.exports = (sequelize, DataTypes) => {
     DigiGoldOrderDetail.associate = function (models) {
         DigiGoldOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         DigiGoldOrderDetail.belongsTo(models.digiGoldTempOrderDetail, { foreignKey: 'tempOrderId', as: 'tempOrder' });
-        DigiGoldOrderDetail.belongsTo(models.digiGoldOrderType, {foreignKey: 'orderTypeId', as: 'digiGoldOrderType'});
-        DigiGoldOrderDetail.hasOne(models.digiGoldOrderAddressDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
-        DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, {foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
-        DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, {foreignKey: 'orderDetailId', as: 'orderProductDetail' });
+        DigiGoldOrderDetail.belongsTo(models.digiGoldOrderType, { foreignKey: 'orderTypeId', as: 'digiGoldOrderType' });
+        DigiGoldOrderDetail.hasOne(models.digiGoldOrderAddressDetail, { foreignKey: 'orderDetailId', as: 'orderDetail' });
+        DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, { foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
+        DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, { foreignKey: 'orderDetailId', as: 'orderProductDetail' });
         // DigiGoldOrderDetail.hasOne(models.digiGoldCustomerBankDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
         DigiGoldOrderDetail.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
     }

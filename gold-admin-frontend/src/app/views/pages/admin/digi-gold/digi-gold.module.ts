@@ -5,6 +5,7 @@ import { CoreModule } from '../../../../core/core.module';
 import { PartialsModule } from '../../../partials/partials.module';
 import { DigiGoldComponent } from './digi-gold.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
+import { LeadManagementComponent } from '../lead-management/lead-management.component';
 
 const routes: Routes = [
 	{
@@ -28,6 +29,14 @@ const routes: Routes = [
 				path: 'global-settings',
 				component: GlobalSettingsComponent
 			},
+			{
+				path: 'applied-kyc-digi-gold',
+				loadChildren: () => import('../digi-gold-kyc/digi-gold-kyc.module').then(m => m.DigiGoldKycModule)
+			},
+			{
+				path: 'all-customers',
+				component: LeadManagementComponent
+			}
 		],
 	},
 ]
@@ -43,7 +52,6 @@ const routes: Routes = [
 	declarations: [
 		DigiGoldComponent,
 		GlobalSettingsComponent,
-	
 	]
 })
 export class DigiGoldModule { }

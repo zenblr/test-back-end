@@ -99,6 +99,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'free_balance'
         },
+        transactionTempDetailId:{
+            type: DataTypes.INTEGER,
+            field: 'transaction_temp_detail_id',
+        },
+        productName: {
+            type: DataTypes.STRING,
+            field: 'product_name'
+        },
+        isFromRefundCron: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_from_refund_cron',
+            defaultValue: false
+        }
     },
         {
             freezeTableName: true,
@@ -110,6 +123,8 @@ module.exports = (sequelize, DataTypes) => {
     WalletTransactionDetails.associate = function (models) {
         WalletTransactionDetails.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         WalletTransactionDetails.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
+        WalletTransactionDetails.belongsTo(models.walletTransactionTempDetails, { foreignKey: 'transactionTempDetailId', as: 'walletTransactionTempDetails' });
+
     }
 
 

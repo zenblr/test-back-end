@@ -19,7 +19,7 @@ let sms = require('../utils/SMS');
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
-    let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId } = req.body
+    let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId, form60Image } = req.body
     var date = dateOfBirth
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
@@ -36,7 +36,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber', 'internalBranchId'],
+            , 'panCardNumber', 'internalBranchId', 'mobileNumber','customerUniqueId'],
     })
     if (check.isEmpty(getCustomerInfo)) {
         return { status: 404, success: false, message: `Your status is not confirm` }
@@ -50,7 +50,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            return { status: 404, success: false, message: `PAN Card already exists!` }
 
         }
     }
@@ -63,11 +63,15 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             return { status: 404, success: false, message: `Identity Proof Number already exists!` }
         }
 
+        if (getCustomerInfo.mobileNumber == alternateMobileNumber) {
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
+        }
 
         let kycInfo = await sequelize.transaction(async t => {
 
             await models.customer.update({
-                firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer,
+                firstName, lastName, panCardNumber: panCardNumber, panType, panImage, form60Image, modifiedBy, modifiedByCustomer,
                 //dob changes
                 dateOfBirth: date,
                 gender: gender,
@@ -115,11 +119,11 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
-            //for create appraiser Request
-            // if (isFromCustomerWebsite) {
-            //     let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
-            // }
-            //for create appraiser Request
+            //// for create appraiser Request
+            //// if (isFromCustomerWebsite) {
+            ////     let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+            //// }
+            //// for create appraiser Request
 
             //for approved the status by default
             if (isFromCustomerWebsite && getCustomerInfo.internalBranchId != null) {
@@ -133,7 +137,12 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
             return customerKycAdd
         })
+//pending
+if(isFromCustomerWebsite == true)
+{
+    await sms.sendMessageForKycPending(getCustomerInfo.mobileNumber, getCustomerInfo.customerUniqueId);
 
+}
         return { status: 200, success: true, message: `Success`, customerId, customerKycId: kycInfo.id }
 
     } else {
@@ -231,7 +240,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             }, { transaction: t })
 
 
-            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
+            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, form60Image, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
 
             await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
@@ -288,7 +297,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId: 1 },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber', 'internalBranchId'],
+            , 'panCardNumber', 'internalBranchId', 'mobileNumber'],
     })
 
     //change
@@ -312,6 +321,11 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
         if (!check.isEmpty(findIdentityNumber)) {
             return { status: 404, success: false, message: `Identity Proof Number already exists!` }
+        }
+
+        if (getCustomerInfo.mobileNumber == customerKycPersonal.alternateMobileNumber) {
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
         }
     }
 
@@ -342,7 +356,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            return { status: 404, success: false, message: `PAN Card already exists!` }
         }
     }
     if (customerKycPersonal) {
@@ -416,8 +430,9 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             //dob changes
             age: customerKycPersonal.age,
             gender: customerKycPersonal.gender,
-            dateOfBirth: customerKycPersonal.dateOfBirth
+            dateOfBirth: customerKycPersonal.dateOfBirth,
             //dob changes
+            form60Image: customerKycBasicDetails.form60Image
 
         }, { where: { id: customerId }, transaction: t })
 
@@ -444,7 +459,8 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                     lastName: customerKycBasicDetails.lastName,
                     panCardNumber: customerKycBasicDetails.panCardNumber,
                     panType: customerKycBasicDetails.panType,
-                    panImage: customerKycBasicDetails.panImage
+                    panImage: customerKycBasicDetails.panImage,
+                    form60Image: customerKycBasicDetails.form60Image
                 }
                 , { where: { id: customerId }, transaction: t });
 
@@ -507,7 +523,7 @@ let getKycInfo = async (customerId) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus', 'gender', 'age', 'dateOfBirth'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus', 'gender', 'age', 'dateOfBirth'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
@@ -662,7 +678,7 @@ let kycBasicDetails = async (req) => {
 
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
+        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'form60Image', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
         include: [{
             model: models.organizationType,
             as: "organizationType",
@@ -732,7 +748,7 @@ let kycBasicDetails = async (req) => {
 }
 
 let submitKycInfo = async (req) => {
-    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
+    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, form60Image, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
 
     console.log(userType);
 
@@ -744,7 +760,7 @@ let submitKycInfo = async (req) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'],
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage', 'form60Image'],
     })
     if (panCardNumber) {
         let findPanCardNumber = await models.customer.findOne({
@@ -755,8 +771,8 @@ let submitKycInfo = async (req) => {
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            // return res.status(400).json({ message: "Pan Card Number already exists! " })
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            // return res.status(400).json({ message: "PAN Card already exists! " })
+            return { status: 404, success: false, message: `PAN Card already exists!` }
 
         }
     }
@@ -896,7 +912,7 @@ let submitKycInfo = async (req) => {
         } else if (KycStage.customerKycCurrentStage == "4") {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'dateOfBirth', 'gender', 'age'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'dateOfBirth', 'gender', 'age'],
                 include: [{
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
@@ -980,7 +996,7 @@ let submitKycInfo = async (req) => {
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
 
 
-        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, form60Image, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
         let createCustomerKyc
         let createOrganizationDetail
         if (moduleId == 3) {
@@ -1203,8 +1219,8 @@ let kycPersonalDetail = async (req) => {
     if (moduleId == 1) {
 
         if (customer.mobileNumber == alternateMobileNumber) {
-            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
-            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
         }
         let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
@@ -1316,7 +1332,7 @@ let kycPersonalDetail = async (req) => {
     if (moduleId == 1) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'dateOfBirth', 'gender', 'age'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'dateOfBirth', 'gender', 'age'],
             include: [{
                 model: models.customerKycPersonalDetail,
                 as: 'customerKycPersonal',
@@ -1354,7 +1370,7 @@ let kycPersonalDetail = async (req) => {
     } else if (moduleId == 3) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage', 'gender', 'age', 'dateOfBirth'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage', 'form60Image', 'gender', 'age', 'dateOfBirth'],
             include: [
                 {
                     model: models.customerKycPersonalDetail,
@@ -1414,11 +1430,11 @@ let kycPersonalDetail = async (req) => {
 
 let digiOrEmiKyc = async (req) => {
     try {
-        const id = req.userData.id;
-        const { panNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
+        let { customerId } = req.body
+        const { panCardNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
         const merchantData = await getMerchantData();
         let customerDetails = await models.customer.findOne({
-            where: { id, isActive: true },
+            where: { id: customerId, isActive: true },
         });
         let customerUniqueId = customerDetails.customerUniqueId;
 
@@ -1448,7 +1464,7 @@ let digiOrEmiKyc = async (req) => {
         const panPath = `public/uploads/digitalGoldKyc/pan-${customerUniqueId}.jpeg`;
         fs.writeFileSync(panPath, base64Image, { encoding: 'base64' });
         const data = new FormData();
-        data.append('panNumber', panNumber);
+        data.append('panNumber', panCardNumber);
         data.append('panAttachment', fs.createReadStream(panPath));
 
         const result = await models.axios({
@@ -1463,7 +1479,8 @@ let digiOrEmiKyc = async (req) => {
         })
         if (result.data.statusCode === 200) {
             fs.unlinkSync(panPath)
-            await sms.sendMessageForKycUpdate(customerDetails.mobileNumber);
+
+            // await sms.sendMessageForKycUpdate(customerDetails.mobileNumber);
         }
         // return res.status(200).json(result.data);
         return { status: 200, success: true, data: { data: result.data }, customerUniqueId }
@@ -1481,6 +1498,47 @@ let digiOrEmiKyc = async (req) => {
     };
 }
 
+let applyDigiKyc = async (req) => {
+
+    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
+    let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
+
+    let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
+
+    if (checkDigiKycRejected !== null) {
+        return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
+    }
+
+    if (panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: { [Op.iLike]: panCardNumber },
+                isActive: true
+            }
+        });
+        if (!check.isEmpty(findPanCardNumber)) {
+            // return res.status(400).json({ message: "PAN Card already exists! " })
+            return { status: 404, success: false, message: `PAN Card already exists!` }
+        }
+    }
+
+
+    await sequelize.transaction(async (t) => {
+
+        if (checkApplied) {
+            await models.digiKycApplied.update({ status: 'waiting' }, { where: { id: id }, transaction: t })
+        } else {
+            await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
+        }
+
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+    })
+
+    // return res.status(200).json({ message: `success` })
+    return { status: 200, success: true, message: `success` }
+}
+
 let allKycCompleteInfo = async (customerInfo) => {
 
     let kycCompletePoint = customerInfo.kycCompletePoint
@@ -1489,32 +1547,52 @@ let allKycCompleteInfo = async (customerInfo) => {
         goldLoan: false,
         goldEmi: false,
         goldScrap: false,
-        digiGold: false
+        digiGold: false,
+        kycStatus: customerInfo.kycStatus,
+        digiKycStatus: customerInfo.digiKycStatus,
+        scrapKycStatus: customerInfo.scrapKycStatus,
+        emiKycStatus: customerInfo.emiKycStatus
     }
 
-    let goldPoint = await models.module.findOne({ where: { id: 1 } })
-    let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
-    if (checkGoldKyc != 0) {
+    if (customerInfo.kycStatus == "approved") {
         kycApproval.goldLoan = true
     }
 
-    let goldEmi = await models.module.findOne({ where: { id: 2 } })
-    let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
-    if (checkEmiKyc != 0) {
-        kycApproval.goldEmi = true
+    if (customerInfo.digiKycStatus == "approved") {
+        kycApproval.digiGold = true
     }
 
-    let goldScrap = await models.module.findOne({ where: { id: 3 } })
-    let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
-    if (checkSprapKyc != 0) {
+    if (customerInfo.scrapKycStatus == "approved") {
         kycApproval.goldScrap = true
     }
 
-    let digiGold = await models.module.findOne({ where: { id: 4 } })
-    let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
-    if (checkDigiGoldKyc != 0) {
-        kycApproval.digiGold = true
+    if (customerInfo.emiKycStatus == "approved") {
+        kycApproval.goldEmi = true
     }
+
+    // let goldPoint = await models.module.findOne({ where: { id: 1 } })
+    // let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
+    // if (checkGoldKyc != 0) {
+    //     kycApproval.goldLoan = true
+    // }
+
+    // let goldEmi = await models.module.findOne({ where: { id: 2 } })
+    // let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
+    // if (checkEmiKyc != 0) {
+    //     kycApproval.goldEmi = true
+    // }
+
+    // let goldScrap = await models.module.findOne({ where: { id: 3 } })
+    // let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
+    // if (checkSprapKyc != 0) {
+    //     kycApproval.goldScrap = true
+    // }
+
+    // let digiGold = await models.module.findOne({ where: { id: 4 } })
+    // let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
+    // if (checkDigiGoldKyc != 0) {
+    //     kycApproval.digiGold = true
+    // }
 
     return kycApproval
 }
@@ -1554,5 +1632,6 @@ module.exports = {
     kycAddressDeatil: kycAddressDeatil,
     kycPersonalDetail: kycPersonalDetail,
     digiOrEmiKyc: digiOrEmiKyc,
+    applyDigiKyc: applyDigiKyc,
     allKycCompleteInfo: allKycCompleteInfo
 }

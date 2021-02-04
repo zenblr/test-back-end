@@ -20,7 +20,7 @@ export class WithdrawalRequestsComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['customerId', 'customerFullName', 'mobileNumber', 'withdrawalTransactionID',
     'withdrawalInitiatedDate', 'withdrawalAmount', 'bankName', 'branchName', 'accountNumber',
-    'accountHolderName', 'ifscCode', 'withdrawalPaymentDate', 'bankTransactionID', 'depositmodeofpayment',
+    'accountHolderName', 'ifscCode', 'withdrawalPaymentDate', 'bankTransactionID',
     'withdrawalStatus', 'action',
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -35,7 +35,9 @@ export class WithdrawalRequestsComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    paymentFor: 'withdraw'
+    paymentFor: 'withdraw',
+    paymentReceivedDate: '',
+    depositStatus: '',
   };
   filteredDataList = {};
 
@@ -48,6 +50,14 @@ export class WithdrawalRequestsComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
   ) {
+    this.withdrawalRequestsService.exportExcel$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.downloadReport();
+        }
+      });
+
     this.withdrawalRequestsService.applyFilter$.pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         if (Object.entries(res).length) {
@@ -107,12 +117,21 @@ export class WithdrawalRequestsComponent implements OnInit {
   }
 
   applyFilter(data) {
+    console.log(data);
+    this.withdrawRequestsData.paymentReceivedDate = data.data.startDate;
+    this.withdrawRequestsData.depositStatus = data.data.depositStatus;
     this.dataSource.loadWithdrawalRequests(this.withdrawRequestsData);
     this.filteredDataList = data.list;
+    console.log(this.filteredDataList);
   }
 
   editWithdrawal(id) {
     this.router.navigate(['admin/digi-gold/wallet/withdrawal-requests/', id]);
+  }
+
+  downloadReport() {
+    this.withdrawalRequestsService.reportExport(this.withdrawRequestsData).subscribe();
+    this.withdrawalRequestsService.exportExcel.next(false);
   }
 
   ngOnDestroy() {

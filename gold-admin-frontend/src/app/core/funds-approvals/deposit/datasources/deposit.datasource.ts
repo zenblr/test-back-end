@@ -20,8 +20,9 @@ export class DepositDatasource extends BaseDataSource {
 
         this.depositService.getDepositList(data)
             .pipe(
-                map(
+                map(           
                     deposit => {
+                    // console.log(deposit);
                         this.paginatorTotalSubject.next(deposit.count);
                         this.entitySubject.next(deposit.data);
                     }

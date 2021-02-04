@@ -1,38 +1,36 @@
 version: "3"
-services: 
-    web:
-      build: ./gold-loan-backend/
-      container_name: gold-loan-test-nodejs-demo
-      image: gold-loan-test:nodejs-demo
-      environment:
-        - NODE_ENV=test
-      links:
-        - redis:redis
-      ports:
-        - "8100:3000"
-      volumes:
-        - gold-loan-test-public-data:/usr/src/app/public/uploads
-      restart: always
-    
-    redis:
-      container_name: gold-loan-test-redis-demo
-      restart: always
-      image: redis:latest
-      expose:
-        - "8479"
+services:
+  web:
+    build: ./gold-loan-backend/
+    container_name: gold-loan-test-nodejs-demo
+    image: gold-loan-test:nodejs-demo
+    environment:
+      - NODE_ENV=test
+    links:
+      - redis:redis
+    ports:
+      - "8100:3000"
+    volumes:
+      - gold-loan-test-public-data:/usr/src/app/public/uploads
+    restart: always
 
-    nginx:
-      restart: always
-      container_name: gold-loan-test-nginx-demo
-      image: gold-loan-test:nginx-demo
-      build: ./gold-admin-frontend/
-      volumes:
-        - ./logs/:/gold/logs
-      ports:
-        - "8300:80"
-      links:
-        - web
+  redis:
+    container_name: gold-loan-test-redis-demo
+    restart: always
+    image: redis:latest
+    ports:
+      - "8479:6379"
+
+  nginx:
+    restart: always
+    container_name: gold-loan-test-nginx-demo
+    image: gold-loan-test:nginx-demo
+    build: ./gold-admin-frontend/
+    volumes:
+      - ./logs/:/gold/logs
+    ports:
+      - "8300:80"
+    links:
+      - web
 volumes:
-    gold-loan-test-public-data:
-
-    
+  gold-loan-test-public-data:

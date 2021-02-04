@@ -11,8 +11,8 @@ const CONSTANT = require("../../utils/constant");
 const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
-let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
+// let sms = require('../../utils/sendSMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage, sendMessageOtpForLogin } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
@@ -20,7 +20,8 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
-
+const { createCustomer } = require('../../service/digiGold')
+let sms = require('../../utils/SMS')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -32,7 +33,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, source, panType, panImage, leadSourceId, moduleId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -61,7 +62,11 @@ exports.addCustomer = async (req, res, next) => {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
-  let modulePoint = await models.module.findOne({ where: { id: moduleId } })
+  let getModulePoint = await models.module.findOne({ where: { id: moduleId } })
+
+  let digiGoldModulePoint = await models.module.findOne({ where: { id: 4 } })
+
+  let modulePoint = getModulePoint.modulePoint | digiGoldModulePoint.modulePoint
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
@@ -69,10 +74,11 @@ exports.addCustomer = async (req, res, next) => {
   let password = `${firstName}@1234`;
 
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'ADMIN_PANEL' } })
+  const customerUniqueId = uniqid.time().toUpperCase();
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image, merchantId: 1 },
       { transaction: t }
     );
 
@@ -80,43 +86,55 @@ exports.addCustomer = async (req, res, next) => {
     //   await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
     // }
 
-    if (moduleId == 4) {
-      const customerUniqueId = uniqid.time().toUpperCase();
-      const merchantData = await getMerchantData();
+    const merchantData = await getMerchantData();
 
-      await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
 
-      let state = await getCustomerStateById(stateId, null);
-      let city = await getCustomerCityById(cityId, null);
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
 
-      const data = qs.stringify({
-        'mobileNumber': mobileNumber,
-        // 'emailId': email,
-        'uniqueId': customerUniqueId,
-        'userName': firstName + " " + lastName,
-        // 'userAddress': address,
-        'userCity': city.cityUniqueCode,
-        // 'userState': stateId,
-        'userState': state.stateUniqueCode,
-        // 'userPincode': pinCode,
-        // 'dateOfBirth':dateOfBirth,
-        // 'gender':gender,
-        // 'utmSource': utmSource,
-        // 'utmMedium': utmMedium,
-        // 'utmCampaign': utmCampaign
-      })
+    const data = qs.stringify({
+      'mobileNumber': mobileNumber,
+      // 'emailId': email,
+      'uniqueId': customerUniqueId,
+      'userName': firstName + " " + lastName,
+      // 'userAddress': address,
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
+      // 'userPincode': pinCode,
+      // 'dateOfBirth':dateOfBirth,
+      // 'gender':gender,
+      // 'utmSource': utmSource,
+      // 'utmMedium': utmMedium,
+      // 'utmCampaign': utmCampaign
+    })
 
-      const result = await models.axios({
-        method: 'POST',
-        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${merchantData.accessToken}`,
-        },
-        data: data
-      });
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
+
+    if (panCardNumber != null && panImage != null && statusId == 1) {
+      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' }, { transaction: t })
+
+      await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
+      // applied
+      await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
 
     }
+
+    const result = await createCustomer(data)
+
+    if (!result.isSuccess) {
+      t.rollback()
+      return res.status(422).json({ err: result.message });
+    }
+
 
   });
   return res.status(200).json({ messgae: `Customer created` });
@@ -188,10 +206,17 @@ exports.customerSignUp = async (req, res, next) => {
 
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
     var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
-    await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+    // await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+    await sendMessageOtpForLogin(mobileNumber, otp)
 
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
+
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
 
     const referenceCode = await createReferenceCode(5);
     let otp;
@@ -205,7 +230,8 @@ exports.customerSignUp = async (req, res, next) => {
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
     expiryTime = moment(moment(expiryTime).utcOffset("+05:30"))
     let smsLink = process.env.BASE_URL_CUSTOMER
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+    // await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+    await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
 
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: true });
 
@@ -241,6 +267,13 @@ exports.sendOtp = async (req, res, next) => {
 
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
+    // await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: customerExist.mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER
@@ -299,7 +332,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, leadSourceId, moduleId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, form60Image, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -311,9 +344,17 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId, form60Image },
       { where: { id: customerId }, transaction: t }
     );
+
+    if (panCardNumber != null && panImage != null && statusId == 1) {
+      await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
+
+      await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
+      await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
+
+    }
   });
   return res.status(200).json({ messgae: `User Updated` });
 };
@@ -393,6 +434,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         pinCode: sequelize.where(
           sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
           {
@@ -667,7 +709,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     subQuery: false,
@@ -780,7 +822,7 @@ exports.signUpCustomer = async (req, res) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `INVALID OTP.` });
+    return res.status(404).json({ message: `The OTP entered is incorrect.` });
   }
 
   let verifyFlag = await models.customerOtp.update(
@@ -821,7 +863,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, internalBranchId: 1 },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, internalBranchId: 1 },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);
@@ -843,16 +885,22 @@ exports.signUpCustomer = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: data
-    });
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
 
+    const result = await createCustomer(data)
+
+    if (!result.isSuccess) {
+      t.rollback()
+      return res.status(422).json({ err: result.message });
+    }
 
     Token = jwt.sign({
       id: customer.dataValues.id,
@@ -878,7 +926,7 @@ exports.signUpCustomer = async (req, res) => {
       expiryDate: expiryTime,
       createdDate: createdTime
     }, { transaction: t });
-    return { result, Token }
+    return { Token }
   })
 
   return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
@@ -967,7 +1015,7 @@ exports.getProductRequest = async (req, res, next) => {
     include: includeArray,
   });
 
-  if (allCustomers.length == 0) {
+  if (getAllProductRequest.length == 0) {
     return res.status(200).json({ data: [] });
   }
   return res.status(200).json({ count: getAllProductRequestCount.length, data: getAllProductRequest });
