@@ -625,6 +625,7 @@ export class UserAddressComponent implements OnInit {
 
 
   async patchAaddarValue(index) {
+    this.isCityEdit = false
     if (this.aadharCardUserDetails) {
       let controls = this.addressControls.controls[index]
       controls['controls'].pinCode.patchValue(this.aadharCardUserDetails.pincode)
