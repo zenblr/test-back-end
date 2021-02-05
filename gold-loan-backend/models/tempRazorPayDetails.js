@@ -4,11 +4,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
         },
-        customerId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_id',
-            allowNull: false
-        },
         razorPayOrderId: {
             type: DataTypes.STRING,
             field: 'razor_pay_order_id',
@@ -37,9 +32,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'ornament_id',
         },
-        transactionUniqueId:{
+        transactionUniqueId: {
             type: DataTypes.STRING,
             field: 'transaction_unique_id'
+        },
+        orderStatus: {
+            type: DataTypes.STRING,
+            field: 'order_status',
+            defaultValue: "pending",
         }
     }, {
         freezeTableName: true,

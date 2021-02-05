@@ -157,7 +157,7 @@ exports.editAppKyc = async (req, res, next) => {
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return res.status(400).json({ message: "Pan Card Number already exists! " })
+            return res.status(400).json({ message: "Pan Card already exists! " })
         }
     }
 
@@ -169,7 +169,8 @@ exports.editAppKyc = async (req, res, next) => {
             lastName: customerKycPersonal.lastName,
             panCardNumber: customerKycPersonal.panCardNumber,
             panType: customerKycPersonal.panType,
-            panImage: customerKycPersonal.panImage
+            panImage: customerKycPersonal.panImage,
+            form60Image: customerKycPersonal.form60Image
         }, { where: { id: customerId }, transaction: t })
 
         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });

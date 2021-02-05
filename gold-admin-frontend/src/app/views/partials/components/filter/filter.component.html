@@ -89,12 +89,12 @@
                 </kt-multi-select-search>
               </div>
 
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Module</label>
                 <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
                   [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
                 </kt-multi-select-search>
-              </div>
+              </div> -->
 
               <div class="col-2 d-flex align-items-end">
                 <label></label>
@@ -108,12 +108,12 @@
         <div class="kt-portlet__body" *ngIf="filterName == 'kyc'">
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Module</label>
                 <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
                   [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
                 </kt-multi-select-search>
-              </div>
+              </div> -->
 
               <div class="col">
                 <label>By Loan CCE Status</label>
@@ -188,7 +188,6 @@
           </form>
         </div>
 
-
         <!-- Applied Scrap -->
         <div class="kt-portlet__body" *ngIf="filterName == 'appliedScrap'">
           <form class="kt-form" [formGroup]="filterForm">
@@ -222,7 +221,6 @@
             </div>
           </form>
         </div>
-
 
         <!-- packets -->
         <div class="kt-portlet__body" *ngIf="filterName == 'packets'">
@@ -441,6 +439,93 @@
                     <div class="col-6">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
                         (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Transaction -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'transaction'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>Transaction</label>
+                <select class="form-control" formControlName="paymentFor">
+                  <option selected disabled value="null"> All </option>
+                  <option value="deposit">Deposit</option>
+                  <option value="withdraw">Withdraw</option>
+                  <option value="walletUtilization">Wallet Utilization</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Deposit Requests -->
+        <div class="kt-portlet__body" *ngIf="filterName =='depositRequests'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-5">
+                      <label>By Date</label>
+                      <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
+                        (click)="pickerStartDate.open()" formControlName="startDate" placeholder="DD/MM/YYYY">
+                      <mat-datepicker #pickerStartDate></mat-datepicker>
+                    </div>
+                    <div class="col-5">
+                      <label>By Deposit Status</label>
+                      <select class="form-control" formControlName="depositStatus">
+                        <option value="" selected>All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </div>
+                    <div class="col-2 d-flex align-items-end">
+                      <kt-button [type]="'button'" [value]="'Apply'" (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Withdraw Requests -->
+        <div class="kt-portlet__body" *ngIf="filterName =='withdrawalRequests'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-5">
+                      <label>By Date</label>
+                      <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
+                        (click)="pickerStartDate.open()" formControlName="startDate" placeholder="DD/MM/YYYY">
+                      <mat-datepicker #pickerStartDate></mat-datepicker>
+                    </div>
+                    <div class="col-5">
+                      <label>By Withdrawal Status</label>
+                      <select class="form-control" formControlName="depositStatus">
+                        <option value="" selected>All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </div>
+                    <div class="col-2 d-flex align-items-end">
+                      <kt-button [type]="'button'" [value]="'Apply'" (click)="applyFilter()">
                       </kt-button>
                     </div>
                   </div>

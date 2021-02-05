@@ -7,7 +7,6 @@ import { CoreModule } from '../../../../core/core.module';
 import { PartialsModule } from '../../../partials/partials.module';
 // Components
 import { LeadManagementComponent } from './lead-management.component';
-import { AddLeadComponent } from './add-lead/add-lead.component';
 // Material
 import { AngularMaterialModule } from '../../angular-material/angular-material.module';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../../core/_base/crud';
@@ -28,8 +27,10 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    LeadManagementComponent,
-    AddLeadComponent, NewRequestAddComponent, NewRequestListComponent, MyRequestComponent, NewRequestAssignAppraiserComponent, RegisteredCustomerRequestComponent
+    NewRequestListComponent, 
+    MyRequestComponent, 
+    NewRequestAssignAppraiserComponent, 
+    RegisteredCustomerRequestComponent    
   ],
   imports: [
     CommonModule,
@@ -63,8 +64,6 @@ const routes: Routes = [
     LayoutUtilsService
   ],
   entryComponents: [
-    AddLeadComponent,
-    NewRequestAddComponent,
     NewRequestAssignAppraiserComponent
   ]
 })

@@ -1,0 +1,54 @@
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body kt-margin-bottom-20">
+        <div class="kt-form">
+            <form [formGroup]="rpgEditForm">
+                <div class="row kt-margin-t-15">
+                    <div class="offset-1 col-5 form-label">
+                        <label for="">Scheme Name:</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" formControlName="schemeName" readonly class="form-control">
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-15">
+                    <div class="offset-1 col-5 form-label ">
+                        <label for="">RPG:</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" formControlName="rpg"
+                            [class.isError]="rpgEditForm.controls.rpg.touched && rpgEditForm.controls.rpg.invalid"
+                            class="form-control">
+                        <mat-error *ngIf="rpgEditForm.controls.rpg.touched && rpgEditForm.controls.rpg.invalid">Field
+                            Required</mat-error>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-15 kt-margin-bottom-20">
+                    <div class="offset-1 col-5 form-label">
+                        <label>Internal Branch:</label>
+                    </div>
+                    <div class="col-6 multiselect-position">
+                        <kt-multi-select-search *ngIf="data.action != 'view'" formControlName="multiSelect"
+                            [items]="internalBranches" [multiple]="true" [bindLabel]="'name'"
+                            [placeholder]="'Internal Branch'" [selectAll]="true"
+                            [isError]="rpgEditForm.get('multiSelect').touched && rpgEditForm.get('multiSelect').invalid">
+                        </kt-multi-select-search>
+                        <textarea readonly class="form-control" *ngIf="data.action == 'view'">{{branchNames}}</textarea>
+                        <mat-error
+                            *ngIf="rpgEditForm.controls.multiSelect.touched && rpgEditForm.controls.multiSelect.invalid">
+                            Field
+                            Required</mat-error>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
+        <div class="p-4">
+            <kt-modal-footer (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

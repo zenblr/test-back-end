@@ -87,7 +87,7 @@ export class MenuConfig {
 								this.userType === 4),
 						},
 						{
-							title: "Lead Management",
+							title: "Customer Management",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
@@ -95,7 +95,7 @@ export class MenuConfig {
 							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
-									title: "All Leads",
+									title: "All Customers",
 									page: "/admin/lead-management",
 									permission: !this.permissionsArr.includes('leadManagmentView'),
 								},
@@ -110,9 +110,9 @@ export class MenuConfig {
 								// 	permission: false,
 								// },
 								{
-									title: "Customer Registration List",
+									title: "Customer Request List",
 									page: "/admin/lead-management/registered-customers",
-									permission: !this.permissionsArr.includes('customerRegistrationView')
+									// permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
 							],
 						},
@@ -134,6 +134,11 @@ export class MenuConfig {
 									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
+								// {
+								// 	title: "Applied KYC - Digi Gold",
+								// 	page: "/admin/applied-kyc-digi-gold",
+								// 	// permission: !this.permissionsArr.includes('appliedKycView'),
+								// },
 								// {
 								// 	title: "Assigned Customers",
 								// 	page: "/admin/assigned-customers",
@@ -197,6 +202,14 @@ export class MenuConfig {
 									page: "/admin/loan-management/transfer-loan-list",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('viewLoanTransfer'),
+								},
+								{
+									title: "Customer Management",
+									// root: true,
+									bullet: 'dot',
+									// src: "assets/media/aside-icons/icons-08.svg",
+									page: "/admin/customer-management/customer-list",
+									permission: !this.permissionsArr.includes('customerManagementView'),
 								}
 							],
 						},
@@ -206,13 +219,13 @@ export class MenuConfig {
 						// 	src: "assets/media/aside-icons/icons-08.svg",
 						// 	page: "/admin/global-map",
 						// },
-						{
-							title: "Customer Management",
-							root: true,
-							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/customer-management/customer-list",
-							permission: !this.permissionsArr.includes('customerManagementView'),
-						},
+						// {
+						// 	title: "Customer Management",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-08.svg",
+						// 	page: "/admin/customer-management/customer-list",
+						// 	permission: !this.permissionsArr.includes('customerManagementView'),
+						// },
 						// {
 						// 	title: "Repayment Structure",
 						// 	root: true,
@@ -354,15 +367,14 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-39.svg",
 							page: "/admin/scrap-management",
-							// permission: !this.modulesArr.includes(3),
+							permission: !this.modulesArr.includes(3),
 						},
 						{
 							title: "Digi Gold",
 							root: true,
-							src: "assets/media/aside-icons/icons-39.svg",
+							src: "assets/media/aside-icons/digi-gold.svg",
 							page: "/admin/digi-gold/wallet",
-							bullet: 'dot',
-							permission: false,
+							permission: !this.modulesArr.includes(4),
 						},
 						{
 							title: "Broker",
@@ -936,25 +948,36 @@ export class MenuConfig {
 					],
 					digiGoldItems: [
 						{
+							title: "All Customers",
+							page: "/admin/digi-gold/all-customers",
+							src: "assets/media/aside-icons/icons-05.svg",
+							// permission: !this.permissionsArr.includes('appliedKycView'),
+						},
+						{
 							title: "Wallet",
 							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-35.svg",
+							src: "assets/media/aside-icons/wallet.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "Deposit Requests",
 									page: "/admin/digi-gold/wallet/deposit-requests",
 									bullet: 'dot',
-									permission: false,
+									permission: !this.permissionsArr.includes('digiGoldDepositView'),
 								},
 								{
 									title: "Withdrawal Requests",
 									page: "/admin/digi-gold/wallet/withdrawal-requests",
 									bullet: 'dot',
-									permission: false,
+									permission: !this.permissionsArr.includes('digiGoldWithdrawView'),
 								}
-
 							]
+						},
+						{
+							title: "Applied KYC",
+							page: "/admin/digi-gold/applied-kyc-digi-gold",
+							src: "assets/media/aside-icons/icons-06.svg",
+							// permission: !this.permissionsArr.includes('appliedKycView'),
 						},
 						// {
 						// 	title: "SIP Management",
@@ -1002,7 +1025,7 @@ export class MenuConfig {
 								{
 									title: "Global Settings",
 									page: "/admin/digi-gold/global-settings",
-									permission: false
+									permission: !this.permissionsArr.includes('digiGoldViewGlobalSetting'),
 								},
 							]
 						},

@@ -15,7 +15,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let { customerId, moduleId } = req.body;
+    let { customerId, moduleId, internalBranchId } = req.body;
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     let statusId = status.id
@@ -54,25 +54,26 @@ exports.addAppraiserRequest = async (req, res, next) => {
         }
     }
 
-    let customerLoan = await models.customerLoanMaster.findAll({where : {
-        customerId,isLoanTransfer:true,loanStageId:{ [Op.in]: [1,2,3,4,6,7,9] }
-    },
+    let customerLoan = await models.customerLoanMaster.findAll({
+        where: {
+            customerId, isLoanTransfer: true, loanStageId: { [Op.in]: [1, 2, 3, 4, 6, 7, 9] }
+        },
         include: {
             model: models.customerLoanTransfer,
             as: 'loanTransfer'
         }
     })
-    if(customerLoan.length != 0){
-        for(const loan of customerLoan){
-            if(loan.loanTransfer.loanTransferStatusForBM == 'rejected' || loan.loanTransfer.loanTransferStatusForAppraiser == 'rejected'){
+    if (customerLoan.length != 0) {
+        for (const loan of customerLoan) {
+            if (loan.loanTransfer.loanTransferStatusForBM == 'rejected' || loan.loanTransfer.loanTransferStatusForAppraiser == 'rejected') {
                 console.log("false")
-            }else{
+            } else {
                 return res.status(400).json({ message: `This customer's loan transfer is in process` })
             }
         }
     }
 
-    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, internalBranchId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
@@ -85,7 +86,7 @@ exports.addAppraiserRequest = async (req, res, next) => {
             let updatePoint = checkStatusCustomer.allModulePoint | modulePoint.modulePoint
             await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
         }
-        let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+        let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, internalBranchId, createdBy, modifiedBy }, { transaction: t })
     })
     return res.status(201).json({ message: `Request Created` })
 }
@@ -94,8 +95,8 @@ exports.addAppraiserRequest = async (req, res, next) => {
 exports.updateAppraiserRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
-    let { moduleId, customerId } = req.body;
-    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
+    let { moduleId, customerId, internalBranchId } = req.body;
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, internalBranchId, customerId: customerId, status: 'incomplete' } })
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
@@ -118,7 +119,7 @@ exports.updateAppraiserRequest = async (req, res, next) => {
             await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
         }
 
-        let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id }, transaction: t })
+        let appraiserRequest = await models.appraiserRequest.update({ moduleId, internalBranchId, modifiedBy }, { where: { id }, transaction: t })
     })
 
     return res.status(200).json({ message: `Request updated` })
@@ -170,6 +171,10 @@ exports.getAllNewRequest = async (req, res, next) => {
         {
             model: models.module,
             as: 'module',
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch'
         },
         {
             model: models.user,

@@ -63,6 +63,8 @@
                         <div class="filtered-title" *ngIf="filterName == 'deposit'">By Payment Recieved Date</div>
                         <div class="filtered-title" *ngIf="filterName == 'cancelOrder'">By Cancel Date</div>
                         <div class="filtered-title" *ngIf="filterName == 'cron'">By From Date</div>
+                        <div class="filtered-title"
+                            *ngIf="filterName == 'deposit-request' || filterName == 'withdraw-request'">By Date</div>
                         <div class="d-flex">
                             <div class="filtered-value">
                                 <span>{{filteredList?.startDate}}</span>
@@ -309,13 +311,26 @@
 
                     <!-- deposit -->
                     <div class="filtered-data" *ngIf="filteredList?.depositStatus">
-                        <div class="filtered-title">Status</div>
+                        <div class="filtered-title">By Status</div>
                         <div class="d-flex">
                             <div class="filtered-value">
                                 <span>{{ filteredList?.depositStatus | titlecase }}</span>
 
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('depositStatus')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- paymentFor -->
+                    <div class="filtered-data" *ngIf="filteredList?.paymentFor">
+                        <div class="filtered-title">By Transaction</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{ filteredList?.paymentFor | titlecase }}</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('paymentFor')">
                             </div>
                         </div>
                     </div>

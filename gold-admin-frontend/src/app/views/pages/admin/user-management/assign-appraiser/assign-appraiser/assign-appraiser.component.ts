@@ -60,7 +60,7 @@ export class AssignAppraiserComponent implements OnInit {
     private toaster: ToastrService
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
     // this.getCustomer()
     this.getUserDetails()
     // this.getAllAppraiser();
@@ -155,7 +155,7 @@ export class AssignAppraiserComponent implements OnInit {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
 
       // this.internalBranchId = res.userDetails.userTypeId == 4 ? this.data.customer.internalBranchId : res.userDetails.internalBranchId
-      this.internalBranchId = this.data.customer.internalBranchId
+      this.internalBranchId = this.data.requestData.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
         this.getAllAppraiser()
@@ -166,6 +166,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   getAllAppraiser() {
+
     this.appraiserService.getAllAppraiser(this.internalBranchId, this.data.customerId).subscribe(res => {
       this.appraisers = res.data;
     })

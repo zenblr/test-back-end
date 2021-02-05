@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 })
 export class DepositRequestsEditComponent implements OnInit {
 	viewLoading = false;
+	formFieldEnableFlag = false;
 	depositForm: FormGroup;
 	depositId: number;
 	depositInfo: any;
@@ -24,9 +25,7 @@ export class DepositRequestsEditComponent implements OnInit {
 		{ value: 'completed', name: 'Completed' },
 		{ value: 'rejected', name: 'Rejected' },
 	];
-	hiddenFlag = false;
-	showUploadFile = false;
-	showUploadedFile = false;
+	maxDate = new Date();
 	private destroy$ = new Subject();
 	@Output() next: EventEmitter<any> = new EventEmitter<any>();
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -63,8 +62,10 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositBranchName: [''],
 			depositDate: [''],
 			depositAmount: [''],
+			approvalDate: [''],
 			depositStatus: ['', Validators.required],
 		});
+		this.depositForm.disable()
 		this.depositForm.valueChanges.subscribe((val) => console.log(val));
 	}
 
@@ -74,14 +75,31 @@ export class DepositRequestsEditComponent implements OnInit {
 		}
 	}
 
+	fieldEnable(value) {
+		if (value == 'completed') {
+			this.formFieldEnableFlag = true;
+			this.controls.approvalDate.setValidators([Validators.required])
+			this.controls.approvalDate.updateValueAndValidity()
+
+		} else {
+			this.formFieldEnableFlag = false;
+			this.controls.approvalDate.setValidators([])
+			this.controls.approvalDate.updateValueAndValidity()
+
+		}
+	}
+
 	editOrder() {
 		const data = {
-			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId,
+			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ||
+				this.depositInfo.transactionData.razorpayPaymentId ||
+				this.depositInfo.transactionData.chequeNumber,
 			depositmodeofpayment: this.depositInfo.transactionData.paymentType,
-			depositBankName: this.depositInfo.transactionData.bankName,
-			depositBranchName: this.depositInfo.transactionData.branchName,
-			depositDate: this.depositInfo.transactionData.depositDate,
+			depositBankName: this.depositInfo.transactionData.bankName ? this.depositInfo.transactionData.bankName : 'NA',
+			depositBranchName: this.depositInfo.transactionData.branchName ? this.depositInfo.transactionData.branchName : 'NA',
+			depositDate: this.depositInfo.transactionData.paymentReceivedDate,
 			depositAmount: this.depositInfo.transactionData.transactionAmount,
+			approvalDate: this.depositInfo.transactionData.depositApprovedDate,
 			depositStatus: '',
 		};
 		this.depositForm.patchValue(data);
@@ -89,8 +107,15 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (!(this.depositInfo.transactionData.depositStatus == 'pending')) {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
-		} else {
-			this.depositForm.disable();
+		}
+
+		if (this.depositInfo.transactionData.depositStatus == 'completed') {
+			this.formFieldEnableFlag = true;
+		}
+
+		else {
+			this.controls.approvalDate.enable();
+			this.controls.depositStatus.enable();
 		}
 	}
 
@@ -100,9 +125,18 @@ export class DepositRequestsEditComponent implements OnInit {
 			return;
 		}
 		if (this.depositId) {
-			const depositData = {
-				depositStatus: this.controls.depositStatus.value,
-			};
+			let depositData;
+			if (this.controls.depositStatus.value == 'completed') {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
+				};
+			} else {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: new Date()
+				};
+			}
 			this.depositRequestsService.editDepositStatus(depositData, this.depositId).pipe(
 				map((res) => {
 					this.toastr.successToastr('Deposit Status Updated Sucessfully');
