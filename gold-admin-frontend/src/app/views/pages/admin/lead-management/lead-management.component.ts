@@ -73,7 +73,7 @@ export class LeadManagementComponent implements OnInit {
     this.dataTableService.topBarCheck$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
       if (res) {
         this.viewAllCustomer = res.checked;
-        this.loadLeadsPage()
+        this.loadLeadsPage();
       }
     });
   }
@@ -122,6 +122,7 @@ export class LeadManagementComponent implements OnInit {
     this.filter$.complete();
     this.leadService.applyFilter.next({});
     this.sharedService.closeFilter.next(true);
+    this.dataTableService.topBarCheck.next('');
   }
 
   loadLeadsPage() {
