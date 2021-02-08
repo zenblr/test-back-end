@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'product_type_id'
         },
-        iaActive: {
+        isActive: {
             type: DataTypes.BOOLEAN,
-            field: 'ia_active',
+            field: 'is_active',
             defaultValue: true,
         },
         transactionDate: {

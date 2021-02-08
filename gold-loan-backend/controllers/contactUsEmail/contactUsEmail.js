@@ -18,7 +18,7 @@ exports.contactUsEmail = async (req, res) => {
         } else {
             const options = {
                 from: `info@augmont.in`,
-                to: `help@augmont.in,${email}`,
+                to: `support@augmont.com,${email}`,
                 bcc: 'ritesh.bhagat@augmont.in',
                 subject: `[Gold Loan] ${subject}`,
                 html: data,

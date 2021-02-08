@@ -18,8 +18,8 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 export class DepositRequestsComponent implements OnInit {
 	dataSource: DepositRequestsDatasource;
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-	displayedColumns = ['transactionID', 'bankTransactionID', 'customerID', 'depositDate', 'fullName',
-		'mobileNumber', 'depositmodeofpayment', 'depositBankName', 'depositBranchName', 'depositAmount',
+	displayedColumns = ['transactionID', 'depositAmount', 'bankTransactionID', 'customerID', 'depositDate', 'fullName',
+		'mobileNumber', 'depositmodeofpayment', 'depositBankName', 'depositBranchName', 'depositApprovedDate',
 		'depositStatus', 'action'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild('sort1', { static: true }) sort: MatSort;
@@ -33,7 +33,9 @@ export class DepositRequestsComponent implements OnInit {
 		from: 1,
 		to: 25,
 		search: '',
-		paymentFor: 'deposit'
+		paymentFor: 'deposit',
+		paymentReceivedDate: '',
+		depositStatus: ''
 	};
 	filteredDataList = {};
 
@@ -46,6 +48,14 @@ export class DepositRequestsComponent implements OnInit {
 		private sharedService: SharedService,
 		private router: Router,
 	) {
+		this.depositRequestsService.exportExcel$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res) {
+					this.downloadReport();
+				}
+			});
+
 		this.depositRequestsService.applyFilter$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe((res) => {
@@ -79,6 +89,8 @@ export class DepositRequestsComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
 				this.depositDetailsResult = res;
+				// console.log(this.depositDetailsResult);
+
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadDepositRequests(this.depositData);
@@ -108,7 +120,16 @@ export class DepositRequestsComponent implements OnInit {
 	}
 
 	applyFilter(data) {
+		console.log(data);
+		this.depositData.paymentReceivedDate = data.data.startDate;
+		this.depositData.depositStatus = data.data.depositStatus;
+		this.dataSource.loadDepositRequests(this.depositData);
 		this.filteredDataList = data.list;
+	}
+
+	downloadReport() {
+		this.depositRequestsService.reportExport(this.depositData).subscribe();
+		this.depositRequestsService.exportExcel.next(false);
 	}
 
 	ngOnDestroy() {

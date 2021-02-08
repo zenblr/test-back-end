@@ -51,6 +51,11 @@
                     <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="branchName">
+                    <mat-header-cell *matHeaderCellDef>Branch Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.internalBranch?.name | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let row"

@@ -10,6 +10,7 @@ import { PartPaymentLogDialogComponent } from '../../../../partials/components/p
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
 
 @Component({
   selector: 'kt-part-payment',
@@ -24,6 +25,8 @@ export class PartPaymentComponent implements OnInit {
   payableAmountSummary: any;
   paymentDetails: any;
   paymentValue: any;
+  payableAmount: any;
+  sum: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +38,7 @@ export class PartPaymentComponent implements OnInit {
     private toastr: ToastrService,
     private razorpayPaymentService: RazorpayPaymentService,
     private zone: NgZone,
+    private quickPayServie: QuickPayService,
     private sharedService: SharedService
   ) { }
 
@@ -42,6 +46,7 @@ export class PartPaymentComponent implements OnInit {
     this.masterLoanId = this.route.snapshot.params.id
     this.getPreviousPartPaymentInfo(this.masterLoanId)
     this.partPayment()
+    this.getPayableAmount()
   }
 
   getPreviousPartPaymentInfo(id) {
@@ -51,13 +56,29 @@ export class PartPaymentComponent implements OnInit {
     })
   }
 
+  getPayableAmount() {
+    this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
+      this.payableAmount = res.data;
+      this.sum = 0;
+      this.sum = Number((Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)).toFixed(2))
+      this.partAmount.patchValue(this.sum)
+      this.ref.detectChanges()
+    })
+  }
+
   partPayment() {
     this.showPartAmountInput = true
   }
 
   partAmountContinue() {
     // console.log(this.partAmount)
-    if (this.partAmount.invalid) return this.partAmount.markAsTouched()
+    if (this.partAmount.invalid || this.partAmount.value <= 0) {
+      if (this.partAmount.value <= 0) {
+        this.partAmount.setErrors({ valueZero: true })
+      }
+      this.partAmount.markAllAsTouched()
+      return
+    }
     const data = {
       paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId
@@ -82,6 +103,7 @@ export class PartPaymentComponent implements OnInit {
 
   cancelPayableAmountSummary() {
     this.payableAmountSummary = null
+    this.paymentValue = {}
     this.scrollToBottom()
   }
 
@@ -105,6 +127,11 @@ export class PartPaymentComponent implements OnInit {
     })
   }
 
+  
+  paymentData(event){
+    this.paymentValue = event
+  }
+
   submitPaymentConfirmation() {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
@@ -123,6 +150,11 @@ export class PartPaymentComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
           this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        },
+        err => {
+          if (err.error.message)
+            this.toastr.error(err.error.message)
+          throw err
         }
       )
       return

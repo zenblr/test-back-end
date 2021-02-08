@@ -18,7 +18,7 @@ export class LeadService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllLeads(data): Observable<any> {
+  getAllLeads(data,viewAllCustomer): Observable<any> {
     const reqParams: any = {};
     if (data && data.from) {
       reqParams.from = data.from;
@@ -32,6 +32,9 @@ export class LeadService {
     if (data && data.stageName) {
       reqParams.stageName = data.stageName;
     }
+    // if (data && data.viewAllCustomer) {
+    //   reqParams.viewAllCustomer = data.viewAllCustomer;
+    // }
     if (data && data.cityId) {
       reqParams.cityId = data.cityId;
     }
@@ -44,7 +47,7 @@ export class LeadService {
     if (data && data.modulePoint) {
       reqParams.modulePoint = data.modulePoint
     }
-    return this.http.get<any>(`/api/customer`, { params: reqParams })
+    return this.http.get<any>(`/api/customer?viewAllCustomer=${viewAllCustomer}`, { params: reqParams })
   }
 
   addLead(data): Observable<any> {

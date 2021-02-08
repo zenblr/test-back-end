@@ -3,13 +3,14 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
-
+const cache = require('../../utils/cache');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
     const { mobileNumber, password } = req.body;
-    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber } });
+    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } });
+
     if (!checkCustomer) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
@@ -34,8 +35,13 @@ exports.customerLogin = async (req, res, next) => {
             where: { id: decoded.id }
         });
 
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
-        
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -64,7 +70,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyCustomer)) {
-        return res.status(401).json({ message: `INVALID OTP` })
+        return res.status(401).json({ message: `The OTP entered is incorrect` })
     }
 
 
@@ -96,7 +102,12 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             where: { id: decoded.id }, transaction: t
         });
 
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
 
         await models.customerLogger.create({
             customerId: decoded.id,

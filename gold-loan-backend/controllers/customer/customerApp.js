@@ -7,7 +7,6 @@ const check = require("../../lib/checkLib");
 const moment = require('moment')
 const { allKycCompleteInfo } = require('../../service/customerKyc')
 
-
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
@@ -161,6 +160,11 @@ exports.readMyLoan = async (req, res, next) => {
                     {
                         model: models.scheme,
                         as: 'scheme'
+                    },
+                    {
+                        model: models.partner,
+                        as: 'partner',
+                        attributes: ['id', 'name']
                     },
                     {
                         model: models.customerLoanInterest,
@@ -328,14 +332,17 @@ exports.personalInfo = async (req, res, next) => {
 }
 
 exports.customerProductRequest = async (req, res, next) => {
-    let { customerId, moduleId } = req.body
+    let { customerId, moduleId, requestFor } = req.body
+    let checkExist = []
 
-    let checkExist = await models.productRequest.findAll({ where: { customerId: customerId } })
+    if (requestFor == 'kyc') {
+        checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
+    }
 
     if (checkExist.length != 0) {
         return res.status(422).json({ message: `Thank you` })
     }
-    await models.productRequest.create({ customerId, moduleId })
+    await models.productRequest.create({ customerId, moduleId, requestFor })
 
     return res.status(200).json({ message: `Thank you` })
 

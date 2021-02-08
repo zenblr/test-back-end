@@ -35,7 +35,7 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, scrapKycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'scrapKycStatus'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image', 'scrapKycStatus'],
 
     })
 
@@ -239,49 +239,49 @@ exports.scrapBankDetails = async (req, res, next) => {
 
 //function for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
-        let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
-        let allOrnmanets = []
-        let createdBy = req.userData.id;
-        let modifiedBy = req.userData.id;
-        for (let i = 0; i < scrapOrnaments.length; i++) {
-            scrapOrnaments[i]['createdBy'] = createdBy
-            scrapOrnaments[i]['modifiedBy'] = modifiedBy
-            scrapOrnaments[i]['scrapId'] = scrapId
-            delete scrapOrnaments[i]['id']
-            allOrnmanets.push(scrapOrnaments[i])
-        }
+    let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
+    let allOrnmanets = []
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    for (let i = 0; i < scrapOrnaments.length; i++) {
+        scrapOrnaments[i]['createdBy'] = createdBy
+        scrapOrnaments[i]['modifiedBy'] = modifiedBy
+        scrapOrnaments[i]['scrapId'] = scrapId
+        delete scrapOrnaments[i]['id']
+        allOrnmanets.push(scrapOrnaments[i])
+    }
 
-        let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
-        if (checkOrnaments.length == 0) {
-            let scrapData = await sequelize.transaction(async t => {
-                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
+    let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
+    if (checkOrnaments.length == 0) {
+        let scrapData = await sequelize.transaction(async t => {
+            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+            let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
-                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-                return createdOrnaments
-            })
-            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
-        } else {
+            return createdOrnaments
+        })
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+    } else {
 
-            let scrapData = await sequelize.transaction(async t => {
-                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+        let scrapData = await sequelize.transaction(async t => {
+            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
 
-                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-                await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
+            await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
 
-                let createdOrnaments = []
-                for (let purityTestData of allOrnmanets) {
-                    delete purityTestData.id;
-                    var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
-                    createdOrnaments.push(ornaments)
-                }
+            let createdOrnaments = []
+            for (let purityTestData of allOrnmanets) {
+                delete purityTestData.id;
+                var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
+                createdOrnaments.push(ornaments)
+            }
 
-                return createdOrnaments;
-            })
-            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
-        }
+            return createdOrnaments;
+        })
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
+    }
 
 }
 
@@ -1123,7 +1123,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
             {
                 model: models.customerKycPersonalDetail,
                 as: 'customerKycPersonal',
-                attributes: ['id',  'panCardNumber'],
+                attributes: ['id', 'panCardNumber'],
             }
             ]
         },
@@ -1260,7 +1260,7 @@ exports.printPurchaseVoucher = async (req, res) => {
             {
                 model: models.customerKycPersonalDetail,
                 as: 'customerKycPersonal',
-                attributes: ['id',  'panCardNumber'],
+                attributes: ['id', 'panCardNumber'],
             },
             {
                 model: models.customerKycOrganizationDetail,
@@ -1281,12 +1281,12 @@ exports.printPurchaseVoucher = async (req, res) => {
         if (address.addressType == "permanent") {
             customerAddress = `${address.address}, ${address.city.name}, ${address.state.name}, ${address.pinCode} `;
             pincode = address.pinCode;
-            customerState = address.state.name;            
+            customerState = address.state.name;
         }
     }
 
     let amountInWords = convert(customerScrap.finalScrapAmountAfterMelting);
-    
+
     var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
 
     var options = {
@@ -1304,20 +1304,20 @@ exports.printPurchaseVoucher = async (req, res) => {
         "width": "11in"
     }
 
-    if(customerScrap.customer.customerKycPersonal && customerScrap.customer.customerKycPersonal.panCardNumber){
+    if (customerScrap.customer.customerKycPersonal && customerScrap.customer.customerKycPersonal.panCardNumber) {
         panNo = customerScrap.customer.customerKycPersonal.panCardNumber
-    }else{
+    } else {
         panNo = " -";
     }
-    if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
+    if (customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber) {
         gstinNumber = customerScrap.customer.organizationDetail.gstinNumber
-    }else{
+    } else {
         gstinNumber = " -";
     }
 
-    if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber){
+    if (customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber) {
         cinNumber = customerScrap.customer.organizationDetail.cinNumber
-    }else{
+    } else {
         cinNumber = " -";
     }
 
@@ -1331,7 +1331,7 @@ exports.printPurchaseVoucher = async (req, res) => {
         panNo: panNo,
         netWeight: customerScrap.meltingOrnament.netWeight,
         amountInWords: `${amountInWords.toUpperCase()} ONLY`,
-        ratePerGram:  customerScrap.finalScrapAmountAfterMelting / customerScrap.meltingOrnament.netWeight,
+        ratePerGram: customerScrap.finalScrapAmountAfterMelting / customerScrap.meltingOrnament.netWeight,
         totalAmount: customerScrap.finalScrapAmountAfterMelting,
         gstinNumber: gstinNumber,
         cinNumber: cinNumber
