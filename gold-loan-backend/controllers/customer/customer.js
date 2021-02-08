@@ -33,7 +33,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -404,7 +404,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, viewAllCustomer } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -553,12 +553,17 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   ]
   let internalBranchId = req.userData.internalBranchId
+
   if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
     searchQuery.internalBranchId = internalBranchId
   }
 
-  // if (req.userData.userTypeId != 4) {
-  // }
+  if (viewAllCustomer == 'true') {
+    if(check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER) == false){
+      delete searchQuery.internalBranchId;
+    }
+    // searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
