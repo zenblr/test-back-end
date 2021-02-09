@@ -120,8 +120,10 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     let idProofType = "aadhaar card";
     let ocrData = [];
     let error = null;
+    let i = 0;
     for (const fileUrl of fileUrls) {
-        let info = await ocrService(fileUrl, idProofType, customerId)
+        let info = await ocrService(fileUrl, idProofType, customerId,i)
+        i ++;
         if (info.error) {
             return res.status(400).json({ message: 'KYC failed' })
         }
@@ -134,9 +136,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             break
         }
     }
-    if (ocrData.error) {
-        return res.status(400).json({ message: error })
-    } else {
+    // if (ocrData.error) {
+    //     return res.status(400).json({ message: error })
+    // } else {
         //aadahar card data
         if (ocrData[0].data.idProofType.toLowerCase().includes('aadhaar card')) {
             let isAadharConfPass = false;
@@ -191,7 +193,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    }
+    // }
 }
 
 exports.kycOcrFoPanCard = async (req, res, next) => {
@@ -199,12 +201,12 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
     let idProofType = "pan card";
     let error = null;
     let ocrData = await ocrService(fileUrl, idProofType, customerId)
-    if (ocrData.error) {
-        return res.status(400).json({ message: 'KYC failed' })
-    }
-    if (ocrData.error) {
-        return res.status(400).json({ message: error })
-    } else {
+    // if (ocrData.error) {
+    //     return res.status(400).json({ message: 'KYC failed' })
+    // }
+    // if (ocrData.error) {
+    //     return res.status(400).json({ message: error })
+    // } else {
         //aadahar card data
         if (ocrData.data.idProofType.toLowerCase().includes('pan card')) {
             let isPanConfPass = ocrData.data.extractedData.confidenceValueResult.isPanConfPass;
@@ -250,7 +252,7 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    }
+    // }
 }
 
 exports.getCustomerEkycData = async (req, res, next) => {

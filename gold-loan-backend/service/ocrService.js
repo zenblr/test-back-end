@@ -95,7 +95,7 @@ const env = process.env.KARZA_ENV || 'TEST';
 
 // Function to Insert into External API Logger
 
-let ocrService = async (fileUrl, idProofType, customerId) => {
+let ocrService = async (fileUrl, idProofType, customerId, index) => {
     let apiPath;
     let requestBody;
     try {
@@ -121,45 +121,142 @@ let ocrService = async (fileUrl, idProofType, customerId) => {
         requestBody = data;
         const apiType = 'Karza OCR';
 
-        let options = {
-            method: 'POST',
-            url: karzaDetail.kycOcrUrl,
-            headers: {
-                'x-karza-key': karzaDetail.key,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
+        // let options = {
+        //     method: 'POST',
+        //     url: karzaDetail.kycOcrUrl,
+        //     headers: {
+        //         'x-karza-key': karzaDetail.key,
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(data)
+        // }
+        //static data
+        let result = await getOcrLocal(idProofType, index)
+        const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
+        return { data: ocrResp };
 
-        return new Promise((resolve, reject) => {
-            request(options, async function (error, response, body) {
-                if (error) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
-                    return resolve({ error: 'Something Went Wrong' });
-                }
-                const respBody = JSON.parse(body);
-                if (respBody.statusCode === 101) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
-                    const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
-                    if (ocrResp.error) {
-                        return resolve({ error: ocrResp.error });
-                    }
-                    const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
-                    if (!validationResp.error) {
-                        return resolve({ data: ocrResp });
-                    } else {
-                        return resolve({ error: validationResp.error });
-                    }
+        // return new Promise((resolve, reject) => {
+        //     request(options, async function (error, response, body) {
+        //         if (error) {
+        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
+        //             return resolve({ error: 'Something Went Wrong' });
+        //         }
+        //         const respBody = JSON.parse(body);
+        //         if (respBody.statusCode === 101) {
+        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
+        //             const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
+        //             if (ocrResp.error) {
+        //                 return resolve({ error: ocrResp.error });
+        //             }
+        //             const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
+        //             if (!validationResp.error) {
+        //                 return resolve({ data: ocrResp });
+        //             } else {
+        //                 return resolve({ error: validationResp.error });
+        //             }
 
-                } else {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
-                    return resolve({ error: 'Ocr Failed' });
-                }
-            })
-        })
+        //         } else {
+        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
+        //             return resolve({ error: 'Ocr Failed' });
+        //         }
+        //     })
+        // })
     } catch (err) {
         await insertInExternalApiLogger('Karza OCR', null, null, apiPath, JSON.stringify(requestBody), JSON.stringify(err), 'Error');
         return { error: 'Something Went Wrong' }
+    }
+}
+
+let getOcrLocal = async (idProofType, index) => {
+    if (idProofType.toLowerCase().includes('aadhaar card')) {
+        if (index == 0) {
+
+            let data = {
+                "statusCode": 101,
+                "requestId": "a14dd2c9-f2af-47fc-91ec-6d02ffa44171",
+                "result": [
+                    {
+                        "type": "Aadhaar Front Bottom",
+                        "details": {
+                            "qr": {
+                                "value": ""
+                            },
+                            "name": {
+                                "value": "Amit Ramashankar Prasad",
+                                "conf": 0.99
+                            },
+                            "dob": {
+                                "value": "03/06/1993",
+                                "conf": 0.9
+                            },
+                            "gender": {
+                                "value": "MALE",
+                                "conf": 0.77
+                            },
+                            "imageUrl": {
+                                "value": "https://download.karza.in/kyc-ocr/UzFhck9NZ0xFWXY5ZnNvRFpRMHByUWUyM3VTZU5YdWJSNTVoTVhxRm1pdDA4TmhXdnNpSndJYUNyaC9lcG9uT1J0M3lOWmxucEtDOTg1SnBxOVQzK3ZPb1F4NE9BTExvak1MUUgrMURJeXZycUJOWi83UDFLdlJPMVpjMzU1VVJ3Vk4rRjRYUHA5MTE0ejBNTytUaUFwM2ovTm1sZnpBa2wzcXdKM05MNUxrPQ=="
+                            },
+                            "father": {
+                                "value": "",
+                                "conf": 0.0
+                            },
+                            "yob": {
+                                "value": "",
+                                "conf": 0.0
+                            },
+                            "aadhaar": {
+                                "isMasked": "yes",
+                                "value": "861736345859",
+                                "conf": 0.9
+                            },
+                            "mother": {
+                                "value": "",
+                                "conf": 0.0
+                            }
+                        }
+                    }
+                ]
+            }
+            return data
+
+        } else {
+            let data1 = { "statusCode": 101, "requestId": "d9c32abd-6bec-422d-94be-b4654633f5f7", "result": [{ "type": "Aadhaar Back", "details": { "qr": { "value": "" }, "pin": { "value": "411044", "conf": 0.9 }, "father": { "value": "", "conf": 0.0 }, "imageUrl": { "value": "https://download.karza.in/kyc-ocr/Rmw4UUYvaGNUVjRBenNrdmRoVTc1RFZOa0RHRmRVLzh0WGFyeFE0cmZnT2R2TkljUjdpdDdpSEQ4UUwvWGNPRVRBQlpEaDU3eVBDcnRWRVNWMEV3UTNuK05Va2Z1emZHUHM5Y2N5NkJGOFhzTjg2TEthQmEwZXV1K0pmTXFsZ1c2MStMUmpoVHluR2ZGd2U4c0hENkc3bzlRS2FheXdHai9zZVZCUS8zdHprPQ==" }, "addressSplit": { "city": "NIGADI GAOTHAN", "district": "Pune", "pin": "411044", "locality": "PRASUN PURAM", "line2": "NEAR MARUTI MANDIR, NIGADI GAOTHAN", "line1": "PRASUN PURAM , E- WING, ROOM NO- 12,", "state": "Maharashtra", "street": "", "landmark": "NEAR MARUTI MANDIR", "careOf": "", "houseNumber": "E- WING, ROOM NO- 12" }, "aadhaar": { "isMasked": "yes", "value": "861736345859", "conf": 0.9 }, "address": { "value": "PRASUN PURAM , E- WING, ROOM NO- 12,, NEAR MARUTI MANDIR, NIGADI GAOTHAN, Pune, Maharashtra - 411044 ", "conf": 0.6 }, "husband": { "value": "", "conf": 0.0 } } }] }
+            return data1
+        }
+
+    } else {
+        let data = {
+            "statusCode": 101,
+            "requestId": "9dce03bb-b62f-46b6-afc2-e8d8fc4c8465",
+            "result": [
+                {
+                    "type": "Pan",
+                    "details": {
+                        "date": {
+                            "value": "03/06/1993",
+                            "conf": 0.9
+                        },
+                        "panNo": {
+                            "value": "BHGPP7215J",
+                            "conf": 1.0
+                        },
+                        "dateOfIssue": {
+                            "value": "",
+                            "conf": 0.0
+                        },
+                        "father": {
+                            "value": "RAMASHANKAR KESHAV PRASAD",
+                            "conf": 1.0
+                        },
+                        "name": {
+                            "value": "PRASAD AMIT RAMASHANKAR",
+                            "conf": 0.99
+                        }
+                    }
+                }
+            ]
+        }
+        return data
     }
 }
 
@@ -176,17 +273,17 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     };
 
     if (proofType.includes('aadhaar card')) {
-        const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
-        return {extractedData,idProofType};
-    }  else if (proofType.includes('driving license')) {
+        const extractedData = await getAadhaarResp(responseBody.result, confidenceValue, userDetailBody);
+        return { extractedData, idProofType };
+    } else if (proofType.includes('driving license')) {
         const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody);
-        return {extractedData,idProofType};
-    } else if(proofType.includes('voter id')){
+        return { extractedData, idProofType };
+    } else if (proofType.includes('voter id')) {
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
-        return {extractedData,idProofType};
-    } else if(proofType.includes('pan card')) {
-        const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
-        return {extractedData,idProofType};
+        return { extractedData, idProofType };
+    } else if (proofType.includes('pan card')) {
+        const extractedData = await getPanCardResp(responseBody.result, confidenceValue, userDetailBody);
+        return { extractedData, idProofType };
     }
 }
 
@@ -203,7 +300,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
         if (respObject.details.name && Number(respObject.details.name.conf) >= confidenceValue) {
             isNameConfPass = true;
         }
-        if(respObject.details.dob && Number(respObject.details.dob.conf) >= confidenceValue) {
+        if (respObject.details.dob && Number(respObject.details.dob.conf) >= confidenceValue) {
             isDobConfPass = true;
         }
         if (respObject.type.toLowerCase().includes('aadhaar front top')) {
@@ -239,8 +336,8 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
     // } else {
     //     return { error: 'Please Upload Aadhaar Card Image' };
     // }
-    let confidenceValueResult = {isAadharConfPass,isNameConfPass, isDobConfPass}
-    return {userDetailBody ,confidenceValueResult}
+    let confidenceValueResult = { isAadharConfPass, isNameConfPass, isDobConfPass }
+    return { userDetailBody, confidenceValueResult }
 }
 
 let getPanCardResp = async (respBody, confidenceValue, userDetailBody) => {
@@ -255,7 +352,7 @@ let getPanCardResp = async (respBody, confidenceValue, userDetailBody) => {
         if (respObject.details.name && Number(respObject.details.name.conf) >= confidenceValue) {
             isNameConfPass = true;
         }
-        if(respObject.details.date && Number(respObject.details.date.conf) >= confidenceValue) {
+        if (respObject.details.date && Number(respObject.details.date.conf) >= confidenceValue) {
             isDobConfPass = true;
         }
         if (respObject.type.toLowerCase().includes('pan')) {
@@ -263,7 +360,7 @@ let getPanCardResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.idNumber = returnValueFunction(respObject.details.panNo);
             userDetailBody.fatherName = returnValueFunction(respObject.details.father);
             userDetailBody.name = returnValueFunction(respObject.details.name);
-            userDetailBody.panNameScore =  returnConfFunction(respObject.details.name);
+            userDetailBody.panNameScore = returnConfFunction(respObject.details.name);
             userDetailBody.panDOBScore = returnConfFunction(respObject.details.date);
         }
     }
@@ -274,8 +371,8 @@ let getPanCardResp = async (respBody, confidenceValue, userDetailBody) => {
     // } else {
     //     return { error: 'Please Upload Aadhaar Card Image' };
     // }
-    let confidenceValueResult = {isPanConfPass,isNameConfPass, isDobConfPass}
-    return {userDetailBody ,confidenceValueResult}
+    let confidenceValueResult = { isPanConfPass, isNameConfPass, isDobConfPass }
+    return { userDetailBody, confidenceValueResult }
 }
 
 let mergeUserDetailBody = async (body1, body2) => {
@@ -320,8 +417,8 @@ let getPassportResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.fileNum = returnValueFunction(respObject.details.fileNum);
         }
     }
-    let confidenceValueResult = {isPassportConfPass,isNameConfPass}
-    return { userDetailBody, confidenceValueResult};
+    let confidenceValueResult = { isPassportConfPass, isNameConfPass }
+    return { userDetailBody, confidenceValueResult };
     // if (isPassportConfPass && isNameConfPass) {
     //     return userDetailBody;
     // } else {
@@ -368,8 +465,8 @@ let getElectiondIdCardResp = async (respBody, confidenceValue, userDetailBody) =
             userDetailBody.city = respObject.details.addressSplit ? respObject.details.addressSplit.district : null;
         }
     }
-    let confidenceValueResult = {isVoterIdConfPass}
-    return {userDetailBody,confidenceValueResult};
+    let confidenceValueResult = { isVoterIdConfPass }
+    return { userDetailBody, confidenceValueResult };
 }
 
 let returnValueFunction = (val) => {
@@ -516,6 +613,6 @@ module.exports = {
     passportValidation: passportValidation,
     dlValidation: dlValidation,
     karzaValidationApiCallFunction: karzaValidationApiCallFunction,
-    mergeUserDetailBody:mergeUserDetailBody,
-    getPanCardResp:getPanCardResp
+    mergeUserDetailBody: mergeUserDetailBody,
+    getPanCardResp: getPanCardResp
 }
