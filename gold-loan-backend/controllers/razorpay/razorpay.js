@@ -8,7 +8,7 @@ const getRazorPayDetails = require('../../utils/razorpay');
 var uniqid = require('uniqid');
 const { getAllPartAndFullReleaseData } = require('../../utils/loanFunction')
 const { quickSettlement, partPaymnetSettlement } = require('../../utils/loanFunction')
-const { updateAmountStatus,updateAmountStatusFullRelease } = require('../../controllers/jewelleryRelease/jewelleryRelease')
+const { updateAmountStatus, updateAmountStatusFullRelease } = require('../../controllers/jewelleryRelease/jewelleryRelease')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
@@ -18,10 +18,10 @@ exports.razorPayCreateOrder = async (req, res, next) => {
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = 0
         if (paymentFor == "jewelleryRelease") {
-            let ornaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: customerTransaction.masterLoanId } })
-            if(ornamentId.length == ornaments.length){
+            let ornaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId } })
+            if (ornamentId.length == ornaments.length) {
                 paymentFor = 'fullRelease'
-            }else{
+            } else {
                 paymentFor = 'partRelease'
             }
             let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
