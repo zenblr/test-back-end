@@ -63,7 +63,7 @@
                 <ng-container matColumnDef="currentWalletBalance">
                     <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Wallet Balance</mat-header-cell>
                     <mat-cell *matCellDef="let lead" [ngClass]="'w-200'">
-                        <span class="kt-pointer"
+                        <span class="kt-pointer kt-link kt-link--brand kt-font-bold"
                             (click)="navigateToTransaction(lead?.id)">{{lead?.currentWalletBalance}} </span>
                         <!-- <a target="_blank" [routerLink]="['/admin/transaction/' + lead?.id]"
                             routerLinkActive="router-link-active">{{lead?.currentWalletBalance }}</a> -->

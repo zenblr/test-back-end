@@ -102,6 +102,15 @@ module.exports = (sequelize, DataTypes) => {
         transactionTempDetailId:{
             type: DataTypes.INTEGER,
             field: 'transaction_temp_detail_id',
+        },
+        productName: {
+            type: DataTypes.STRING,
+            field: 'product_name'
+        },
+        isFromRefundCron: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_from_refund_cron',
+            defaultValue: false
         }
     },
         {

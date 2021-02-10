@@ -7,7 +7,7 @@ services:
       environment:
         - NODE_ENV=uat
       links:
-        - redis:redis
+        - redis:redis 
       ports:
         - "8100:3000"
       volumes:

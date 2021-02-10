@@ -374,7 +374,7 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.filterName = "transaction";
 			this.filterWidth = "400px";
-			
+
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -599,6 +599,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "depositRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,depositRequestsStatus";
@@ -614,6 +616,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "withdrawal-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "withdrawalRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,withdrawalRequestsStatus";
@@ -736,16 +740,10 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
+		if (location.href.includes("/wallet/deposit-requests/")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("/admin/digi-gold/wallet/withdrawal-requests")) {
-			this.showBackButton = true;
-		}
-		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
-			this.showBackButton = true;
-		}
-		if (location.href.includes("admin/digi-gold/wallet/withdrawal-requests/withdrawal-requests-edit")) {
+		if (location.href.includes("/wallet/withdrawal-requests/")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {
@@ -1034,6 +1032,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
+		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.exportExcel.next(true);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.exportExcel.next(true);
 		}
 		// if (this.path == 'deposit-requests') {
 		// 	this.sipInvestmentTenureService.openModal.next(true)

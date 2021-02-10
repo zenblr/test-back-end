@@ -776,7 +776,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.profileImg : []),
-    ...this.data.customerKycReview.panImg,
+    ...this.data.customerKycReview.panImg,...this.data.customerKycReview.form60Img,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.signatureProofImg : [])
     ]
 

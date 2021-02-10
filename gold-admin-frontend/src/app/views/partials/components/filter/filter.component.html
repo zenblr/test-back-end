@@ -89,12 +89,12 @@
                 </kt-multi-select-search>
               </div>
 
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Module</label>
                 <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
                   [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
                 </kt-multi-select-search>
-              </div>
+              </div> -->
 
               <div class="col-2 d-flex align-items-end">
                 <label></label>
@@ -108,12 +108,12 @@
         <div class="kt-portlet__body" *ngIf="filterName == 'kyc'">
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Module</label>
                 <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
                   [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
                 </kt-multi-select-search>
-              </div>
+              </div> -->
 
               <div class="col">
                 <label>By Loan CCE Status</label>
@@ -485,7 +485,7 @@
                     <div class="col-5">
                       <label>By Deposit Status</label>
                       <select class="form-control" formControlName="depositStatus">
-                        <option value="" selected>Select</option>
+                        <option value="" selected>All</option>
                         <option value="pending">Pending</option>
                         <option value="completed">Completed</option>
                         <option value="rejected">Rejected</option>
@@ -518,7 +518,7 @@
                     <div class="col-5">
                       <label>By Withdrawal Status</label>
                       <select class="form-control" formControlName="depositStatus">
-                        <option value="" selected>Select</option>
+                        <option value="" selected>All</option>
                         <option value="pending">Pending</option>
                         <option value="completed">Completed</option>
                         <option value="rejected">Rejected</option>

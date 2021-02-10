@@ -14,6 +14,7 @@ import { InternalUserBranchService } from '../../../../core/user-management/inte
 export class RpgEditComponent implements OnInit {
   internalBranches: any;
   title: string;
+  branchNames: string;
   constructor(public dialogRef: MatDialogRef<RpgEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
@@ -38,7 +39,8 @@ export class RpgEditComponent implements OnInit {
     this.getInternalBranchList();
     if (this.data.action) {
       this.title = (this.data.action == 'edit') ? 'Edit Scheme Details' : 'View Scheme Details';
-      if(this.data.action == 'view'){
+      if (this.data.action == 'view') {
+        this.branchNames = this.data.scheme.internalBranches.map(e => e.name);
         this.rpgEditForm.disable();
       }
     }
