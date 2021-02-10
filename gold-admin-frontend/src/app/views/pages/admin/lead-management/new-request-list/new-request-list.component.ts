@@ -22,7 +22,7 @@ import { AddLeadComponent } from '../add-lead/add-lead.component';
 export class NewRequestListComponent implements OnInit {
 
   dataSource: NewRequestDatasource;
-  displayedColumns = ['customerId', 'fullName', 'product', 'apprasierName', 'appointmentDate', 'appointmentTime', 'status', 'update', 'appraiser', 'apply'];
+  displayedColumns = ['customerId', 'fullName', 'product','branchName', 'apprasierName', 'appointmentDate', 'appointmentTime', 'status', 'update', 'appraiser', 'apply'];
   results = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -147,7 +147,7 @@ export class NewRequestListComponent implements OnInit {
           requestData: item,
           appraiser: item.appraiser,
           customer: item.customer,
-          internalBranchId: item.customer.internalBranchId,
+          internalBranchId: item.internalBranchId,
           customerId: item.customerId
         }, width: '500px'
       });

@@ -1891,6 +1891,30 @@ let allKycCompleteInfo = async (customerInfo) => {
     return kycApproval
 }
 
+let customerBalance = async (customerData, amount) => {
+    let { currentWalletBalance, walletFreeBalance } = customerData
+
+    let paymentGateWayAmount = 0
+    if (amount >= currentWalletBalance) {
+        let checkAmount = amount - currentWalletBalance
+        paymentGateWayAmount = checkAmount
+        currentWalletBalance = 0
+        walletFreeBalance = 0
+    } else {
+        currentWalletBalance = currentWalletBalance - amount
+        if (currentWalletBalance < walletFreeBalance) {
+            let checkWalletFreeBalance = currentWalletBalance - walletFreeBalance
+            walletFreeBalance = walletFreeBalance - checkWalletFreeBalance
+        }
+    }
+
+    return {
+        paymentGateWayAmount,
+        currentWalletBalance,
+        walletFreeBalance
+    }
+}
+
 module.exports = {
     customerKycAdd: customerKycAdd,
     customerKycEdit: customerKycEdit,

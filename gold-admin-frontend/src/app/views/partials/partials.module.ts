@@ -4,6 +4,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AngularMaterialModule } from "../pages/angular-material/angular-material.module";
+import { MatCheckboxModule } from '@angular/material'
 // NgBootstrap
 import {
 	NgbDropdownModule,
@@ -189,7 +190,8 @@ import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 		LeadManagementComponent,
 		AddLeadComponent,
 		NewRequestAddComponent,
-		RpgEditComponent
+		RpgEditComponent,
+		
 	],
 	exports: [
 		WidgetModule,
@@ -274,7 +276,8 @@ import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 		LeadManagementComponent,
 		AddLeadComponent,
 		NewRequestAddComponent,
-		RpgEditComponent
+		RpgEditComponent,
+		MatCheckboxModule
 	],
 	imports: [
 		PdfViewerModule,
@@ -302,6 +305,7 @@ import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 		WebcamModule,
 		NgxMaterialTimepickerModule.setLocale('en-IN'),
 		AngularImageViewerModule,
+		MatCheckboxModule
 	],
 
 	entryComponents: [

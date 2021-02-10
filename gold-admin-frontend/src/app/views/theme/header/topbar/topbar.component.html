@@ -78,4 +78,5 @@
     <kt-button *ngIf="value5" [value]='value5' [type]='type5' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
+    <mat-checkbox *ngIf="value6" (change)="topBarCheck($event)">{{value6}}</mat-checkbox> 
 </ng-template>
