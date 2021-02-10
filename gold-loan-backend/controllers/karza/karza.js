@@ -148,9 +148,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             break
         }
     }
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: error })
-    // } else {
+    if (ocrData.error) {
+        return res.status(400).json({ message: error })
+    } else {
         //aadahar card data
         if (ocrData[0].data.idProofType.toLowerCase().includes('aadhaar card')) {
             let isAadharConfPass = false;
@@ -205,7 +205,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    // }
+    }
 }
 
 exports.kycOcrFoPanCard = async (req, res, next) => {
@@ -216,12 +216,12 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
     if(ocrData.error == 'Insufficient Credits'){
         return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
     }
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: 'KYC failed' })
-    // }
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: error })
-    // } else {
+    if (ocrData.error) {
+        return res.status(400).json({ message: 'KYC failed' })
+    }
+    if (ocrData.error) {
+        return res.status(400).json({ message: error })
+    } else {
         //aadahar card data
         if (ocrData.data.idProofType.toLowerCase().includes('pan card')) {
             let isPanConfPass = ocrData.data.extractedData.confidenceValueResult.isPanConfPass;
@@ -267,7 +267,7 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    // }
+    }
 }
 
 exports.getCustomerEkycData = async (req, res, next) => {
