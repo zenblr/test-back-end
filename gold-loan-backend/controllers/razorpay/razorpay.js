@@ -18,6 +18,12 @@ exports.razorPayCreateOrder = async (req, res, next) => {
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = 0
         if (paymentFor == "jewelleryRelease") {
+            let ornaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: customerTransaction.masterLoanId } })
+            if(ornamentId.length == ornaments.length){
+                paymentFor = 'fullRelease'
+            }else{
+                paymentFor = 'partRelease'
+            }
             let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
             amount = releaseData.loanInfo.totalPayableAmount;
             transactionUniqueId = uniqid.time().toUpperCase();
