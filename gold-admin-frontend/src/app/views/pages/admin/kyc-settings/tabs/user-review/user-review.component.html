@@ -248,7 +248,7 @@
                                 <div class="row">
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
                                         <input class="form-control" formControlName="panCardNumber" autocomplete="off"
-                                            placeholder="PAN"
+                                            placeholder="PAN" (blur)="inputPAN()"
                                             [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                             maxlength="10" style="text-transform: uppercase;" />
                                         <mat-error
