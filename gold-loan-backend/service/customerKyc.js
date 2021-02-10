@@ -716,6 +716,10 @@ let getKycInfo = async (customerId) => {
         {
             model: models.customerKycClassification,
             as: 'customerKycClassification'
+        },
+        {
+            model: models.customerEKycDetails,
+            as: 'customerEKycDetails'
         }
         ]
     })

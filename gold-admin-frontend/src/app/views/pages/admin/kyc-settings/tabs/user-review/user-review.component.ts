@@ -68,7 +68,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   permission: any;
   resetOnPanChange = true;
   aadharCardUserDetails: any;
-  customerData={fatherName:''};
+  customerData = { fatherName: '' };
+  conf: { AadharDobScore: any; AadhaarNameScore: any; PanDOBScore: any; panNameScore: any; };
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -191,6 +192,10 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       if (this.customerOrganizationDetail) this.customerOrganizationDetail.disable();
     }
 
+    console.log(this.data.customerKycReview.customerEKycDetails)
+    let con = this.data.customerKycReview.customerEKycDetails
+    this.conf = { AadharDobScore: con.aahaarDOBScore, AadhaarNameScore: con.aahaarNameScore, PanDOBScore: con.panDOBScore, panNameScore: con.panNameScore }
+    
   }
 
   initForm() {
