@@ -468,7 +468,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
 
 
                         await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { id: loanTransaction.id }, transaction: t });
-                        await models.tempRazorPayDetails.update({ depositStatus: "Completed" }, {
+                        await models.tempRazorPayDetails.update({ orderStatus: "Completed" }, {
                             where: { razorPayOrderId: razorpay_order_id }, transaction: t
                         });
                         await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
@@ -1948,7 +1948,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         await models.customerTransactionDetail.update({ referenceId: `${uniqid.time().toUpperCase()}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
 
                         await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { id: loanTransaction.id }, transaction: t });
-                        await models.tempRazorPayDetails.update({ depositStatus: "Completed" }, {
+                        await models.tempRazorPayDetails.update({ orderStatus: "Completed" }, {
                             where: { razorPayOrderId: razorpay_order_id }, transaction: t
                         });
                         await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
