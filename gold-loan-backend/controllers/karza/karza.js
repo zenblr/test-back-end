@@ -14,6 +14,9 @@ exports.panCardNameByPan = async (req, res, next) => {
     if (panData.error == false) {
         return res.status(200).json({ message: 'Success', data: panData.data })
     } else {
+        if(panData.error == 'Insufficient Credits'){
+            return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
+        }
         if (panData.status == 504) {
             return res.status(400).json({ message: 'Please try again' })
         }
@@ -32,6 +35,9 @@ exports.checkNameSimilarity = async (req, res, next) => {
             return res.status(400).json({ message: 'Name does not match', data: nameData.score })
         }
     } else {
+        if(nameData.error == 'Insufficient Credits'){
+            return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
+        }
         if (nameData.status == 504) {
             return res.status(400).json({ message: 'Please try again' })
         }
@@ -60,6 +66,9 @@ exports.kycOcrAddressVoterId = async (req, res, next) => {
     let error = null;
     for (const fileUrl of fileUrls) {
         let info = await ocrService(fileUrl, idProofType, customerId)
+        if(info.error == 'Insufficient Credits'){
+            return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
+        }
         if (info.error) {
             return res.status(400).json({ message: 'KYC failed' })
         }
@@ -124,6 +133,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     for (const fileUrl of fileUrls) {
         let info = await ocrService(fileUrl, idProofType, customerId,i)
         i ++;
+        if(info.error == 'Insufficient Credits'){
+            return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
+        }
         if (info.error) {
             return res.status(400).json({ message: 'KYC failed' })
         }
@@ -136,9 +148,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             break
         }
     }
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: error })
-    // } else {
+    if (ocrData.error) {
+        return res.status(400).json({ message: error })
+    } else {
         //aadahar card data
         if (ocrData[0].data.idProofType.toLowerCase().includes('aadhaar card')) {
             let isAadharConfPass = false;
@@ -193,7 +205,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    // }
+    }
 }
 
 exports.kycOcrFoPanCard = async (req, res, next) => {
@@ -201,12 +213,15 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
     let idProofType = "pan card";
     let error = null;
     let ocrData = await ocrService(fileUrl, idProofType, customerId)
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: 'KYC failed' })
-    // }
-    // if (ocrData.error) {
-    //     return res.status(400).json({ message: error })
-    // } else {
+    if(ocrData.error == 'Insufficient Credits'){
+        return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
+    }
+    if (ocrData.error) {
+        return res.status(400).json({ message: 'KYC failed' })
+    }
+    if (ocrData.error) {
+        return res.status(400).json({ message: error })
+    } else {
         //aadahar card data
         if (ocrData.data.idProofType.toLowerCase().includes('pan card')) {
             let isPanConfPass = ocrData.data.extractedData.confidenceValueResult.isPanConfPass;
@@ -252,7 +267,7 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
             return res.status(200).json({ message: 'Success', data })
         }
         return res.status(400).json({ message: 'Please try again' })
-    // }
+    }
 }
 
 exports.getCustomerEkycData = async (req, res, next) => {

@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-aahaar-verified',
             defaultValue: false
         },
-        gender : {
+        gender: {
             type: DataTypes.STRING,
             field: 'gender'
         },
@@ -122,6 +122,12 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         tableName: 'customer_e_kyc_details',
     });
+
+    CustomerEKycDetails.associate = function(models) {
+        CustomerEKycDetails.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' })
+    }
+
+
 
     return CustomerEKycDetails;
 }
