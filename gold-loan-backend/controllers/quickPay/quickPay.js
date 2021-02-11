@@ -404,7 +404,7 @@ exports.quickPayment = async (req, res, next) => {
 
                 await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: receivedDate }, { where: { id: transactionId }, transaction: t });
                 if (razorpay_order_id)
-                    models.tempRazorPayDetails.update({ depositStatus: status }, {
+                    await models.tempRazorPayDetails.update({ depositStatus: status }, {
                         where: { razorPayOrderId: razorpay_order_id }, transaction: t
                     });
                 if (payment.securedLoanDetails) {
