@@ -25,6 +25,7 @@ exports.getDepositData = async (req, res) => {
     };
 
     let connectionString = await sql.connect(config);
+
     let DepositNewData = [];
     let depositDetail;
     let whereClause;
@@ -40,13 +41,15 @@ exports.getDepositData = async (req, res) => {
     console.log(endDateNew, startDateNew)
     if (connectionString) {
 
+      //  return;
       // const result = await connectionString.query`DELETE FROM [AGTPL$Online Deposite]`;
-      // console.log(result); 
-      // return
+      // const result = await connectionString.query`DROP TABLE [AGTPL$Online Deposite]`;
+      // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
 
-      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,PRIMARY KEY ([Deposite ID]));`
-      // console.log(creatDepositTable);
-      // return
+
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Deposite ID]));`
+      // console.log(creatDeposistTable);
+
 
       // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
       // console.log(x);
@@ -107,6 +110,7 @@ exports.getDepositData = async (req, res) => {
         DepositNewData.push(data);
       }
       console.log("DepositNewData", DepositNewData);
+      // return;
       if (DepositNewData.length != 0) {
 
         await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
@@ -127,7 +131,7 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
 
   for (let ele of DepositNewData) {
 
-    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}')`
+    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date],[Partner]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}','Nimap')`
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
@@ -316,6 +320,133 @@ exports.getDepositDataCron = async (req, res) => {
   }
 }
 
+
+exports.getDepositDataOfPrevious = async (req, res) => {
+  try {
+  
+    // async function getDepositData() {
+
+
+    // dateObj.setDate(dateObj.getDate() - 1);
+    const getCredential = await models.navisionDbConfig.getNavisionDbConfig();
+    var dateObject = new Date();
+
+    var dateObj =  dateObject.setDate(dateObject.getDate() - 1);
+    var config = {
+      user: getCredential.serverUserName,
+      password: getCredential.serverPassword,
+      server: getCredential.serverIp,
+      database: getCredential.serverDbName
+    };
+
+    let connectionString = await sql.connect(config);
+    
+    let DepositNewData = [];
+    let depositDetail;
+    let whereClause;
+    let whereClauseString;
+
+    // var dateObj = new Date();
+    // dateObj.setDate(dateObj.getDate() - 1);
+
+    // let endDateNew = moment(dateObj).endOf('day');
+    // let startDateNew = moment(dateObj).startOf('day');
+    let endDateNew = moment(moment(dateObj).utcOffset("+05:30").endOf('day'));
+    let startDateNew = moment(moment(dateObj).utcOffset("+05:30").startOf('day'));
+    console.log(endDateNew, startDateNew)
+    if (connectionString) {
+  
+    //  return;
+      // const result = await connectionString.query`DELETE FROM [AGTPL$Online Deposite]`;
+      // const result = await connectionString.query`DROP TABLE [AGTPL$Online Deposite]`;
+      // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
+    //  return
+
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Deposite ID]));`
+      // console.log(creatDeposistTable);
+     
+
+      // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
+      // console.log(x);
+     
+  
+      // let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+  
+  
+      // let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
+
+      whereClause = {
+        depositApprovedDate: { [Op.lt]: dateObj },
+        orderTypeId: { [Op.in]: [4] },
+        depositStatus: { [Op.in]: ['completed'] }
+      }
+      whereClauseString = `{depositApprovedDate: { [Op.between] : [${startDateNew}, ${endDateNew}] }, orderTypeId: {[Op.in]: [4]}, depositStatus: {[Op.in]: ['completed']}}`
+
+      const includeArray = [
+        {
+          model: models.customer,
+          as: 'customer',
+          attributes: ['customerUniqueId'],
+          include: {
+            model: models.state,
+            as: 'state'
+          }
+        }
+      ];
+
+      depositDetail = await models.walletTransactionDetails.findAll({
+        where: whereClause,
+        include: includeArray,
+
+      });
+console.log("depositDetaildepositDetail",depositDetail.length)
+
+      for (let deposit of depositDetail) {
+        data = {};
+        data.depositeId = deposit.transactionUniqueId;
+        data.userAccountId = deposit.customer.customerUniqueId;
+        data.userId = 0;
+        data.userType = "Augmont";
+        data.userAccountState = deposit.customer.state.stateCode;
+        data.depositModeofPayment = deposit.paymentType;
+        data.depositDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.depositTransactionId = deposit.transactionUniqueId;
+        data.modeOfPayment = "";
+        data.depositAmount = deposit.transactionAmount;
+        data.deliveryCharge = 0;
+        data.deliveryType = "";
+        data.processed = 0;
+        data.chqNo = "";
+        data.purchaseId = "";
+        data.approvedDate = moment(moment(deposit.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.depositCreationDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.Manual = 0;
+        data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
+        if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
+          data.atomTxnId = deposit.razorpayPaymentId;
+        } else {
+          data.atomTxnId = deposit.bankTransactionUniqueId;
+        }
+
+        DepositNewData.push(data);
+      }
+      console.log("DepositNewData",DepositNewData.length);
+      // return;
+      if (DepositNewData.length != 0) {
+
+        await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
+      } else {
+        console.log("no data found");
+      }
+    } else {
+      console.log("connection fail");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+
+}
 
 
 
