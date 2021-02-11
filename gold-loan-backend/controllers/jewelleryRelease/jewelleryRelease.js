@@ -1950,7 +1950,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
 
                         await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { id: loanTransaction.id }, transaction: t });
                         if (razorpay_order_id)
-                            await models.tempRazorPayDetails.update({ depositStatus: "Completed" }, {
+                            await models.tempRazorPayDetails.update({ orderStatus: "Completed" }, {
                                 where: { razorPayOrderId: razorpay_order_id }, transaction: t
                             });
                         await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
