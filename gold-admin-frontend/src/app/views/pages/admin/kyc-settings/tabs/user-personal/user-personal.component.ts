@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   selector: 'kt-user-personal',
   templateUrl: './user-personal.component.html',
   styleUrls: ['./user-personal.component.scss'],
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
 export class UserPersonalComponent implements OnInit {
 
@@ -43,8 +43,8 @@ export class UserPersonalComponent implements OnInit {
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
     private dialog: MatDialog,
-    private router:Router,
-    private datePipe:DatePipe) { }
+    private router: Router,
+    private datePipe: DatePipe) { }
 
   ngOnInit() {
 
@@ -200,7 +200,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     this.controls.age.patchValue(age);
-    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value,'yyyy-MM-dd'))
+    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value, 'yyyy-MM-dd'))
     // this.ageValidation()
   }
 
@@ -234,7 +234,7 @@ export class UserPersonalComponent implements OnInit {
       map(res => {
 
         if (res) {
-          if(res.customerKycCurrentStage == '6'){
+          if (res.customerKycCurrentStage == '6') {
             this.router.navigate(['admin/applied-kyc'])
             this.toastr.success('Success')
             return
@@ -340,11 +340,12 @@ export class UserPersonalComponent implements OnInit {
   }
 
   changeMaritalStatus() {
-    if(this.controls.martialStatus.value != 'married'){
+    if (this.controls.martialStatus.value != 'married') {
       this.controls.spouseName.patchValue(this.customerData.fatherName)
-      this.controls.spouseName.disable()
+      if (this.customerData.fatherName)
+        this.controls.spouseName.disable()
 
-    }else{
+    } else {
       this.controls.spouseName.reset()
       this.controls.spouseName.enable()
     }
@@ -388,8 +389,8 @@ export class UserPersonalComponent implements OnInit {
     this.userPersonalService.getUserDetails(this.controls.customerId.value).subscribe(res => {
       if (res.data) {
         this.customerData = res.data
-        if(res.data.aahaarDOB){
-          let myMoment = moment(res.data.aahaarDOB,"DD/MM/YYYY").format("YYYY-MM-DD");
+        if (res.data.aahaarDOB) {
+          let myMoment = moment(res.data.aahaarDOB, "DD/MM/YYYY").format("YYYY-MM-DD");
 
           this.controls.dateOfBirth.patchValue(myMoment)
           this.personalForm.controls.dateOfBirth.disable()
@@ -402,13 +403,17 @@ export class UserPersonalComponent implements OnInit {
         } else {
           gender = 'o'
         }
+        if (gender)
+          this.personalForm.controls.gender.disable()
+
         this.controls.gender.patchValue(gender)
+        if (res.data.fatherName)
+          this.controls.spouseName.disable()
+          
         this.controls.spouseName.patchValue(res.data.fatherName)
         this.ageValidation()
         // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
         // console.log(myMoment)
-        this.personalForm.controls.gender.disable()
-        this.controls.spouseName.disable()
         this.ref.detectChanges()
       }
     })

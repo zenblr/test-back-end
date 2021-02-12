@@ -216,7 +216,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
-      panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
       panImage: [],
@@ -231,6 +231,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       form60Image: [],
       form60Img: []
     })
+    if(this.data.customerKycReview.panCardNumber){
+      this.reviewForm.controls.panCardNumber.patchValue(this.data.customerKycReview.panCardNumber)
+    }
 
     this.reviewForm.patchValue(this.data.customerKycReview)
     if (this.data.customerKycReview.customerKycPersonal) {
