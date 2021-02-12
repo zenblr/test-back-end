@@ -459,6 +459,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
       },
     }],
     isActive: true,
+    merchantId: 1
   };
 
   if (!check.isEmpty(modulePoint)) {
@@ -559,7 +560,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   }
 
   if (viewAllCustomer == 'true') {
-    if(check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER) == false){
+    if (check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER) == false) {
       delete searchQuery.internalBranchId;
     }
     // searchQuery.internalBranchId = internalBranchId
