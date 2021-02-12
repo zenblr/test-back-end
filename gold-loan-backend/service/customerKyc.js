@@ -1094,10 +1094,20 @@ let submitKycInfo = async (req) => {
                     order: [["id", "ASC"]]
                 },
                 {
+                    model: models.customerKyc,
+                    as: 'customerKyc',
+                    attributes: ['id', 'currentKycModuleId', 'isAppliedForKyc','isCityEdit']
+                },
+                
+                {
                     model: models.customerKycOrganizationDetail,
                     as: 'organizationDetail',
                     required: false,
                     attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
+                },
+                {
+                    model: models.customerEKycDetails,
+                    as: 'customerEKycDetails'
                 },
                 {
                     model: models.organizationType,
@@ -1657,6 +1667,13 @@ let kycPersonalDetail = async (req) => {
                     as: 'addressProofType'
                 }],
                 order: [["id", "ASC"]]
+            },
+            {
+                model: models.customerEKycDetails,
+                as: 'customerEKycDetails'
+            },{
+                model: models.customerKyc,
+                as: 'customerKyc'
             }]
         })
 
