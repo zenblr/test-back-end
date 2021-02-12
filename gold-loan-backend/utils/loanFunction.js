@@ -1675,9 +1675,19 @@ let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
 }
 
 
-let getTransactionPrincipalAmount = async (customerLoanTransactionId, transactionSecured, transactionUnSecured) => {
-    let transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
-    let transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
+let getTransactionPrincipalAmount = async (customerLoanTransactionId, transactionSecured, transactionUnSecured, newTransactionSplitUp) => {
+    let transactionDataSecured
+    let transactionDataUnSecured
+    if (newTransactionSplitUp) {
+        transactionDataSecured = newTransactionSplitUp[0]
+        if (newTransactionSplitUp.length > 0) {
+            transactionDataUnSecured = newTransactionSplitUp[1]
+        }
+    } else {
+
+        transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
+        transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
+    }
     if (!transactionDataSecured) {
         transactionDataSecured = transactionSecured;
     }
