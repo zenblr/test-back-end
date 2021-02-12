@@ -62,7 +62,7 @@
                                 <div class="col-3 offset-1 p-0">
                                     <label class="mandatory font-weight-500 text-color">Aadhaar No.</label>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-5">
                                     <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
                                         placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
                                         readonly
@@ -76,8 +76,25 @@
                                         Invalid Input
                                     </mat-error>
                                 </div>
+                                <div class="col-2">
+                                    <!-- <div class="col"> -->
+                                        <div *ngIf="!isAadharVerified">
+                                            <kt-button [myClass]="'w-100'" [isDisabled]="aadharButton" [type]="'button'"
+                                                [value]="'Verify'" (action)="getAaddharDetails()">
+                                            </kt-button>
+                                        </div>
+            
+                                        <div *ngIf="isAadharVerified">
+                                            <button class="w-100 success-button" mat-raised-button matTooltip="Aadhar Verified"
+                                                [disabled]="disabled">
+                                                Verified
+                                            </button>
+                                        </div>
+                                    <!-- </div> -->
+                                </div>
                             </div>
                         </div>
+                       
                     </div>
 
                     <div class="row kt-margin-t-20 kt-margin-b-20">

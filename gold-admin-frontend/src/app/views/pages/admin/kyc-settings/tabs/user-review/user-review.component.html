@@ -396,7 +396,7 @@
                                 <div class="offset-1 col-3 form-label">
                                     <label [class.mandatory]="viewOnly" class="">Aadhaar No.</label>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-4">
                                     <input formControlName="identityProofNumber" type="text" maxlength="12"
                                         placeholder="Unique Identity Number" class="form-control" readonly
                                         [class.isError]="reviewForm.controls.identityProofNumber.touched && reviewForm.controls.identityProofNumber.invalid">
@@ -408,6 +408,22 @@
                                         *ngIf="reviewForm.controls.identityProofNumber.errors?.pattern && reviewForm.controls.identityProofNumber.touched">
                                         Invalid Input
                                     </mat-error>
+                                </div>
+                                <div class="col-3">
+                                    <!-- <div class="col"> -->
+                                    <div *ngIf="!isAadharVerified">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="aadharButton" [type]="'button'"
+                                            [value]="'Verify'" (action)="getAaddharDetails()">
+                                        </kt-button>
+                                    </div>
+
+                                    <div *ngIf="isAadharVerified">
+                                        <button class="w-100 success-button" mat-raised-button
+                                            matTooltip="Aadhar Verified" [disabled]="disabled">
+                                            Verified
+                                        </button>
+                                    </div>
+                                    <!-- </div> -->
                                 </div>
                             </div>
                         </div>

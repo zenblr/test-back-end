@@ -69,6 +69,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   resetOnPanChange = true;
   aadharCardUserDetails: any;
   customerData={fatherName:''};
+  isAadharVerified: any = false;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -361,6 +362,12 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.ref.detectChanges()
     }
 
+    if(this.data.customerKycReview.customerKycPersonal.identityProofNumber){
+      this.isAadharVerified = true;
+      this.ref.detectChanges()
+
+    }
+
     this.setValidation()
 
     if (this.disabled) {
@@ -591,6 +598,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
       this.reviewForm.controls.identityProofNumber.reset()
       this.aadharCardUserDetails = null
+      this.isAadharVerified = false
       this.removeImageFromAddress(index)           // remove from permanent address
 
 
@@ -779,7 +787,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
             this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
           }
           // if (this.identityImageArray.length == 2) {
-          this.getAaddharDetails()
+          // this.getAaddharDetails()
           // }
         }
         else if (type == 'permanent' && this.addressImageArray1.length < 2) {
@@ -847,10 +855,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   getAaddharDetails() {
-
+    if(this.identityImageArray.length == 0){
+      this.toastr.error('Attach Aadhar card')
+      return
+    }
     this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
+      this.isAadharVerified =  res.data.isAahaarVerified
     })
   }
   // getFileInfo(event, type: any) {
