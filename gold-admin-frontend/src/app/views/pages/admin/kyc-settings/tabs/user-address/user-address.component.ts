@@ -40,6 +40,7 @@ export class UserAddressComponent implements OnInit {
   index: any;
   type = { aadharIndex: [], voterIndex: [] }
   isCityEdit: boolean;
+  isAadharVerified: any = false;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
@@ -225,7 +226,7 @@ export class UserAddressComponent implements OnInit {
           }
           
           // if (this.images.identityProof.length == 2) {
-            this.getAaddharDetails()
+            // this.getAaddharDetails()
           // }
 
         } else if (type == 1 && this.images.residential.length < 2) {
@@ -268,10 +269,15 @@ export class UserAddressComponent implements OnInit {
     //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
     //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
     // ]
+    if(this.images.identityProof.length ==0){
+      this.toastr.error("Attach Addhar Image")
+      return 
+    }
     this.controls.identityProofNumber.reset()
     this.userAddressService.getAaddharDetails(this.images.identityProof, this.controls.customerId.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
+      this.isAadharVerified =  res.data.isAahaarVerified
     })
   }
 
@@ -422,6 +428,7 @@ export class UserAddressComponent implements OnInit {
         this.removeImageFromAddress(index)           // remove from permanent address
         this.aadharCardUserDetails = null
         this.controls.identityProofNumber.reset()
+        this.isAadharVerified = false
       // }
 
     }
