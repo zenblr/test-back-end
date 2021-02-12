@@ -33,10 +33,19 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
+
+  let userData = await models.user.findOne({
+    where: { id: req.userData.id },
+    include: [{
+      model: models.internalBranch
+    }]
+  })
+
+  let internalBranchId = userData.internalBranches[0].userInternalBranch.internalBranchId
 
   let getMobileNumber = await models.customerOtp.findOne({
     where: { referenceCode, isVerified: true },
@@ -395,7 +404,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, viewAllCustomer } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -544,12 +553,17 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   ]
   let internalBranchId = req.userData.internalBranchId
+
   if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
     searchQuery.internalBranchId = internalBranchId
   }
 
-  // if (req.userData.userTypeId != 4) {
-  // }
+  if (viewAllCustomer == 'true') {
+    if(check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER) == false){
+      delete searchQuery.internalBranchId;
+    }
+    // searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
@@ -854,7 +868,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1 },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, internalBranchId: 1 },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);

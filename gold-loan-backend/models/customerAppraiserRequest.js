@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'product_id',
         },
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id',
+        },
         moduleId: {
             type: DataTypes.INTEGER,
             field: 'module_id',
@@ -70,6 +74,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // LEAD NEW REQUEST ASSOCIATION WITH MODULES
     AppraiserRequest.associate = function (models) {
+        AppraiserRequest.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
+
         AppraiserRequest.belongsTo(models.product, { foreignKey: 'productId', as: 'product' });
 
         AppraiserRequest.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });

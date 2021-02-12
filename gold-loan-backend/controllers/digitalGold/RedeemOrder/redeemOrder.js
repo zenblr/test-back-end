@@ -494,11 +494,11 @@ exports.generateOrderInvoice = async (req, res) => {
       });
       const s3 = new AWS.S3({ accessKeyId: `${process.env.Accessid}`, secretAccessKey: `${process.env.Secretkey}` });
       // Read content from the file
-      const fileContent = fs.readFileSync(generateInvoice.path);
+      const fileContent = fs.readFileSync(invoiceData.path);
       // Setting up S3 upload parameters
       const params = {
         Bucket: process.env.Bucket,
-        Key: `${generateInvoice.path}`, // File name you want to save as in S3
+        Key: `${invoiceData.path}`, // File name you want to save as in S3
         Body: fileContent,
         ACL: 'public-read'
       };
@@ -510,8 +510,8 @@ exports.generateOrderInvoice = async (req, res) => {
         }
         console.log(`File uploaded successfully. ${data.Location}`);
         if (data) {
-          fs.unlinkSync(generateInvoice.path)
-          res.setHeader('Content-Disposition', `attachment; filename=${generateInvoice.fileName}.pdf`);
+          fs.unlinkSync(invoiceData.path)
+          res.setHeader('Content-Disposition', `attachment; filename=${invoiceData.fileName}.pdf`);
           res.status(200).json({ invoice: data.Location });
         }
       });

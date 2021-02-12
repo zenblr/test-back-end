@@ -39,12 +39,12 @@ export class LeadManagementComponent implements OnInit {
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
-
   stageName = 'lead'
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
   filteredDataList = {};
   permission: any;
+  viewAllCustomer: boolean = false;
 
   constructor(
     public dialog: MatDialog,
@@ -69,6 +69,13 @@ export class LeadManagementComponent implements OnInit {
           this.applyFilter(res);
         }
       });
+
+    this.dataTableService.topBarCheck$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      if (res) {
+        this.viewAllCustomer = res.checked;
+        this.loadLeadsPage();
+      }
+    });
   }
 
   ngOnInit() {
@@ -102,7 +109,7 @@ export class LeadManagementComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadLeads(this.queryParamsData);
+    this.dataSource.loadLeads(this.queryParamsData, this.viewAllCustomer);
   }
 
   ngOnDestroy() {
@@ -115,26 +122,24 @@ export class LeadManagementComponent implements OnInit {
     this.filter$.complete();
     this.leadService.applyFilter.next({});
     this.sharedService.closeFilter.next(true);
+    this.dataTableService.topBarCheck.next('');
   }
-
 
   loadLeadsPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadLeads(this.queryParamsData);
+    this.dataSource.loadLeads(this.queryParamsData, this.viewAllCustomer);
   }
 
 
   applyFilter(data) {
-
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
     this.queryParamsData.statusId = data.data.leadStatus;
     this.queryParamsData.modulePoint = data.data.modulePoint
-    this.dataSource.loadLeads(this.queryParamsData);
+    this.dataSource.loadLeads(this.queryParamsData, this.viewAllCustomer);
     this.filteredDataList = data.list;
   }
 
@@ -242,5 +247,7 @@ export class LeadManagementComponent implements OnInit {
     this.router.navigate([`/admin/digi-gold/applied-kyc-digi-gold/apply/${lead.id}`]);
     // })
   }
+
+
 
 }
