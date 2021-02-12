@@ -175,14 +175,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
-        this.panButton = false;
-      } else {
-        this.panButton = true;
-        this.isPanVerified = false;
-      }
-    });
+    // this.controls.panCardNumber.valueChanges.subscribe(res => {
+    //   if (this.controls.panCardNumber.valid) {
+    //     this.panButton = false;
+    //   } else {
+    //     this.panButton = true;
+    //     this.isPanVerified = false;
+    //   }
+    // });
 
     if (!this.viewOnly || !this.permission.customerKycAdd) {
       this.reviewForm.disable();
@@ -198,6 +198,15 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     
   }
 
+  inputPAN() {
+    if (this.controls.panCardNumber.valid) {
+      this.panButton = false;
+    } else {
+      this.panButton = true;
+      this.isPanVerified = false;
+    }
+  }
+  
   initForm() {
     this.reviewForm = this.fb.group({
       id: [],
@@ -985,7 +994,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.profileImg : []),
-    ...this.data.customerKycReview.panImg,
+    ...this.data.customerKycReview.panImg,...this.data.customerKycReview.form60Img,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.signatureProofImg : [])
     ]
 
