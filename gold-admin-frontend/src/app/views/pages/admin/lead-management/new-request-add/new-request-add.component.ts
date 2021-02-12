@@ -37,9 +37,9 @@ export class NewRequestAddComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.getModules() // /api/modules
     this.getInternalBranhces();
-    this.initForm()
+    this.initForm();
+    this.getUserDetailsFromStorage();
     this.setForm();
-    this.getUserDetailsFromStorage()
   }
 
   ngAfterViewInit() {
@@ -51,6 +51,8 @@ export class NewRequestAddComponent implements OnInit, AfterViewInit {
   getUserDetailsFromStorage() {
     this.sharedService.getUserDetailsFromStorage().subscribe(res => {
       this.userDetails = res.userDetails;
+      console.log( this.userDetails);
+      
     })
   }
 
@@ -80,6 +82,7 @@ export class NewRequestAddComponent implements OnInit, AfterViewInit {
   setForm() {
 
     this.requestForm.patchValue(this.data.leadData)
+    this.requestForm.patchValue({internalBranchId:this.userDetails.internalBranchId})
     console.log(this.requestForm.value)
     if (this.data.action === 'edit') {
       this.requestForm.patchValue({
