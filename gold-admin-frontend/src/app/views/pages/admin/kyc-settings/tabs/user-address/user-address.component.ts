@@ -235,7 +235,7 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[1].patchValue({ addressProof: this.imageId.residential });
           this.addressControls.controls[1].patchValue({ addressProofImg: this.images.residential });
           this.addressControls.controls[1].patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
-          this.checkForVoter(1, 'residential')
+          // this.checkForVoter(1, 'residential')
         } else if (type == 0 && this.images.permanent.length < 2) {
           this.images.permanent.push(res.uploadFile.URL)
           this.imageId.permanent.push(res.uploadFile.path)
@@ -244,7 +244,7 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
           this.addressControls.controls[0].patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
 
-          this.checkForVoter(0, 'permanent')
+          // this.checkForVoter(0, 'permanent')
         } else {
           this.toastr.error("Cannot upload more than two images")
         }
@@ -551,7 +551,7 @@ export class UserAddressComponent implements OnInit {
           this.addressFileNameArray1 = []
           this.enableAadharField(0)
           this.resetAadharFields(0)
-          this.checkForVoter(0, 'permanent')
+          // this.checkForVoter(0, 'permanent')
         }
       } else {
         if (this.addressControls.at(1).value.addressProofTypeId == 2) {
@@ -580,7 +580,7 @@ export class UserAddressComponent implements OnInit {
           this.addressFileNameArray1 = []
           this.enableAadharField(1)
           this.resetAadharFields(1)
-          this.checkForVoter(1, 'residential')
+          // this.checkForVoter(1, 'residential')
         }
       }
     } else {

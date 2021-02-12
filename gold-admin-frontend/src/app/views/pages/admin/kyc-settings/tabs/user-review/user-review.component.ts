@@ -70,6 +70,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   aadharCardUserDetails: any;
   customerData = { fatherName: '' };
   conf: { AadharDobScore: any; AadhaarNameScore: any; PanDOBScore: any; panNameScore: any; };
+  reason: string;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -364,6 +365,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.isPanVerified = true
       this.controls.panType.disable()
       this.ref.detectChanges()
+    }
+
+    if(this.data.customerKycReview.customerKyc.isCityEdit){
+      this.reason = "City Details Fetch By karza was not matching the database"
+    }else if(!this.data.customerKycReview.customerEKycDetails.isPanVerified){
+      this.reason = "Pan was not verified By karza or confidence score must have not meet our standard's"
+    }else if(!this.data.customerKycReview.customerEKycDetails.isAahaarVerified){
+      this.reason = "Aadhar was not verified By karza or confidence score must have not meet our standard's"
     }
 
     this.setValidation()
@@ -1067,7 +1076,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           // this.customerKycAddressOne.controls.addressProofFileName.enable()
           // this.customerKycAddressOne.controls.addressProofNumber.enable()
           this.resetAadharFields(0)
-          this.checkForVoter(0, 'permanent')
+          // this.checkForVoter(0, 'permanent')
         }
         break;
 
@@ -1094,7 +1103,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           // this.customerKycAddressTwo.controls.addressProofFileName.enable()
           // this.customerKycAddressTwo.controls.addressProofNumber.enable()
           this.resetAadharFields(1)
-          this.checkForVoter(1, 'permanent')
+          // this.checkForVoter(1, 'permanent')
         }
         break;
 
