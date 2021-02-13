@@ -101,7 +101,11 @@ export class KycDetailsComponent implements OnInit {
       status: [],
       id: [],
       reasonForDigiKyc: [],
-      reason: []
+      reason: [],
+      firstName: [],
+      lastName: [],
+      isPanVerified: [false],
+
     })
   }
 
@@ -223,7 +227,14 @@ export class KycDetailsComponent implements OnInit {
   getPanDetails() {
     this.leadService.getPanDetailsFromKarza(this.controls.panAttachment.value, this.customerId).subscribe(res => {
       this.controls.panCardNumber.patchValue(res.data.idNumber)
-      this.isPanVerified = res.data.isPanVerified
+      this.controls.isPanVerified.patchValue(res.data.isPanVerified)
+      if (res.data.name) {
+        let name = res.data.name.split(" ")
+        let lastName = name[name.length - 1]
+        name.splice(name.length - 1, 1)
+        this.controls.firstName.patchValue(name.join(" "))
+        this.controls.lastName.patchValue(lastName)
+      }
       if (res.data.dob) {
         let dateString = res.data.dob;
         let dateParts = dateString.split("/");
@@ -315,6 +326,8 @@ export class KycDetailsComponent implements OnInit {
         panAttachment: this.images.pan['path'],
         panImage: this.images.pan['path']
       });
+      this.controls.dateOfBirth.reset()
+      this.controls.panCardNumber.reset()
     }
   }
 
