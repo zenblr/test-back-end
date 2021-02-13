@@ -157,7 +157,7 @@ let ocrService = async (fileUrl, idProofType, customerId, index) => {
 
                 } else {
                     await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
-                    return resolve({ error: 'Ocr Failed' });
+                    return resolve({ error: JSON.parse(body).error });
                 }
             })
         })
