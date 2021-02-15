@@ -737,6 +737,11 @@ let getKycInfo = async (customerId) => {
         customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
         customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
     }
+    if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+        customerKycReview.dataValues.customerKycPersonal = {}
+        customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
+        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = customerKycReview.customerEKycDetails.panDOB
+    }
     //dob changes
 
     let userType = null;
@@ -1129,6 +1134,12 @@ let submitKycInfo = async (req) => {
                 customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
                 customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
                 customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+            }
+            if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+                customerKycReview.dataValues.customerKycPersonal = {}
+                customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
+                customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.panDOB
+
             }
             //dob changes
 
@@ -1696,6 +1707,11 @@ let kycPersonalDetail = async (req) => {
             customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
             customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
             customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+        }
+        if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+            customerKycReview.dataValues.customerKycPersonal = {}
+            customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
+            customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.panDOB
         }
     } else if (moduleId == 3) {
         customerKycReview = await models.customer.findOne({
