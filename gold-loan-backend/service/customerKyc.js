@@ -170,14 +170,15 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         //add complete kyc point
                         let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
                         // cust- check - scrap kyc complete
-                        // customerKycClassification get data of cce 
+                        // customerKycClassification get data of cce
+                        let customerKyc = await models.customerKyc.findOne({ where: { customerId }, transaction: t })
+                        customerKycId = customerKyc.id
                         if (getMobileNumber.scrapKycStatus == "pending") {
 
                             await models.customer.update({ customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", emiKycStatus: 'approved', digiKycStatus: 'approved', userType: "Individual" }, { where: { id: customerId }, transaction: t })
                             await models.customerKyc.update(
                                 { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
-                            let customerKyc = await models.customerKyc.findOne({ where: { customerId }, transaction: t })
-                            customerKycId = customerKyc.id
+
                             let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
                             if (customerRating) {
                                 await models.customerKycClassification.update({
@@ -212,7 +213,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         }
 
                         if (checkApplied) {
-                            await models.digiKycApplied.update({ status: 'approved' }, { where: { id: id }, transaction: t })
+                            await models.digiKycApplied.update({ status: 'approved' }, { where: { id: checkApplied.id }, transaction: t })
                         } else {
                             await models.digiKycApplied.create({ customerId: customerId, status: 'approved' }, { transaction: t })
                         }
@@ -737,10 +738,10 @@ let getKycInfo = async (customerId) => {
         customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
         customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
     }
-    if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+    if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
         customerKycReview.dataValues.customerKycPersonal = {}
         customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
-        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB,'DD-MM-YYYY').format("YYYY-MM-DD")
+        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB, 'DD-MM-YYYY').format("YYYY-MM-DD")
         customerKycReview.dataValues.customerKycPersonal['age'] = customerKycReview.age
     }
     //dob changes
@@ -1136,7 +1137,7 @@ let submitKycInfo = async (req) => {
                 customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
                 customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
             }
-            if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+            if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
                 customerKycReview.dataValues.customerKycPersonal = {}
                 customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
                 customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB).format("YYYY-MM-DD")
@@ -1710,7 +1711,7 @@ let kycPersonalDetail = async (req) => {
             customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
             customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
         }
-        if(customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName !=null){
+        if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
             customerKycReview.dataValues.customerKycPersonal = {}
             customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
             customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB).format("YYYY-MM-DD")
