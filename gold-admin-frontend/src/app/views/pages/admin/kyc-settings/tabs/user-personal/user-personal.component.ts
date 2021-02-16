@@ -10,12 +10,14 @@ import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.compone
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-user-personal',
   templateUrl: './user-personal.component.html',
   styleUrls: ['./user-personal.component.scss'],
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
 export class UserPersonalComponent implements OnInit {
 
@@ -34,18 +36,21 @@ export class UserPersonalComponent implements OnInit {
   @ViewChild("gstCertificate", { static: false }) gstCertificate;
 
   images = { constitutionsDeed: [], gstCertificate: [] }
+  customerData: any;
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
     private dialog: MatDialog,
-    private datePipe:DatePipe) { }
+    private router: Router,
+    private datePipe: DatePipe) { }
 
   ngOnInit() {
 
     this.getOccupation();
     this.initForm();
+    this.getCustomerDetails()
   }
 
   initForm() {
@@ -195,7 +200,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     this.controls.age.patchValue(age);
-    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value,'yyyy-MM-dd'))
+    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value, 'yyyy-MM-dd'))
     // this.ageValidation()
   }
 
@@ -223,12 +228,17 @@ export class UserPersonalComponent implements OnInit {
     this.personalForm.patchValue({
       martialStatus: this.controls.martialStatus.value == '' ? null : this.controls.martialStatus.value
     })
-    const basicForm = this.personalForm.value;
+    const basicForm = this.personalForm.getRawValue();
 
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
 
         if (res) {
+          if (res.customerKycCurrentStage == '6') {
+            this.router.navigate(['admin/applied-kyc'])
+            this.toastr.success('Success')
+            return
+          }
           this.next.emit(true);
         }
       }),
@@ -330,7 +340,15 @@ export class UserPersonalComponent implements OnInit {
   }
 
   changeMaritalStatus() {
-    this.controls.spouseName.reset()
+    if (this.controls.martialStatus.value != 'married') {
+      this.controls.spouseName.patchValue(this.customerData.fatherName)
+      if (this.customerData.fatherName)
+        this.controls.spouseName.disable()
+
+    } else {
+      this.controls.spouseName.reset()
+      this.controls.spouseName.enable()
+    }
   }
 
   removeImages(index, type) {
@@ -365,6 +383,40 @@ export class UserPersonalComponent implements OnInit {
   getURLArray(type: string) {
     const urlArray = this.images[type].map(e => e.URL)
     return urlArray
+  }
+
+  getCustomerDetails() {
+    this.userPersonalService.getUserDetails(this.controls.customerId.value).subscribe(res => {
+      if (res.data) {
+        this.customerData = res.data
+        if (res.data.aahaarDOB) {
+          let myMoment = moment(res.data.aahaarDOB, "DD/MM/YYYY").format("YYYY-MM-DD");
+
+          this.controls.dateOfBirth.patchValue(myMoment)
+          this.personalForm.controls.dateOfBirth.disable()
+        }
+        let gender
+        if (res.data.gender == 'MALE') {
+          gender = 'm'
+        } else if (res.data.gender == 'FEMALE') {
+          gender = 'f'
+        } else {
+          gender = 'o'
+        }
+        if (gender)
+          this.personalForm.controls.gender.disable()
+
+        this.controls.gender.patchValue(gender)
+        if (res.data.fatherName)
+          this.controls.spouseName.disable()
+          
+        this.controls.spouseName.patchValue(res.data.fatherName)
+        this.ageValidation()
+        // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
+        // console.log(myMoment)
+        this.ref.detectChanges()
+      }
+    })
   }
 
 }

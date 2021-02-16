@@ -17,7 +17,7 @@ import { DatePipe } from '@angular/common';
   selector: 'kt-user-review',
   templateUrl: './user-review.component.html',
   styleUrls: ['./user-review.component.scss'],
-  providers:[DatePipe],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserReviewComponent implements OnInit, OnDestroy {
@@ -67,6 +67,11 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   disabled: boolean;
   permission: any;
   resetOnPanChange = true;
+  aadharCardUserDetails: any;
+  customerData = { fatherName: '' };
+  conf: { AadharDobScore: any; AadhaarNameScore: any; PanDOBScore: any; panNameScore: any; };
+  reason: string;
+  isAadharVerified: any = false;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -83,7 +88,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     private ele: ElementRef,
     private route: ActivatedRoute,
     private ngxPermission: NgxPermissionsService,
-    private datePipe:DatePipe
+    private datePipe: DatePipe
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -172,14 +177,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
-        this.panButton = false;
-      } else {
-        this.panButton = true;
-        this.isPanVerified = false;
-      }
-    });
+    // this.controls.panCardNumber.valueChanges.subscribe(res => {
+    //   if (this.controls.panCardNumber.valid) {
+    //     this.panButton = false;
+    //   } else {
+    //     this.panButton = true;
+    //     this.isPanVerified = false;
+    //   }
+    // });
 
     if (!this.viewOnly || !this.permission.customerKycAdd) {
       this.reviewForm.disable();
@@ -189,8 +194,21 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       if (this.customerOrganizationDetail) this.customerOrganizationDetail.disable();
     }
 
+    console.log(this.data.customerKycReview.customerEKycDetails)
+    let con = this.data.customerKycReview.customerEKycDetails
+    this.conf = { AadharDobScore: con.aahaarDOBScore, AadhaarNameScore: con.aahaarNameScore, PanDOBScore: con.panDOBScore, panNameScore: con.panNameScore }
+    
   }
 
+  inputPAN() {
+    if (this.controls.panCardNumber.valid) {
+      this.panButton = false;
+    } else {
+      this.panButton = true;
+      this.isPanVerified = false;
+    }
+  }
+  
   initForm() {
     this.reviewForm = this.fb.group({
       id: [],
@@ -198,7 +216,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
-      panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
       panImage: [],
@@ -213,6 +231,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       form60Image: [],
       form60Img: []
     })
+    if(this.data.customerKycReview.panCardNumber){
+      this.reviewForm.controls.panCardNumber.patchValue(this.data.customerKycReview.panCardNumber)
+    }
 
     this.reviewForm.patchValue(this.data.customerKycReview)
     if (this.data.customerKycReview.customerKycPersonal) {
@@ -326,6 +347,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.customerKycPersonal.patchValue({
         martialStatus: this.data.customerKycReview.customerKycPersonal.martialStatus == null ? '' : this.data.customerKycReview.customerKycPersonal.martialStatus
       })
+      if (this.data.customerKycReview.customerKycPersonal.martialStatus != 'married') {
+        this.customerData['fatherName'] = this.data.customerKycReview.customerKycPersonal.spouseName
+      }
     }
 
     if (this.data.moduleId == 3) {
@@ -352,7 +376,21 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     if (this.data.customerKycReview.panCardNumber) {
       this.isPanVerified = true
+      this.controls.panType.disable()
       this.ref.detectChanges()
+    }
+
+    if(this.data.customerKycReview.customerKyc.isCityEdit){
+      this.reason = "City Details Fetch By karza was not matching the database"
+    }else if(!this.data.customerKycReview.customerEKycDetails.isPanVerified){
+      this.reason = "Pan was not verified By karza or confidence score must have not meet our standard's"
+    }else if(!this.data.customerKycReview.customerEKycDetails.isAahaarVerified){
+      this.reason = "Aadhar was not verified By karza or confidence score must have not meet our standard's"
+    }
+      if(this.data.customerKycReview.customerKycPersonal.identityProofNumber){
+      this.isAadharVerified = true;
+      this.ref.detectChanges()
+
     }
 
     this.setValidation()
@@ -401,7 +439,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
-    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value,'yyyy-MM-dd'))
+    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value, 'yyyy-MM-dd'))
 
   }
 
@@ -431,11 +469,19 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     if (this.reviewForm.invalid || this.customerKycPersonal && this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid ||
       (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) || (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid)) {
       if (this.customerKycPersonal && this.customerKycPersonal.invalid) this.customerKycPersonal.markAllAsTouched();
+      if (this.customerKycAddressOne.controls.addressProof.invalid) {
+        this.toastr.error('Upload address proof image')
+      }
       this.customerKycAddressOne.markAllAsTouched();
       // this.customerKycAddressTwo.markAllAsTouched();
       this.reviewForm.markAllAsTouched()
       if (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid) this.customerOrganizationDetail.markAllAsTouched()
-      if (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) this.customerKycAddressTwo.markAllAsTouched()
+      if (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) {
+        this.customerKycAddressTwo.markAllAsTouched()
+        if (this.customerKycAddressTwo.controls.addressProof.invalid) {
+          this.toastr.error('Upload address proof image')
+        }
+      }
       return;
     }
 
@@ -467,7 +513,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       userType: this.data.userType,
       customerOrganizationDetail: this.customerOrganizationDetail ? this.customerOrganizationDetail.value : null
     }
-
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
@@ -515,7 +560,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     this.getCities('residential');
   }
 
-  getCities(type?) {
+  async getCities(type?) {
     let stateId = null;
     if (type == 'permanent') {
       stateId = this.customerKycAddressOne.controls.stateId.value;
@@ -526,26 +571,26 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     if (stateId) {
-      this.sharedService.getCities(stateId).subscribe(res => {
-        if (type == 'permanent') {
-          this.cities0 = res.data;
-          const city0Exists = this.cities0.find(e => e.id === this.customerKycAddressOne.controls.cityId.value)
-          if (!city0Exists) {
-            this.customerKycAddressOne.controls.cityId.patchValue('');
-          }
-          this.ref.detectChanges();
-
-        } else if (type == 'residential') {
-          this.cities1 = res.data;
-          if ((this.data.moduleId == 3 && this.data.userType === 'Corporate') || this.data.moduleId == 1) {
-            const city1Exists = this.cities1.find(e => e.id === this.customerKycAddressTwo.controls.cityId.value)
-            if (!city1Exists) {
-              this.customerKycAddressTwo.controls.cityId.patchValue('');
-            }
-          }
-          this.ref.detectChanges();
+      let res = await this.sharedService.getCities(stateId)
+      if (type == 'permanent') {
+        this.cities0 = res['data'];
+        const city0Exists = this.cities0.find(e => e.id === this.customerKycAddressOne.controls.cityId.value)
+        if (!city0Exists) {
+          this.customerKycAddressOne.controls.cityId.patchValue('');
         }
-      });
+        this.ref.detectChanges();
+
+      } else if (type == 'residential') {
+        this.cities1 = res['data'];
+        if ((this.data.moduleId == 3 && this.data.userType === 'Corporate') || this.data.moduleId == 1) {
+          const city1Exists = this.cities1.find(e => e.id === this.customerKycAddressTwo.controls.cityId.value)
+          if (!city1Exists) {
+            this.customerKycAddressTwo.controls.cityId.patchValue('');
+          }
+        }
+        this.ref.detectChanges();
+      }
+
     }
 
 
@@ -576,6 +621,12 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.identityFileNameArray.splice(index, 1)
       this.reviewForm.patchValue({ identityProof: this.identityIdArray });
       this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
+      this.reviewForm.controls.identityProofNumber.reset()
+      this.aadharCardUserDetails = null
+      this.isAadharVerified = false
+      this.removeImageFromAddress(index)           // remove from permanent address
+
+
     } else if (type == 'residential') {
       this.addressImageArray2.splice(index, 1)
       this.addressIdArray2.splice(index, 1)
@@ -649,93 +700,283 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  removeImageFromAddress(index) {
+    const addressControlZero = this.customerKycAddressOne
+    if (addressControlZero.get('addressProofTypeId').value == 2) {
+      this.addressImageArray1.splice(index, 1)
+      this.addressIdArray1.splice(index, 1)
+      this.addressFileNameArray1.splice(index, 1)
+      this.reviewForm.patchValue({ identityProof: this.identityIdArray });
+      this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
+      addressControlZero['controls'].stateId.reset()
+      addressControlZero['controls'].cityId.reset()
+      addressControlZero['controls'].address.reset()
+      addressControlZero['controls'].pinCode.reset()
+      addressControlZero['controls'].addressProofNumber.reset()
+      if (this.isAddressSame) {
+        this.addressImageArray2.splice(index, 1)
+        this.addressIdArray2.splice(index, 1)
+        this.addressFileNameArray2.splice(index, 1)
+        this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
+        this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2 });
+        const addressControlOne = this.customerKycAddressTwo
+        addressControlOne['controls'].stateId.reset()
+        addressControlOne['controls'].cityId.reset()
+        addressControlOne['controls'].address.reset()
+        addressControlOne['controls'].pinCode.reset()
+        addressControlOne['controls'].addressProofNumber.reset()
+      }
+    }
+  }
+
   getFileInfo(event, type: any) {
     this.file = event.target.files[0];
+
     if (this.sharedService.fileValidator(event)) {
-      const params = {
-        reason: 'customer',
-        customerId: this.customerKycAddressOne.controls.customerId.value
-      }
+      this.getImageValidationForKarza(event, type)
 
-      this.sharedService.uploadFile(this.file, params).pipe(
-        map(res => {
-
-          if (type == "identityProof" && this.identityImageArray.length < 2) {
-            this.identityImageArray.push(res.uploadFile.URL)
-            this.identityIdArray.push(res.uploadFile.path)
-            this.identityFileNameArray.push(event.target.files[0].name)
-            this.reviewForm.patchValue({ identityProof: this.identityIdArray })
-            this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
-            this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
-          }
-          else if (type == 'permanent' && this.addressImageArray1.length < 2) {
-            this.addressImageArray1.push(res.uploadFile.URL)
-            this.addressIdArray1.push(res.uploadFile.path)
-            this.addressFileNameArray1.push(event.target.files[0].name)
-            this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
-            this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
-          } else if (type == 'residential' && this.addressImageArray2.length < 2) {
-            this.addressImageArray2.push(res.uploadFile.URL)
-            this.addressIdArray2.push(res.uploadFile.path)
-            this.addressFileNameArray2.push(event.target.files[0].name)
-            this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
-            this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
-          } else if (type == "signature") {
-            this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
-            this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.path })
-            this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
-            this.ref.markForCheck();
-          } else if (type == "profile") {
-            this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
-            this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
-            this.reviewForm.patchValue({ profileImage: res.uploadFile.path })
-            this.ref.markForCheck();
-          } else if (type == "panType") {
-            this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
-            // this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
-            // this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
-
-            let formControl = this.getFormControlPanForm60()
-            this.controls[formControl.path].patchValue(res.uploadFile.path)
-            this.controls[formControl.URL].patchValue(res.uploadFile.URL)
-
-          } else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
-            this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            this.customerOrganizationDetail.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
-            this.customerOrganizationDetail.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
-          } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
-            this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            this.customerOrganizationDetail.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
-            this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
-          }
-          else {
-            this.toastr.error("Cannot upload more than two images")
-          }
-
-
-          this.ref.detectChanges();
-        }),
-        catchError(err => {
-          this.toastr.error(err.error.message);
-          throw err
-        }),
-        finalize(() => {
-          if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
-          if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
-          if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
-          if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
-          if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
-          if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
-          if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
-          event.target.value = ''
-        })
-      ).subscribe()
     }
-    else {
-      event.target.value = ''
-    }
+    // event.target.value = ''
+
+    // else {
+    //   this.toastr.error('Upload Valid File Format');
+    // }
 
   }
+
+  getImageValidationForKarza(event, type) {
+    var details = event.target.files
+    let ext = this.sharedService.getExtension(details[0].name)
+    if (Math.round(details[0].size / 1024) > 4000 && ext != 'pdf') {
+      this.toastr.error('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+
+    if (ext == 'pdf') {
+      if (Math.round(details[0].size / 1024) > 2000) {
+        this.toastr.error('Maximun size is 2MB')
+      } else {
+        this.uploadFile(type, event)
+      }
+      event.target.value = ''
+      return
+    }
+
+    var reader = new FileReader()
+    var reader = new FileReader();
+    const img = new Image();
+
+    img.src = window.URL.createObjectURL(details[0]);
+    reader.readAsDataURL(details[0]);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if (width > 3000 || height > 3000) {
+          this.toastr.error('Image of height and width should be less than 3000px')
+          event.target.value = ''
+        } else {
+          this.uploadFile(type, details[0])
+          event.target.value = ''
+
+        }
+      }, 1000);
+    }
+    // return data
+    this.ref.detectChanges()
+  }
+
+  uploadFile(type, event) {
+    const params = {
+      reason: 'customer',
+      customerId: this.customerKycAddressOne.controls.customerId.value
+    }
+
+    this.sharedService.uploadFile(this.file, params).pipe(
+      map(res => {
+
+        if (type == "identityProof" && this.identityImageArray.length < 2) {
+          this.identityImageArray.push(res.uploadFile.URL)
+          this.identityIdArray.push(res.uploadFile.path)
+          this.identityFileNameArray.push(event.name)
+          this.reviewForm.patchValue({ identityProof: this.identityIdArray })
+          this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
+          this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
+          if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
+            this.addressImageArray1.push(res.uploadFile.URL)
+            this.addressIdArray1.push(res.uploadFile.path)
+            this.addressFileNameArray1.push(event.name)
+            this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
+            this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
+          }
+          // if (this.identityImageArray.length == 2) {
+          // this.getAaddharDetails()
+          // }
+        }
+        else if (type == 'permanent' && this.addressImageArray1.length < 2) {
+          this.addressImageArray1.push(res.uploadFile.URL)
+          this.addressIdArray1.push(res.uploadFile.path)
+          this.addressFileNameArray1.push(event.name)
+          this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
+          this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
+        } else if (type == 'residential' && this.addressImageArray2.length < 2) {
+          this.addressImageArray2.push(res.uploadFile.URL)
+          this.addressIdArray2.push(res.uploadFile.path)
+          this.addressFileNameArray2.push(event.name)
+          this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
+          this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
+        } else if (type == "signature") {
+          this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
+          this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.path })
+          this.customerKycPersonal.patchValue({ signatureProofFileName: event.name });
+          this.ref.markForCheck();
+        } else if (type == "profile") {
+          this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
+          this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
+          this.reviewForm.patchValue({ profileImage: res.uploadFile.path })
+          this.ref.markForCheck();
+        } else if (type == "panType") {
+          this.reviewForm.controls.form60.patchValue(event.name)
+          // this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
+          // this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
+
+          let formControl = this.getFormControlPanForm60()
+          this.controls[formControl.path].patchValue(res.uploadFile.path)
+          this.controls[formControl.URL].patchValue(res.uploadFile.URL)
+
+        } else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
+          this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+          this.customerOrganizationDetail.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
+          this.customerOrganizationDetail.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
+        } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
+          this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+          this.customerOrganizationDetail.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
+          this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
+        }
+        else {
+          this.toastr.error("Cannot upload more than two images")
+        }
+
+
+        this.ref.detectChanges();
+      }),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw err
+      }),
+      finalize(() => {
+        if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
+        if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
+        if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
+        if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
+        if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
+        if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+        if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
+      })
+    ).subscribe()
+
+  }
+
+  getAaddharDetails() {
+    if(this.identityImageArray.length == 0){
+      this.toastr.error('Attach Aadhar card')
+      return
+    }
+    this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
+      this.aadharCardUserDetails = res.data
+      this.controls.identityProofNumber.patchValue(res.data.idNumber)
+      this.isAadharVerified =  res.data.isAahaarVerified
+    })
+  }
+  // getFileInfo(event, type: any) {
+  //   this.file = event;
+  //   if (this.sharedService.fileValidator(event)) {
+  //     const params = {
+  //       reason: 'customer',
+  //       customerId: this.customerKycAddressOne.controls.customerId.value
+  //     }
+
+  //     this.sharedService.uploadFile(this.file, params).pipe(
+  //       map(res => {
+
+  //         if (type == "identityProof" && this.identityImageArray.length < 2) {
+  //           this.identityImageArray.push(res.uploadFile.URL)
+  //           this.identityIdArray.push(res.uploadFile.path)
+  //           this.identityFileNameArray.push(event.target.files[0].name)
+  //           this.reviewForm.patchValue({ identityProof: this.identityIdArray })
+  //           this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
+  //           this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
+  //         }
+  //         else if (type == 'permanent' && this.addressImageArray1.length < 2) {
+  //           this.addressImageArray1.push(res.uploadFile.URL)
+  //           this.addressIdArray1.push(res.uploadFile.path)
+  //           this.addressFileNameArray1.push(event.target.files[0].name)
+  //           this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
+  //           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
+  //         } else if (type == 'residential' && this.addressImageArray2.length < 2) {
+  //           this.addressImageArray2.push(res.uploadFile.URL)
+  //           this.addressIdArray2.push(res.uploadFile.path)
+  //           this.addressFileNameArray2.push(event.target.files[0].name)
+  //           this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
+  //           this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
+  //         } else if (type == "signature") {
+  //           this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
+  //           this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.path })
+  //           this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
+  //           this.ref.markForCheck();
+  //         } else if (type == "profile") {
+  //           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
+  //           this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
+  //           this.reviewForm.patchValue({ profileImage: res.uploadFile.path })
+  //           this.ref.markForCheck();
+  //         } else if (type == "panType") {
+  //           this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
+  //           // this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
+  //           // this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
+
+  //           let formControl = this.getFormControlPanForm60()
+  //           this.controls[formControl.path].patchValue(res.uploadFile.path)
+  //           this.controls[formControl.URL].patchValue(res.uploadFile.URL)
+
+  //         } else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
+  //           this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+  //           this.customerOrganizationDetail.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
+  //           this.customerOrganizationDetail.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
+  //         } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
+  //           this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+  //           this.customerOrganizationDetail.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
+  //           this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
+  //         }
+  //         else {
+  //           this.toastr.error("Cannot upload more than two images")
+  //         }
+
+
+  //         this.ref.detectChanges();
+  //       }),
+  //       catchError(err => {
+  //         this.toastr.error(err.error.message);
+  //         throw err
+  //       }),
+  //       finalize(() => {
+  //         if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
+  //         if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
+  //         if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
+  //         if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
+  //         if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
+  //         if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+  //         if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
+  //         event.target.value = ''
+  //       })
+  //     ).subscribe()
+  //   }
+  //   else {
+  //     event.target.value = ''
+  //   }
+
+  // }
 
   get controls() {
     return this.reviewForm.controls;
@@ -776,7 +1017,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.profileImg : []),
-    ...this.data.customerKycReview.panImg,
+    ...this.data.customerKycReview.panImg,...this.data.customerKycReview.form60Img,
     ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.signatureProofImg : [])
     ]
 
@@ -847,6 +1088,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
           // this.customerKycAddressOne.controls.addressProofFileName.disable()
           // this.customerKycAddressOne.controls.addressProofNumber.disable()
+          this.patchAaddarValue(0)
         } else {
           this.addressImageArray1 = [];
           this.addressIdArray1 = [];;
@@ -856,6 +1098,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1 });
           // this.customerKycAddressOne.controls.addressProofFileName.enable()
           // this.customerKycAddressOne.controls.addressProofNumber.enable()
+          this.resetAadharFields(0)
+          // this.checkForVoter(0, 'permanent')
         }
         break;
 
@@ -871,6 +1115,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
           // this.customerKycAddressTwo.controls.addressProofFileName.disable()
           // this.customerKycAddressTwo.controls.addressProofNumber.disable()
+          this.patchAaddarValue(1)
         } else {
           this.addressImageArray2 = [];
           this.addressIdArray2 = [];;
@@ -880,6 +1125,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.customerKycAddressTwo.patchValue({ addressProofNumber: this.addressFileNameArray2 });
           // this.customerKycAddressTwo.controls.addressProofFileName.enable()
           // this.customerKycAddressTwo.controls.addressProofNumber.enable()
+          this.resetAadharFields(1)
+          // this.checkForVoter(1, 'permanent')
         }
         break;
 
@@ -889,6 +1136,101 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
   }
 
+  resetAadharFields(index) {
+
+    let controls
+    if (index == 0) {
+      controls = this.customerKycAddressOne.controls
+    } else {
+      controls = this.customerKycAddressTwo.controls
+    }
+    controls.address.reset()
+    controls.addressProofNumber.reset()
+    controls.pinCode.reset()
+    controls.stateId.reset()
+    controls.cityId.reset()
+    controls.pinCode.reset()
+  }
+
+  async patchAaddarValue(index) {
+    if (this.aadharCardUserDetails) {
+      let controls
+      let type
+      if (index == 0) {
+        controls = this.customerKycAddressOne.controls
+        type = 'permanent'
+      } else {
+        controls = this.customerKycAddressTwo.controls
+        type = 'residential'
+      }
+      controls.pinCode.patchValue(this.aadharCardUserDetails.pincode)
+      controls.address.patchValue(this.aadharCardUserDetails.address)
+      let stateId = this.states.filter(res => {
+        if (res.name == this.aadharCardUserDetails.state)
+          return res
+      })
+      if (stateId.length > 0) {
+        controls.stateId.patchValue(stateId[0]['id'])
+        await this.getCities(type)
+      }
+      if (index == 0) {
+        var city = this.cities0.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      } else {
+        city = this.cities1.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      }
+
+      if (city.length > 0) {
+        controls.cityId.patchValue(city[0]['id'])
+        controls.cityId.disable()
+      } else {
+        let data = {
+          stateId: stateId[0]['id'],
+          cityName: this.aadharCardUserDetails.city,
+          cityUniqueId: null
+        }
+        this.sharedService.newCity(data).subscribe()
+      }
+      // controls.disable()
+
+    }
+  }
+
+
+  checkForVoter(index: number, type: string) {
+    let controls
+    if (index == 0) {
+      controls = this.customerKycAddressOne.controls
+    } else {
+      controls = this.customerKycAddressTwo.controls
+    }
+    if (this.images[type].length == 2 && controls.get('addressProofTypeId').value == 1) {
+      this.getVoterIdDetails(index)
+
+    }
+  }
+
+  getVoterIdDetails(index) {
+    let images
+    let controls
+    if (index == 0) {
+      images = this.addressImageArray1
+      controls = this.customerKycAddressOne.controls
+    } else {
+      images = this.addressImageArray2
+      controls = this.customerKycAddressTwo.controls
+    }
+    this.userAddressService.getVoterIdDetails(images, this.controls.customerId.value).subscribe(res => {
+      controls.address.patchValue(res.data.address)
+      controls.addressProofNumber.patchValue(res.data.idNumber)
+      controls.pinCode.patchValue(res.data.pincode)
+    })
+  }
 
   checkOccupation(event) {
     if (event.target.value == 'null') {
@@ -903,7 +1245,12 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   changeMaritalStatus() {
-    this.customerKycPersonal.controls.spouseName.reset()
+    const controls = this.customerKycPersonal.controls
+    if (this.customerKycPersonal.controls.martialStatus.value != 'married') {
+      controls.spouseName.patchValue(this.customerData.fatherName)
+    } else {
+      controls.spouseName.reset()
+    }
   }
 
   patchNullToEmptyString() {

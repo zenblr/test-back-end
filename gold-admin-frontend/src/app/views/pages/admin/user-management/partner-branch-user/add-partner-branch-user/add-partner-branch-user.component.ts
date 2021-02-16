@@ -54,11 +54,10 @@ export class AddPartnerBranchUserComponent implements OnInit {
       this.states = res.data;
     })
   }
-  getCities() {
-    const stateId = this.controls.stateId.value;
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.data;
-    })
+  async getCities() {
+    const stateId =  this.controls.stateId.value;
+    let res = await this.sharedService.getCities(stateId)
+    this.cities = res['data'];
   }
 
   setTitle() {

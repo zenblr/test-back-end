@@ -75,7 +75,7 @@
                 </div>
 
                 <!-- <ng-container *ngIf="editRating"> -->
-                <div *ngIf="showTextBoxCce && permission.cceKycRating && customerDetails.ratingStage == 1"
+                <div *ngIf="showTextBoxCce && permission.cceKycRating && customerDetails.ratingStage == 1 && cceControls.kycRatingFromCce.value && cceControls.kycStatusFromCce.value"
                     class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <div class="row">
                         <div class="col-4" style="font-weight: 500 !important;">
@@ -85,7 +85,7 @@
                             <select class="form-control" formControlName="reasonForOther"
                                 placeholder="reason for Incomplete" (change)="patchReason()" [class.isError]="cceControls.reasonForOther.touched &&
                                 cceControls.reasonForOther.invalid">
-                                <option [value]="null || ''" selected disabled>Choose a reason </option>
+                                <option [value]="null" selected disabled>Choose a reason </option>
                                 <option [value]="reason.description" *ngFor="let reason of reasons">
                                     {{reason.description}}
                                 </option>

@@ -63,7 +63,8 @@ import { TransactionService } from '../../../../core/transaction/services/transa
 import { SipInvestmentTenureService } from '../../../../core/sip-management';
 import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
 import { SipTradesService, CreateSipService, SipApplicationService } from '../../../../core/sip-management';
-
+import { DataTableService } from '../../../../core/shared/services/data-table.service';
+ 
 @Component({
 	selector: "kt-topbar",
 	templateUrl: "./topbar.component.html",
@@ -92,6 +93,7 @@ export class TopbarComponent implements OnInit {
 	value4: string;
 	type5: string;
 	value5: string;
+	value6: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -177,7 +179,8 @@ export class TopbarComponent implements OnInit {
 		private sipCycleDateService: SipCycleDateService,
 		private sipTradesService: SipTradesService,
 		private createSipService: CreateSipService,
-		private sipApplicationService: SipApplicationService
+		private sipApplicationService: SipApplicationService,
+		private dataTableService: DataTableService
 
 	) {
 
@@ -305,6 +308,7 @@ export class TopbarComponent implements OnInit {
 		this.value4 = "";
 		this.type5 = "";
 		this.value5 = "";
+		this.value6 = "";
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
@@ -363,18 +367,20 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "lead-management" || this.path == 'all-customers') {
 			this.dataSourceHeader();
 			this.value1 = "Add Customer";
+			this.value6 = "View All Customers"
 			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
 			this.listType = "state,leadStatus";
+            
 		}
 		if (location.href.includes('/admin/transaction/')) {
 			// this.dataSourceHeader();
 			this.showfilter = true;
 			this.filterName = "transaction";
 			this.filterWidth = "400px";
-			
+
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -599,6 +605,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "depositRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,depositRequestsStatus";
@@ -614,6 +622,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "withdrawal-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "withdrawalRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,withdrawalRequestsStatus";
@@ -736,16 +746,10 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
+		if (location.href.includes("/wallet/deposit-requests/")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("/admin/digi-gold/wallet/withdrawal-requests")) {
-			this.showBackButton = true;
-		}
-		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
-			this.showBackButton = true;
-		}
-		if (location.href.includes("admin/digi-gold/wallet/withdrawal-requests/withdrawal-requests-edit")) {
+		if (location.href.includes("/wallet/withdrawal-requests/")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {
@@ -1035,6 +1039,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.exportExcel.next(true);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.exportExcel.next(true);
+		}
 		// if (this.path == 'deposit-requests') {
 		// 	this.sipInvestmentTenureService.openModal.next(true)
 		// }
@@ -1113,6 +1123,10 @@ export class TopbarComponent implements OnInit {
 
 	sortValue(value) {
 		this.shopService.sortValue.next(value);
+	}
+
+	topBarCheck(value) {
+		this.dataTableService.topBarCheck.next(value);
 	}
 
 	sort() {

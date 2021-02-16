@@ -230,12 +230,19 @@ module.exports = (sequelize, DataTypes) => {
             field: 'wallet_free_balance',
             defaultValue: 0
         },
+        aadhaarMaskedImage1: {
+            type: DataTypes.TEXT,
+            field: 'aadhaar_masked_image1',
+        },
+        aadhaarMaskedImage2: {
+            type: DataTypes.TEXT,
+            field: 'aadhaar_masked_image2',
+        },
         isAugmontCustomerCreated: {
             type: DataTypes.BOOLEAN,
             field: 'is_augmont_customer_created',
             defaultValue: false
         }
-
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -250,6 +257,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
 
         Customer.hasOne(models.customerKycClassification, { foreignKey: 'customerId', as: 'customerKycClassification' });
+        Customer.hasOne(models.customerEKycDetails,{ foreignKey: 'customerId', as: 'customerEKycDetails' })
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });

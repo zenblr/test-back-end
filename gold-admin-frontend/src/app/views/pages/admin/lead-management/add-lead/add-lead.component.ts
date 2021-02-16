@@ -68,7 +68,7 @@ export class AddLeadComponent implements OnInit {
     this.formInitialize();
     this.setForm();
     this.getLeadSourceWithoutPagination();
-    this.getInternalBranhces();
+    // this.getInternalBranhces();
     this.getStates();
     this.getStatus();
     this.getModules();
@@ -91,12 +91,15 @@ export class AddLeadComponent implements OnInit {
     this.controls.panType.valueChanges.subscribe(res => {
       if (this.controls.panType.value) {
         if (this.controls.panType.value == "pan") {
+          this.controls.dateOfBirth.setValidators(Validators.required)
           this.controls.panCardNumber.setValidators(
             [
               Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$'),
               Validators.required
             ])
           this.controls.panCardNumber.updateValueAndValidity()
+          this.controls.dateOfBirth.updateValueAndValidity()
+
 
           this.controls.form60Image.reset()
           this.controls.form60Image.setValidators([])
@@ -110,6 +113,9 @@ export class AddLeadComponent implements OnInit {
           }
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
+          this.controls.dateOfBirth.clearValidators()
+          this.controls.dateOfBirth.updateValueAndValidity()
+
 
           this.controls.form60Image.reset()
           this.controls.panImage.reset()
@@ -136,6 +142,8 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
         this.controls.panImg.reset()
+        this.controls.dateOfBirth.clearValidators()
+        this.controls.dateOfBirth.updateValueAndValidity()
 
         this.controls.form60Image.clearValidators()
         this.controls.form60Image.updateValueAndValidity()
@@ -169,7 +177,7 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      internalBranchId: [this.details.userDetails.internalBranchId, Validators.required],
+      // internalBranchId: [this.details.userDetails.internalBranchId, Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
@@ -179,6 +187,7 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: [, [Validators.required]],
+      dateOfBirth: [],
       panType: [''],
       form60: [''],
       panImage: [null],
@@ -206,15 +215,15 @@ export class AddLeadComponent implements OnInit {
       this.modalTitle = 'View Customer'
       this.leadForm.disable()
     } else if (this.data.action == 'assignBranch') {
-      this.getLeadById(this.data['id']);
-      this.modalTitle = 'Assign Branch';
-      Object.keys(this.controls).forEach(res => {
-        this.controls[res].setValidators([])
-        this.controls[res].updateValueAndValidity()
-      })
-      this.controls.internalBranchId.setValidators([Validators.required])
-      this.controls.internalBranchId.updateValueAndValidity()
-      this.disableAssignBranch()
+      // this.getLeadById(this.data['id']);
+      // this.modalTitle = 'Assign Branch';
+      // Object.keys(this.controls).forEach(res => {
+      //   this.controls[res].setValidators([])
+      //   this.controls[res].updateValueAndValidity()
+      // })
+      // this.controls.internalBranchId.setValidators([Validators.required])
+      // this.controls.internalBranchId.updateValueAndValidity()
+      // this.disableAssignBranch()
     }
     else {
       this.modalTitle = 'Add Customer'
@@ -225,16 +234,11 @@ export class AddLeadComponent implements OnInit {
     const cityId = this.data.action == 'assignBranch' ? this.controls.cityId.value : null
     this.leadService.getInternalBranhces({ cityId }).subscribe(res => {
       this.branches = res.data;
-      // const branchExists = this.branches.find(e => e.id === this.controls.internalBranchId.value)
-      // if (!branchExists) {
-      //   this.controls.internalBranchId.reset();
-      //   this.controls.internalBranchId.patchValue('');
-      // }
     });
   }
 
   getBranchFromCity() {
-    if (this.data.action == 'edit') this.getInternalBranhces()
+    // if (this.data.action == 'edit') this.getInternalBranhces()
   }
 
   getLeadSourceWithoutPagination() {
@@ -250,17 +254,17 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
-  getCities() {
+  async getCities() {
     const stateId = this.controls.stateId.value;
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.data;
-      this.ref.detectChanges()
-      const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
-      if (!cityExists) {
-        this.controls.cityId.reset();
-        this.controls.cityId.patchValue('');
-      }
-    });
+    let res = await this.sharedService.getCities(stateId)
+    this.cities = res['data'];
+    this.ref.detectChanges()
+    const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+    if (!cityExists) {
+      this.controls.cityId.reset();
+      this.controls.cityId.patchValue('');
+    }
+
   }
 
   getModules() {
@@ -351,18 +355,52 @@ export class AddLeadComponent implements OnInit {
       this.controls.otp.setErrors({ verifyOTP: true })
       return this.toaster.error('Mobile number not verified!')
     }
+    if (!this.isPanVerified && this.controls.panType.value == 'pan') {
+      this.controls.panCardNumber.setErrors({ verifyPan: true });
+      return this.toaster.error('PAN number not verified!')
+    } else {
+      this.controls.panCardNumber.setErrors(null);
+    }
+  }
+
+  public ageValidation() {
+    const today = new Date();
+    const birthDate = new Date(this.controls.dateOfBirth.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      this.controls.dateOfBirth.setErrors({ invalid: true })
+    }
+    // this.controls.age.patchValue(age);
+    // this.ageValidation()
   }
 
   verifyPAN() {
     const panCardNumber = this.controls.panCardNumber.value;
-    // this.leadService.verifyPAN({ panCardNumber }).subscribe(res => {
-    //   if (res) {
-    //     this.isPanVerified = true;
-    //   }
-    // });
+    const dateOfBirth = this.controls.dateOfBirth.value
+    this.leadService.panDetails({ panCardNumber }).subscribe(res => {
+      if (res) {
+        this.getVerified(panCardNumber, dateOfBirth, res.data.name)
+        console.log(res)
+        // this.isPanVerified = true;
+      }
+    });
     // setTimeout(() => {
-    this.isPanVerified = true;
+    // this.isPanVerified = true;
     // }, 1000);
+  }
+
+  getVerified(panCardNumber, dateOfBirth, fullName) {
+    let data = { panCardNumber, dateOfBirth, fullName }
+    this.leadService.verifyPAN(data).subscribe(res => {
+      if (res.data.status == "Active") {
+        this.isPanVerified = true;
+      }
+    });
   }
 
   resendOTP() {
@@ -451,20 +489,17 @@ export class AddLeadComponent implements OnInit {
     // this.controls.panImg.patchValue(null)
   }
   disable() {
-    this.leadForm.controls.internalBranchId.disable();
-    // this.leadForm.controls.stateId.disable();
-    // this.leadForm.controls.cityId.disable();
+    // this.leadForm.controls.internalBranchId.disable();
   }
   enable() {
-    this.leadForm.controls.internalBranchId.enable();
-    // this.leadForm.controls.stateId.enable();
-    ///this.leadForm.controls.cityId.enable();
+    // this.leadForm.controls.internalBranchId.enable();
   }
   onSubmit() {
     if (this.data.action == 'add') {
-      // console.log(this.leadForm.getRawValue())
+      // console.log(this.leadForm.getRawValue()
       // return
-      if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
+      console.log(this.isPanVerified)
+      if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists || (!this.isPanVerified && this.controls.panType.value == 'pan')) {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         if (this.controls.panImage.invalid || this.controls.form60Image.invalid) {
@@ -521,9 +556,7 @@ export class AddLeadComponent implements OnInit {
         }
       );
     } else if (this.data.action == 'edit' || this.data.action == 'assignBranch') {
-      // if (this.data.action == 'assignBranch') this.leadForm.enable()
       if (this.leadForm.invalid) {
-        // this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         if (this.controls.panImage.invalid) {
           if (this.controls.panType.value == 'pan') {
@@ -619,29 +652,22 @@ export class AddLeadComponent implements OnInit {
   }
 
   patchStateCity(internalBranchId) {
-    if (this.data.action != 'assignBranch') {
-      this.leadService.patchStateCityAdmin(internalBranchId).pipe(
-        map(res => {
-          this.leadForm.patchValue({
-            stateId: res.stateId,
-            cityId: res.cityId
-          })
-          this.getCities()
-        })
-      ).subscribe()
-    }
+    // if (this.data.action != 'assignBranch') {
+    //   this.leadService.patchStateCityAdmin(internalBranchId).pipe(
+    //     map(res => {
+    //       this.leadForm.patchValue({
+    //         stateId: res.stateId,
+    //         cityId: res.cityId
+    //       })
+    //       this.getCities()
+    //     })
+    //   ).subscribe()
+    // }
   }
 
   disableAssignBranch() {
     this.leadForm.disable()
-    this.leadForm.controls.internalBranchId.enable()
-    // this.leadForm.controls.statusId.enable()
-    // this.leadForm.controls.comment.enable()
-    // this.leadForm.controls.panCardNumber.enable()
-    // this.leadForm.controls.panType.enable()
-    // this.leadForm.controls.form60.enable()
-    // this.leadForm.controls.panImage.enable()
-    // this.leadForm.controls.panImg.enable()
+    // this.leadForm.controls.internalBranchId.enable()
   }
 
   getFormControlPanForm60() {

@@ -81,28 +81,6 @@
  *         description: Success.
  *       404:
  *         description: Customer not found
-* /wallet/withdraw-detail-report:
- *   get:
- *     tags:
- *       -  Wallet
- *     name: read withdraw request
- *     summary: To read wallet withdraw request
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *     - name: "startDate"
- *       in: "query"
- *       type: string
- *     - name: "endDate"
- *       in: "query"
- *       type: string
- *     responses:
- *       200:
- *          description: deposit request fetch successfully
- *       404:
- *          description: no deposit request found
  * /wallet/deposit-detail-report:
  *   get:
  *     tags:
@@ -114,10 +92,13 @@
  *     consumes:
  *       - application/json
  *     parameters:
- *     - name: "startDate"
+ *     - name: "paymentReceivedDate"
  *       in: "query"
  *       type: string
- *     - name: "endDate"
+ *     - name: "depositStatus"
+ *       in: "query"
+ *       type: string
+ *     - name: "paymentFor"
  *       in: "query"
  *       type: string
  *     responses:

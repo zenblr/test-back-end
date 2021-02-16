@@ -70,16 +70,15 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 		this.sharedService.getStates().subscribe(res => this.stateList = res.data);
 	}
 
-	getCities() {
+	async getCities() {
 		if (this.controls.stateId.value == '') {
 			this.cityList = [];
 		} else {
 			let stateData;
 			stateData = this.controls.stateId.value;
-			this.sharedService.getCities(stateData).subscribe(res => {
-				this.cityList = res.data;
+			let res = await this.sharedService.getCities(stateData)
+				this.cityList = res['data'];
 				this.ref.detectChanges();
-			});
 		}
 	}
 

@@ -67,6 +67,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by_customer',
         },
+        isCityEdit : {
+            type: DataTypes.BOOLEAN,
+            field: 'is_city_edit',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

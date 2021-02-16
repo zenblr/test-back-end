@@ -25,8 +25,8 @@ const options = {
     apis: ['./routes/apiDocumentation/*.js'],
 };
 
-module.exports.swaggerSpec = swaggerJSDoc(options);
+module.exports.swaggerSpec1 = swaggerJSDoc(options);
 app.get('/swagger.json', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
+    res.send(swaggerSpec1);
 });

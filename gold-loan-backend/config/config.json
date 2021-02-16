@@ -2,9 +2,9 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "razor_pay_cron",
+        "database": "new_db",
         "host": "127.0.0.1",
-        "port": "7432",
+        "port": "6432",
         "dialect": "postgres",
         "operatorsAliases": false
     },
@@ -37,6 +37,15 @@
         "username": "postgres",
         "password": "nimap@123",
         "database": "gold_new_changes",
+        "host": "173.249.49.7",
+        "port": "3432",
+        "dialect": "postgres",
+        "operatorsAliases": false
+    },
+    "ekyc": {
+        "username": "postgres",
+        "password": "nimap@123",
+        "database": "ekyc_gold",
         "host": "173.249.49.7",
         "port": "3432",
         "dialect": "postgres",

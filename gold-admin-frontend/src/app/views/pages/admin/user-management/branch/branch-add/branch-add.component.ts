@@ -87,19 +87,17 @@ export class BranchAddComponent implements OnInit {
       });
   }
 
-  getCities() {
+  async getCities() {
     const stateId = this.controls.stateId.value;
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.data;
-    },
-      error => {
-      });
+    let res = await this.sharedService.getCities(stateId)
+    this.cities = res['data'];
+
   }
 
   getPartnerById(id) {
     this.viewLoading = true
     this.branchService.getBranchById(id).subscribe(res => {
-     
+
       this.branchForm.patchValue(res);
       this.getCities()
     },
@@ -127,13 +125,13 @@ export class BranchAddComponent implements OnInit {
       this.branchForm.markAllAsTouched()
       return
     }
-    
+
     const partnerData = this.branchForm.value;
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
       this.branchService.updateBranch(id, partnerData).subscribe(res => {
-       
+
         if (res) {
           const msg = 'Branch Updated Sucessfully';
           this.toastr.successToastr(msg);
@@ -148,7 +146,7 @@ export class BranchAddComponent implements OnInit {
 
     } else {
       this.branchService.addBranch(partnerData).subscribe(res => {
-        
+
         if (res) {
           const msg = 'Branch Added Successfully';
           this.toastr.successToastr(msg);

@@ -115,7 +115,7 @@
 								ktTrimControl class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" />
+								" readonly/>
 							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
@@ -129,7 +129,7 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" />
+								" readonly/>
 							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
@@ -160,8 +160,46 @@
 							</mat-error>
 						</div>
 					</div>
+					<div class="row kt-padding-t-15" *ngIf="(controls.panType.value && controls.panType.value == 'pan' && !controls.panImage.value) ||
+						(controls.panType.value && controls.panType.value == 'form60' && !controls.form60Image.value)">
+						<div class="col-4 align-self-center form-label">
+							<label *ngIf="controls.panType.value == ''"
+								ngClass="{'mandatory': controls.panType.value != ''}"
+								class="text-color font-weight-500">
+							</label>
+							<label *ngIf="controls.panType.value != 'pan'"
+								class="mandatory  text-color font-weight-500">
+								<span *ngIf="controls.panType.value == 'pan'">
+									{{ controls.panType.value | uppercase }}
+								</span>
+								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
 
-
+							</label>
+						</div>
+						<div class="col-8">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Select File"
+									aria-label="Recipient's username" aria-describedby="basic-addon2"
+									formControlName="form60" readonly
+									[class.isError]="controls[(getFormControlPanForm60()).path].touched && controls[(getFormControlPanForm60()).path].invalid" />
+								<div class="input-group-append">
+									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+										(click)="pan.click()">Attach</span>
+								</div>
+								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
+									(input)="getFileInfo($event)">
+								<div class="w-100">
+									<mat-error
+										*ngIf="controls[(getFormControlPanForm60()).path].errors?.required && controls[(getFormControlPanForm60()).path].touched">
+										Required field
+									</mat-error>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
+							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
+						</div> -->
+					</div>
 					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
 						<div class="col-4 align-self-center form-label">
 							<label class="mandatory  text-color font-weight-500">PAN</label>
@@ -171,7 +209,7 @@
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN"
 								[class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
-								maxlength="10" style="text-transform: uppercase;" />
+								maxlength="10" style="text-transform: uppercase;"  />
 							<mat-error *ngIf="
 									controls.panCardNumber.errors?.required &&
 									controls.panCardNumber.touched
@@ -206,45 +244,7 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15" *ngIf="(controls.panType.value && controls.panType.value == 'pan' && !controls.panImage.value) ||
-						(controls.panType.value && controls.panType.value == 'form60' && !controls.form60Image.value)">
-						<div class="col-4 align-self-center form-label">
-							<label *ngIf="controls.panType.value == ''"
-								ngClass="{'mandatory': controls.panType.value != ''}"
-								class="text-color font-weight-500">
-							</label>
-							<label *ngIf="controls.panType.value != 'pan'"
-								class="mandatory  text-color font-weight-500">
-								<span *ngIf="controls.panType.value == 'pan'">
-									{{ controls.panType.value | uppercase }}
-								</span>
-								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
-							</label>
-						</div>
-						<div class="col-8">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Select File"
-									aria-label="Recipient's username" aria-describedby="basic-addon2"
-									formControlName="form60" readonly
-									[class.isError]="controls[(getFormControlPanForm60()).path].touched && controls[(getFormControlPanForm60()).path].invalid" />
-								<div class="input-group-append">
-									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-										(click)="pan.click()">Attach</span>
-								</div>
-								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
-									(input)="getFileInfo($event)">
-								<div class="w-100">
-									<mat-error
-										*ngIf="controls[(getFormControlPanForm60()).path].errors?.required && controls[(getFormControlPanForm60()).path].touched">
-										Required field
-									</mat-error>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
-							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
-						</div> -->
-					</div>
+					
 
 					<div class="row kt-margin-t-15" *ngIf="controls.panType.value == 'pan' && controls.panImg.value">
 						<div class="col offset-4">
@@ -264,6 +264,9 @@
 									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
 										width="290" scrolling="no" *ngIf="isPdf(controls?.panImg.value)"></iframe>
 								</div>
+							</div>
+							<div class="kt-margin-t-20 text-color font-11">
+								(Click on image to view)
 							</div>
 						</div>
 					</div>
@@ -287,6 +290,9 @@
 									<iframe [src]="controls?.form60Img.value | safe : 'resourceUrl'" height="250"
 										width="290" scrolling="no" *ngIf="isPdf(controls?.form60Img.value)"></iframe>
 								</div>
+							</div>
+							<div class="kt-margin-t-20 text-color font-11">
+								(Click on image to view)
 							</div>
 						</div>
 					</div>

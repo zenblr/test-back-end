@@ -26,7 +26,7 @@ export class KycDetailsComponent implements OnInit {
   isEditable: boolean;
   kycStage: string;
   reasonsList: any;
-
+  isPanVerified = false;
   constructor(
     public dialogRef: MatDialogRef<KycDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public modalData: any,
@@ -101,7 +101,11 @@ export class KycDetailsComponent implements OnInit {
       status: [],
       id: [],
       reasonForDigiKyc: [],
-      reason: []
+      reason: [],
+      firstName: [],
+      lastName: [],
+      isPanVerified: [false],
+
     })
   }
 
@@ -220,31 +224,96 @@ export class KycDetailsComponent implements OnInit {
     ).subscribe();
   }
 
+  getPanDetails() {
+    this.leadService.getPanDetailsFromKarza(this.controls.panAttachment.value, this.customerId).subscribe(res => {
+      this.controls.panCardNumber.patchValue(res.data.idNumber)
+      this.controls.isPanVerified.patchValue(res.data.isPanVerified)
+      if (res.data.name) {
+        let name = res.data.name.split(" ")
+        let lastName = name[name.length - 1]
+        name.splice(name.length - 1, 1)
+        this.controls.firstName.patchValue(name.join(" "))
+        this.controls.lastName.patchValue(lastName)
+      }
+      if (res.data.dob) {
+        let dateString = res.data.dob;
+        let dateParts = dateString.split("/");
+        let dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        this.controls.dateOfBirth.patchValue(dateObject);
+      }
+      this.controls.panCardNumber.disable()
+      this.controls.dateOfBirth.disable()
+    })
+  }
+  uploadPanImg(file) {
+    const params = {
+      reason: 'lead'
+    }
+    this.sharedService.uploadFile(file, params).pipe(
+      map(res => {
+        if (res) {
+          this.controls.panImage.patchValue(res.uploadFile.path);
+          this.controls.panAttachment.patchValue(res.uploadFile.URL);
+          console.log(res.uploadFile.URL)
+          const panObj = { path: res.uploadFile.path, URL: res.uploadFile.URL, fileName: res.uploadFile.originalname }
+          this.images.pan = { ...panObj }
+          if (this.controls.panType.value == 'pan')
+            this.getPanDetails()
+        }
+      }),
+      finalize(() => {
+        if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
+        //event.target.value = ''
+      })
+    ).subscribe();
+  }
+  getImageValidationForKarza(event) {
+    var details = event.target.files
+    let ext = this.sharedService.getExtension(details[0].name)
+    if (Math.round(details[0].size / 1024) > 4000 && ext != 'pdf') {
+      this.toastr.error('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+
+    if (ext == 'pdf') {
+      if (Math.round(details[0].size / 1024) > 2000) {
+        this.toastr.error('Maximun size is 2MB')
+      } else {
+        this.uploadPanImg(event.target.files[0])
+      }
+      event.target.value = ''
+      return
+    }
+    var reader = new FileReader();
+    const img = new Image();
+
+    img.src = window.URL.createObjectURL(details[0]);
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if (width > 3000 || height > 3000) {
+          this.toastr.error('Image of height and width should be less than 3000px')
+          event.target.value = ''
+        } else {
+          this.uploadPanImg(event.target.files[0])
+        }
+      }, 1000);
+    }
+    // return data
+  }
+
   testUpload(event) {
     const file = event.target.files[0];
-    if (this.sharedService.fileValidator(event)) {
-      const params = {
-        reason: 'lead'
-      }
-      this.sharedService.uploadFile(file, params).pipe(
-        map(res => {
-          if (res) {
-            this.controls.panImage.patchValue(res.uploadFile.path);
-            // this.controls.panAttachment.patchValue(res.uploadFile.URL);
-
-            const panObj = { path: res.uploadFile.path, URL: res.uploadFile.URL, fileName: res.uploadFile.originalname }
-            this.images.pan = { ...panObj }
-          }
-        }),
-        finalize(() => {
-          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
-          event.target.value = ''
-        })
-      ).subscribe();
+    if (this.sharedService.fileValidator(event, 'image')) {
+      let data = this.getImageValidationForKarza(event)
     } else {
       this.toastr.error('Upload Valid File Format');
     }
-    event.target.value = ''
+    //event.target.value = ''
   }
 
   removeImage(event) {
@@ -257,6 +326,8 @@ export class KycDetailsComponent implements OnInit {
         panAttachment: this.images.pan['path'],
         panImage: this.images.pan['path']
       });
+      this.controls.dateOfBirth.reset()
+      this.controls.panCardNumber.reset()
     }
   }
 
