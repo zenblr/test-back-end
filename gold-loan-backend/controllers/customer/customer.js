@@ -799,7 +799,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age,isCampaign } = req.body;
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
   var todayDateTime = new Date();
   // console.log('abc')
@@ -852,9 +852,11 @@ exports.signUpCustomer = async (req, res) => {
   let data = await sequelize.transaction(async (t) => {
 
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
-
+    if(!isCampaign){
+      isCampaign = false;
+    }
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1 },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1,isCampaign },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);
