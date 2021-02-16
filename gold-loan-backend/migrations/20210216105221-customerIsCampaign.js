@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer', 'isCampaign', {
+    return queryInterface.addColumn('customer', 'is_campaign', {
       type: Sequelize.DataTypes.BOOLEAN,
       defaultValue:false
     })

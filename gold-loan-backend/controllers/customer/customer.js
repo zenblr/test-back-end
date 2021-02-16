@@ -799,7 +799,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age,isCampaign } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age, isCampaign } = req.body;
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
   var todayDateTime = new Date();
   // console.log('abc')
@@ -820,45 +820,82 @@ exports.signUpCustomer = async (req, res) => {
     { isVerified: true },
     { where: { id: verifyUser.id } }
   );
-
-  //To check in customer table 
-  let customerExist = await models.customer.findOne({
-    where: { mobileNumber: mobileNumber },
-  });
-  if (!check.isEmpty(customerExist)) {
-    return res.status(404).json({ message: "This Mobile number already Exists" });
-  }
-
-  //To check in Registered customer from customer website
-  // let registerCustomerExist = await models.customerRegister.findOne({
-  //   where: { mobileNumber: mobileNumber },
-  // });
-  // if (!check.isEmpty(registerCustomerExist)) {
-  //   return res.status(404).json({ message: "This Mobile number already Exists" });
-  // }
-
-  const customerUniqueId = uniqid.time().toUpperCase();
-  const merchantData = await getMerchantData();
-
-  let isFromApp = false
-  if (req.useragent.isMobile) {
-    isFromApp = true
-  }
-
-  // let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
-  let createdBy = 1;
-  let modifiedBy = 1;
-  let status = await models.status.findOne({ where: { statusName: "confirm" } })
   let data = await sequelize.transaction(async (t) => {
 
+
+
+    //To check in customer table 
+    let customerExist = await models.customer.findOne({
+      where: { mobileNumber: mobileNumber },
+    });
+
+    if (!check.isEmpty(customerExist)) {
+      if (customerExist.isCampaign) {
+
+        Token = jwt.sign({
+          id: customerExist.dataValues.id,
+          mobile: customerExist.dataValues.mobileNumber,
+          firstName: customerExist.dataValues.firstName,
+          lastName: customerExist.dataValues.lastName,
+          userBelongsTo: "customer"
+        },
+          JWT_SECRETKEY, {
+          expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
+        });
+
+        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const createdTime = new Date(decoded.iat * 1000).toGMTString();
+        const expiryTime = new Date(decoded.exp * 1000).toGMTString();
+
+        await models.customer.update({ lastLogin: createdTime }, {
+          where: { id: decoded.id }, transaction: t
+        });
+
+        let x = await models.customerLogger.create({
+          customerId: decoded.id,
+          token: Token,
+          expiryDate: expiryTime,
+          createdDate: createdTime
+        }, { transaction: t });
+        return { Token }
+        // return res.status(200).json({ messgae: `Successfully Logged In`, token: Token });
+
+      } else {
+
+        return res.status(404).json({ message: "This Mobile number already Exists" });
+      }
+    }
+
+    //To check in Registered customer from customer website
+    // let registerCustomerExist = await models.customerRegister.findOne({
+    //   where: { mobileNumber: mobileNumber },
+    // });
+    // if (!check.isEmpty(registerCustomerExist)) {
+    //   return res.status(404).json({ message: "This Mobile number already Exists" });
+    // }
+
+    const customerUniqueId = uniqid.time().toUpperCase();
+    const merchantData = await getMerchantData();
+
+    let isFromApp = false
+    if (req.useragent.isMobile) {
+      isFromApp = true
+    }
+
+    // let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
+    let createdBy = 1;
+    let modifiedBy = 1;
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
-    if(!isCampaign){
+    if (!isCampaign) {
       isCampaign = false;
     }
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1,isCampaign },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign },
       { transaction: t }
     );
+
     let state = await getCustomerStateById(stateId, null);
     let city = await getCustomerCityById(cityId, null);
 
