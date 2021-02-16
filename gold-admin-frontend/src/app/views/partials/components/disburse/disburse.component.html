@@ -415,5 +415,5 @@
     </div>
 </form>
 <div class="p-3">
-    <kt-modal-footer (action)="action($event)" [value]="'Done'" [isDisabled]="isDisable"></kt-modal-footer>
+    <kt-modal-footer *ngIf="showButton && !disbursed" (action)="action($event)" [value]="'Done'" [isDisabled]="isDisable"></kt-modal-footer>
 </div>
