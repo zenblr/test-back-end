@@ -30,6 +30,7 @@ export class UserDetailsComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+  name: any = {};
 
   showVerifyPAN = false;
   organizationTypes: any;
@@ -171,6 +172,8 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.name['firstName'] = this.controls.firstName.value
+        this.name['lastName'] = this.controls.lastName.value
         if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
         }
@@ -564,6 +567,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panCardNumber.updateValueAndValidity()
       this.controls.form60Image.setValidators([Validators.required])
       this.controls.form60Image.updateValueAndValidity()
+      this.userBasicForm.patchValue({ firstName: this.name.firstName, lastName: this.name.lastName })
+
     }
     if (panType == 'pan') {
 
