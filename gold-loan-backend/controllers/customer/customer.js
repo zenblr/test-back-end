@@ -826,11 +826,11 @@ exports.signUpCustomer = async (req, res) => {
 
     //To check in customer table 
     let customerExist = await models.customer.findOne({
-      where: { mobileNumber: mobileNumber },
+      where: { mobileNumber: mobileNumber, merchantId: 1 },
     });
 
     if (!check.isEmpty(customerExist)) {
-      if (customerExist.isCampaign) {
+      if (isCampaign) {
 
         Token = jwt.sign({
           id: customerExist.dataValues.id,
@@ -888,11 +888,16 @@ exports.signUpCustomer = async (req, res) => {
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
 
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
+    let moduleId = 4
+
     if (!isCampaign) {
       isCampaign = false;
+    } else if (isCampaign === true) {
+      moduleId = 1
     }
+
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: 1, moduleId: moduleId, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign },
       { transaction: t }
     );
 
