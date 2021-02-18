@@ -454,7 +454,11 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   };
 
   if (isCampaign) {
+    // let source = await models.source.findOne({ where: { sourceName: 'CAMPAIGN' } })
     searchQuery.isCampaign = true
+    // query.source = Sequelize.or(
+    //   Sequelize.where(Sequelize.literal(`source & ${source.sourcePoint}`), '!=', 0)
+    // )
   }
 
   if (!check.isEmpty(modulePoint)) {
