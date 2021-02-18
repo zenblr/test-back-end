@@ -369,6 +369,11 @@ export class TopbarComponent implements OnInit {
 			this.permissionType = "leadManagmentAdd";
 			this.listType = "state,leadStatus";
 		}
+
+		if (this.path == "campaign-list") {
+			this.dataSourceHeader();
+		}
+
 		if (location.href.includes('/admin/transaction/')) {
 			// this.dataSourceHeader();
 			this.showfilter = true;

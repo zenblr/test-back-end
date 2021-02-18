@@ -17,20 +17,23 @@ import { NewRequestListComponent } from './new-request-list/new-request-list.com
 import { MyRequestComponent } from './my-request/my-request.component';
 import { NewRequestAssignAppraiserComponent } from './new-request-assign-appraiser/new-request-assign-appraiser.component';
 import { RegisteredCustomerRequestComponent } from './registered-customer-request/registered-customer-request.component';
+import { CampaignListComponent } from './campaign-list/campaign-list.component';
 
 const routes: Routes = [
   { path: '', component: LeadManagementComponent },
   { path: 'new-requests', component: NewRequestListComponent },
   { path: 'my-requests', component: MyRequestComponent },
-  { path: 'registered-customers', component: RegisteredCustomerRequestComponent }
+  { path: 'registered-customers', component: RegisteredCustomerRequestComponent },
+  { path: 'campaign-list', component: CampaignListComponent }
 ]
 
 @NgModule({
   declarations: [
-    NewRequestListComponent, 
-    MyRequestComponent, 
-    NewRequestAssignAppraiserComponent, 
-    RegisteredCustomerRequestComponent    
+    NewRequestListComponent,
+    MyRequestComponent,
+    NewRequestAssignAppraiserComponent,
+    RegisteredCustomerRequestComponent,
+    CampaignListComponent
   ],
   imports: [
     CommonModule,
