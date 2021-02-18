@@ -806,6 +806,13 @@ exports.getsingleCustomerManagement = async (req, res) => {
 exports.signUpCustomer = async (req, res) => {
   let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age, isCampaign } = req.body;
   let sourcePoint;
+
+  if (!isCampaign) {
+    isCampaign = false;
+  } else if (isCampaign === true) {
+    moduleId = 1
+  }
+
   if (isCampaign) {
     let source = await models.source.findOne({ where: { sourceName: 'CAMPAIGN' } })
     sourcePoint = source.sourcePoint
@@ -901,12 +908,6 @@ exports.signUpCustomer = async (req, res) => {
 
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
     let moduleId = 4
-
-    if (!isCampaign) {
-      isCampaign = false;
-    } else if (isCampaign === true) {
-      moduleId = 1
-    }
 
     let customer = await models.customer.create(
       { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: 1, moduleId: moduleId, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign },
