@@ -37,6 +37,7 @@ export class UserPersonalComponent implements OnInit {
 
   images = { constitutionsDeed: [], gstCertificate: [] }
   customerData: any;
+  panType: string;
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
@@ -51,6 +52,10 @@ export class UserPersonalComponent implements OnInit {
     this.getOccupation();
     this.initForm();
     this.getCustomerDetails()
+    this.userPersonalService.panType$.subscribe(res => {
+      this.panType = res
+      console.log(this.panType)
+    })
   }
 
   initForm() {
@@ -340,7 +345,7 @@ export class UserPersonalComponent implements OnInit {
   }
 
   changeMaritalStatus() {
-    if (this.controls.martialStatus.value != 'married') {
+    if (this.controls.martialStatus.value != 'married' && this.panType == 'pan') {
       this.controls.spouseName.patchValue(this.customerData.fatherName)
       if (this.customerData.fatherName)
         this.controls.spouseName.disable()
@@ -407,10 +412,11 @@ export class UserPersonalComponent implements OnInit {
           this.personalForm.controls.gender.disable()
 
         this.controls.gender.patchValue(gender)
-        if (res.data.fatherName)
+        if (res.data.fatherName && this.panType == 'pan') {
           this.controls.spouseName.disable()
-          
-        this.controls.spouseName.patchValue(res.data.fatherName)
+          this.controls.spouseName.patchValue(res.data.fatherName)
+        }
+
         this.ageValidation()
         // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
         // console.log(myMoment)
