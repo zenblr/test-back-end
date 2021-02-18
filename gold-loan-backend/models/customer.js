@@ -234,6 +234,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_augmont_customer_created',
             defaultValue: false
+        },
+        isCampaign: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_campaign',
+            defaultValue: false
         }
 
     }, {

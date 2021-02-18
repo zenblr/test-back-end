@@ -852,14 +852,14 @@ exports.updateAmountStatus = async (req, res, next) => {
                 var transactionId = tempRazorData.transactionUniqueId
                 var ornamentId = tempRazorData.ornamentId
             }
-            let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
-                where: { isReleased: true, masterLoanId: masterLoanId }
-            });
+            // let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+            //     where: { isReleased: true, masterLoanId: masterLoanId }
+            // });
 
 
-            if (checkOrnament.length > 0) {
-                return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
-            }
+            // if (checkOrnament.length > 0) {
+            //     return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
+            // }
             // let partRelease = await sequelize.transaction(async t => {
             let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
             let ornamentData = releaseData.ornamentWeight;
@@ -1129,6 +1129,13 @@ exports.updateAmountStatus = async (req, res, next) => {
                     else
                         return
                 } else if (amountStatus == 'rejected') {
+                    let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+                        where: { isReleased: true, masterLoanId: partReleaseData.masterLoanId }
+                    })
+                    for (index = 0; index < checkOrnament.length; index++) {
+                        let id = checkOrnament[index].id
+                        await models.customerLoanOrnamentsDetail.update({ isReleased: false }, { where: { id: id }, transaction: t })
+                    }
                     // await sequelize.transaction(async t => {
                     await models.customerLoanTransaction.update({ depositStatus: "Rejected" }, { where: { id: partReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.partRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
@@ -2165,14 +2172,14 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                 var transactionId = tempRazorData.transactionUniqueId
                 var ornamentId = tempRazorData.ornamentId
             }
-            let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
-                where: { isReleased: true, masterLoanId: masterLoanId }
-            });
+            // let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+            //     where: { isReleased: true, masterLoanId: masterLoanId }
+            // });
 
 
-            if (checkOrnament.length > 0) {
-                return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
-            }
+            // if (checkOrnament.length > 0) {
+            //     return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
+            // }
             let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
             let ornamentData = releaseData.ornamentWeight;
             if (receivedDate != todaysDate) {
@@ -2437,6 +2444,13 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                         return
                 } else if (amountStatus == 'rejected') {
                     // await sequelize.transaction(async t => {
+                    let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+                        where: { isReleased: true, masterLoanId: fullReleaseData.masterLoanId }
+                    })
+                    for (index = 0; index < checkOrnament.length; index++) {
+                        let id = checkOrnament[index].id
+                        await models.customerLoanOrnamentsDetail.update({ isReleased: false }, { where: { id: id }, transaction: t })
+                    }
                     await models.customerLoanTransaction.update({ depositStatus: "Rejected" }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.fullRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
