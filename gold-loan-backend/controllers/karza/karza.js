@@ -130,8 +130,10 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     let ocrData = [];
     let error = null;
     let i = 0;
+    let number = Math.floor(Math.random() * 10)
+    console.log(number % 2)
     for (const fileUrl of fileUrls) {
-        let info = await ocrService(fileUrl, idProofType, customerId, i)
+        let info = await ocrService(fileUrl, idProofType, customerId, i,number)
         i++;
         if (info.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })

@@ -95,7 +95,7 @@ const env = process.env.KARZA_ENV || 'TEST';
 
 // Function to Insert into External API Logger
 
-let ocrService = async (fileUrl, idProofType, customerId, index) => {
+let ocrService = async (fileUrl, idProofType, customerId, index,number) => {
     let apiPath;
     let requestBody;
     try {
@@ -131,7 +131,7 @@ let ocrService = async (fileUrl, idProofType, customerId, index) => {
             body: JSON.stringify(data)
         }
         // static data
-        let result = await getOcrLocal(idProofType, index)
+        let result = await getOcrLocal(idProofType, index,number)
         const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
         return { data: ocrResp };
 
@@ -167,10 +167,10 @@ let ocrService = async (fileUrl, idProofType, customerId, index) => {
     }
 }
 
-let getOcrLocal = async (idProofType, index) => {
+let getOcrLocal = async (idProofType, index,number) => {
     if (idProofType.toLowerCase().includes('aadhaar card')) {
-        let number = (Math.random() * 10)
-        if(number / 2 == 0){
+       
+        if(number % 2 == 0){
             if (index == 0) {
 
                 let data = {
