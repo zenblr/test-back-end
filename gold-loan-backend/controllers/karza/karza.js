@@ -14,7 +14,7 @@ exports.panCardNameByPan = async (req, res, next) => {
     if (panData.error == false) {
         return res.status(200).json({ message: 'Success', data: panData.data })
     } else {
-        if(panData.error == 'Insufficient Credits'){
+        if (panData.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
         }
         if (panData.status == 504) {
@@ -35,7 +35,7 @@ exports.checkNameSimilarity = async (req, res, next) => {
             return res.status(400).json({ message: 'Name does not match', data: nameData.score })
         }
     } else {
-        if(nameData.error == 'Insufficient Credits'){
+        if (nameData.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
         }
         if (nameData.status == 504) {
@@ -66,7 +66,7 @@ exports.kycOcrAddressVoterId = async (req, res, next) => {
     let error = null;
     for (const fileUrl of fileUrls) {
         let info = await ocrService(fileUrl, idProofType, customerId)
-        if(info.error == 'Insufficient Credits'){
+        if (info.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
         }
         if (info.error) {
@@ -131,9 +131,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     let error = null;
     let i = 0;
     for (const fileUrl of fileUrls) {
-        let info = await ocrService(fileUrl, idProofType, customerId,i)
-        i ++;
-        if(info.error == 'Insufficient Credits'){
+        let info = await ocrService(fileUrl, idProofType, customerId, i)
+        i++;
+        if (info.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
         }
         if (info.error) {
@@ -213,7 +213,7 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
     let idProofType = "pan card";
     let error = null;
     let ocrData = await ocrService(fileUrl, idProofType, customerId)
-    if(ocrData.error == 'Insufficient Credits'){
+    if (ocrData.error == 'Insufficient Credits') {
         return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
     }
     if (ocrData.error) {
@@ -279,6 +279,23 @@ exports.getCustomerEkycData = async (req, res, next) => {
         return res.status(404).json({ message: 'No data found' })
     }
 
+}
+
+exports.removePanAadhar = async (req, res, next) => {
+    let { identityProofNumber, panCardNumber } = req.body
+
+    if (identityProofNumber) {
+        
+        let math = Math.random()
+       let x= await models.customerKycPersonalDetail.update({ identityProofNumber: math }, { where: { identityProofNumber } })
+       
+    } 
+    if (panCardNumber) {
+        let math = Math.random()
+        await models.customer.update({ panCardNumber: math }, { where: { panCardNumber } })
+    }
+
+    return res.status(200).json({ Success: "Success" })
 }
 
 
