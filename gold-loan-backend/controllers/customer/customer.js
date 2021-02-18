@@ -395,7 +395,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, isCampaign } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -450,7 +450,12 @@ exports.getAllCustomersForLead = async (req, res, next) => {
       },
     }],
     isActive: true,
+    merchantId: 1
   };
+
+  if (isCampaign) {
+    searchQuery.isCampaign = true
+  }
 
   if (!check.isEmpty(modulePoint)) {
     let moduleArray = modulePoint.split(',')
@@ -800,7 +805,14 @@ exports.getsingleCustomerManagement = async (req, res) => {
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
   let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age, isCampaign } = req.body;
-  let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
+  let sourcePoint;
+  if (isCampaign) {
+    let source = await models.source.findOne({ where: { sourceName: 'CAMPAIGN' } })
+    sourcePoint = source.sourcePoint
+  } else {
+    let source = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
+    sourcePoint = source.sourcePoint
+  }
   var todayDateTime = new Date();
   // console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
@@ -830,7 +842,7 @@ exports.signUpCustomer = async (req, res) => {
     });
 
     if (!check.isEmpty(customerExist)) {
-      if (customerExist.isCampaign) {
+      if (isCampaign) {
 
         Token = jwt.sign({
           id: customerExist.dataValues.id,
