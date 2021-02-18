@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { UserPersonalService } from '../../../../../../core/kyc-settings/services/user-personal.service';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-personal.component.scss'],
   providers: [DatePipe]
 })
-export class UserPersonalComponent implements OnInit {
+export class UserPersonalComponent implements OnInit,OnDestroy {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
@@ -423,6 +423,11 @@ export class UserPersonalComponent implements OnInit {
         this.ref.detectChanges()
       }
     })
+  }
+
+  ngOnDestroy(){
+    this.userPersonalService.panType.next('')
+    this.userPersonalService.panType.unsubscribe()
   }
 
 }
