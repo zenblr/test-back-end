@@ -15,7 +15,7 @@ export class LoanDetailsComponent implements OnInit {
 
   roles: any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'customerName', 'branchName','loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'applicationDate','startDate', 'endDate', 'partRelease', 'fullRelease', 'actions'];
+  displayedColumns = ['customerID', 'customerName', 'branchName', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'applicationDate', 'startDate', 'endDate', 'partRelease', 'fullRelease', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -121,6 +121,14 @@ export class LoanDetailsComponent implements OnInit {
 
   partPayment(loan) {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
+  }
+
+  checkForRelease(loan) {
+    if ((loan.fullRelease && (loan.fullRelease.amountStatus == 'completed' || loan.fullRelease.amountStatus == 'pending') && (loan.fullRelease.fullReleaseStatus == 'released' || loan.fullRelease.fullReleaseStatus == 'pending')) || (loan.partRelease && (loan.partRelease.amountStatus == 'completed' || loan.partRelease.amountStatus == 'pending') && (loan.partRelease.partReleaseStatus == 'released' || loan.partRelease.partReleaseStatus == 'pending'))) {
+      return false
+    } else {
+      return true
+    }
   }
 
   show(loan) {
