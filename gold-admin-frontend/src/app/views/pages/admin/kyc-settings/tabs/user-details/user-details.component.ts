@@ -585,6 +585,9 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panImage.updateValueAndValidity()
       this.controls.form60Image.setValidators([])
       this.controls.form60Image.updateValueAndValidity()
+      if(this.isPanVerified){
+      this.userBasicForm.patchValue({ firstName: this.name.pan.firstName, lastName: this.name.pan.lastName })
+      }
     }
 
     this.userPersonalService.panType.next(panType)
