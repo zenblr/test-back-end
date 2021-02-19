@@ -360,8 +360,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panCardNumber.patchValue(res.data.idNumber)
       this.controls.dateOfBirth.patchValue(res.dob)
       this.isPanVerified = res.data.isPanVerified
-      if (res.data.isPanVerified)
-        this.resetOnPanChange = false
+      // if (res.data.isPanVerified)
+      //   this.resetOnPanChange = false
       this.controls.panCardNumber.disable()
       this.controls.firstName.disable()
       this.controls.lastName.disable()
@@ -378,7 +378,7 @@ export class UserDetailsComponent implements OnInit {
     //     console.log(res)
     if (this.controls.panCardNumber.valid) {
       this.isPanVerified = true;
-      this.resetOnPanChange = false
+      // this.resetOnPanChange = false
     }
     // });
   }
@@ -473,6 +473,7 @@ export class UserDetailsComponent implements OnInit {
           this.controls.form60Img.patchValue(null)
         }
         if (panType === 'form60') {
+          this.isPanVerified = false
           this.controls.panImage.patchValue(null)
           this.controls.panImg.patchValue(null)
         }
