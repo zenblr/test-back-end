@@ -111,6 +111,10 @@ export class UpdateStatusComponent implements OnInit {
       this.updateStatusForm.patchValue({ fullReleaseStatus: '' })
     }
 
+    if(data.amountStatus == "rejected"){
+      this.updateStatusForm.controls.amountStatus.disable()
+    }
+
     // if (this.data.name === 'fullReleaseApproval' && data.amountStatus === 'pending') this.controls.amountStatus.patchValue('')
 
   }

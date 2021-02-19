@@ -159,6 +159,9 @@ export class PageConfig {
 				},
 				"registered-customers": {
 					page: { title: "Customer Request List", desc: "" }
+				},
+				"campaign-list": {
+					page: { title: "Campaign Customer List", desc: "" }
 				}
 			},
 			"transaction": {
