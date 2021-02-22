@@ -76,7 +76,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
 
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.customerOtp.update({ isVerified: true }, { where: { id: verifyCustomer.id }, transaction: t });
-        let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber }, transaction: t });
+        let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, merchantId: 1 }, transaction: t });
         let checkUser = await models.customer.findOne({
             where: { id: customer.id, isActive: true },
             transaction: t

@@ -63,7 +63,8 @@ import { TransactionService } from '../../../../core/transaction/services/transa
 import { SipInvestmentTenureService } from '../../../../core/sip-management';
 import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
 import { SipTradesService, CreateSipService, SipApplicationService } from '../../../../core/sip-management';
-
+import { DataTableService } from '../../../../core/shared/services/data-table.service';
+ 
 @Component({
 	selector: "kt-topbar",
 	templateUrl: "./topbar.component.html",
@@ -92,6 +93,7 @@ export class TopbarComponent implements OnInit {
 	value4: string;
 	type5: string;
 	value5: string;
+	value6: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -177,7 +179,8 @@ export class TopbarComponent implements OnInit {
 		private sipCycleDateService: SipCycleDateService,
 		private sipTradesService: SipTradesService,
 		private createSipService: CreateSipService,
-		private sipApplicationService: SipApplicationService
+		private sipApplicationService: SipApplicationService,
+		private dataTableService: DataTableService
 
 	) {
 
@@ -305,6 +308,7 @@ export class TopbarComponent implements OnInit {
 		this.value4 = "";
 		this.type5 = "";
 		this.value5 = "";
+		this.value6 = "";
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
@@ -363,11 +367,13 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "lead-management" || this.path == 'all-customers') {
 			this.dataSourceHeader();
 			this.value1 = "Add Customer";
+			this.value6 = "View All Customers"
 			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
 			this.listType = "state,leadStatus";
+            
 		}
 
 		if (this.path == "campaign-list") {
@@ -1122,6 +1128,10 @@ export class TopbarComponent implements OnInit {
 
 	sortValue(value) {
 		this.shopService.sortValue.next(value);
+	}
+
+	topBarCheck(value) {
+		this.dataTableService.topBarCheck.next(value);
 	}
 
 	sort() {

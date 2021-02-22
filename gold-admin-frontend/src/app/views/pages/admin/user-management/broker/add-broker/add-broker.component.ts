@@ -117,14 +117,14 @@ export class AddBrokerComponent implements OnInit {
     if (broker.passbookStatementChequeDetails) {
       this.brokerFrom.patchValue({
         passbookImgName: broker.passbookStatementChequeDetails.filename,
-        passbookImg:broker.passbookStatementChequeDetails.url,
+        passbookImg: broker.passbookStatementChequeDetails.url,
       })
     }
 
     if (broker.panCardDetails) {
       this.brokerFrom.patchValue({
         imgName: broker.panCardDetails.filename,
-        panCardImg:broker.panCardDetails.url,
+        panCardImg: broker.panCardDetails.url,
       })
     }
   }
@@ -158,13 +158,11 @@ export class AddBrokerComponent implements OnInit {
 
   }
 
-  getCities() {
+  async getCities() {
 
-    this.sharedService.getCities(this.controls.stateId.value).pipe(map(
-      res => {
-        this.citys = res.data;
-      }
-    )).subscribe()
+    let res = await this.sharedService.getCities(this.controls.stateId.value)
+    this.citys = res['data'];
+
 
   }
 
@@ -187,7 +185,7 @@ export class AddBrokerComponent implements OnInit {
   }
 
   getFileInfo(event, type) {
-    var reason ="broker";
+    var reason = "broker";
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {

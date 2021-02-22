@@ -33,10 +33,19 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
+
+  let userData = await models.user.findOne({
+    where: { id: req.userData.id },
+    include: [{
+      model: models.internalBranch
+    }]
+  })
+
+  let internalBranchId = userData.internalBranches[0].userInternalBranch.internalBranchId
 
   let getMobileNumber = await models.customerOtp.findOne({
     where: { referenceCode, isVerified: true },
@@ -128,7 +137,7 @@ exports.addCustomer = async (req, res, next) => {
 
 
   });
-  return res.status(200).json({ messgae: `Customer created` });
+  return res.status(200).json({ message: `Customer created` });
 };
 
 
@@ -147,7 +156,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -187,7 +196,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -211,7 +220,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -246,7 +255,7 @@ exports.sendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -395,7 +404,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, isCampaign } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, viewAllCustomer, isCampaign } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -553,12 +562,17 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   ]
   let internalBranchId = req.userData.internalBranchId
+
   if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
     searchQuery.internalBranchId = internalBranchId
   }
 
-  // if (req.userData.userTypeId != 4) {
-  // }
+  if (viewAllCustomer == 'true') {
+    if (check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER) == false) {
+      delete searchQuery.internalBranchId;
+    }
+    // searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
@@ -914,7 +928,7 @@ exports.signUpCustomer = async (req, res) => {
     let moduleId = 4
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: 1, moduleId: moduleId, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, internalBranchId: 1, isCampaign },
       { transaction: t }
     );
 

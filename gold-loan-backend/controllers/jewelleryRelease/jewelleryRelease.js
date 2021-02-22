@@ -1584,6 +1584,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 appraiserId: partReleaseData.appraiserData.appraiserId,
                 status: 'complete',
                 isAssigned: true,
+                internalBranchId: req.userData.internalBranchId,
                 appoinmentDate: partReleaseData.appraiserData.appoinmentDate,
                 startTime: partReleaseData.appraiserData.startTime,
                 endTime: partReleaseData.appraiserData.endTime,

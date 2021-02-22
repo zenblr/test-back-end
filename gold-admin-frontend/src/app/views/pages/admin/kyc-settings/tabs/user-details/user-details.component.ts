@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../partials/components';
-import { UserDetailsService } from '../../../../../../core/kyc-settings';
+import { UserDetailsService, UserPersonalService } from '../../../../../../core/kyc-settings';
 import { map, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { SharedService } from '../../../../../../core/shared/services/shared.ser
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { LeadService } from '../../../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-user-details',
@@ -26,9 +27,12 @@ export class UserDetailsComponent implements OnInit {
   isOpverified = true;
   @ViewChild("pan", { static: false }) pan;
   @ViewChild('editPan', { static: false }) editPan;
-
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+  name: any = {
+    pan: { firstName: '', lastName: '' },
+    form60: { firstName: '', lastName: '' }
+  };
 
   showVerifyPAN = false;
   organizationTypes: any;
@@ -47,7 +51,9 @@ export class UserDetailsComponent implements OnInit {
     private dialog: MatDialog,
     private toast: ToastrService,
     private sharedService: SharedService,
-    private router: Router
+    private router: Router,
+    private leadService: LeadService,
+    private userPersonalService:UserPersonalService
   ) { }
 
   ngOnInit() {
@@ -149,6 +155,7 @@ export class UserDetailsComponent implements OnInit {
       panImg: [],
       panCardNumber: [''],
       id: [],
+      dateOfBirth: [],
       userType: [null],
       moduleId: [null],
       organizationTypeId: [null],
@@ -168,8 +175,11 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.name.form60['firstName'] = this.controls.firstName.value
+        this.name.form60['lastName'] = this.controls.lastName.value
         if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
+          this.userPersonalService.panType.next(res.customerInfo.panType)
         }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
         if (this.controls.moduleId.value == 1) {
@@ -231,37 +241,87 @@ export class UserDetailsComponent implements OnInit {
 
   getFileInfo(event) {
     if (this.sharedService.fileValidator(event)) {
-      const params = {
-        reason: 'lead',
-        customerId: this.controls.id.value
-      }
-      this.sharedServices.uploadFile(event.target.files[0], params).pipe(
-        map(res => {
-          if (res) {
-            this.controls.form60.patchValue(event.target.files[0].name)
-            // this.controls.panImage.patchValue(res.uploadFile.path)
-            // this.controls.panImg.patchValue(res.uploadFile.URL)
-
-            let formControl = this.getFormControlPanForm60()
-            this.controls[formControl.path].patchValue(res.uploadFile.path)
-            this.controls[formControl.URL].patchValue(res.uploadFile.URL)
-          }
-        }),
-        catchError(err => {
-          if (err.error.message) this.toast.error(err.error.message)
-          throw err
-        }),
-        finalize(() => {
-          if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
-          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
-          event.target.value = ''
-
-        })).subscribe()
+      let data = this.getImageValidationForKarza(event)
+      console.log(data)
     } else {
       event.target.value = ''
     }
   }
 
+  getImageValidationForKarza(event) {
+    var details = event.target.files
+    let ext = this.sharedService.getExtension(details[0].name)
+    if (Math.round(details[0].size / 1024) > 4000 && ext != 'pdf') {
+      this.toast.error('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+
+    if (ext == 'pdf') {
+      if (Math.round(details[0].size / 1024) > 2000) {
+        this.toast.error('Maximun size is 2MB')
+      } else {
+        this.uploadFile(event.target.files[0])
+      }
+      event.target.value = ''
+      return
+    }
+
+    var reader = new FileReader()
+    var reader = new FileReader();
+    const img = new Image();
+
+    img.src = window.URL.createObjectURL(details[0]);
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if (width > 3000 || height > 3000) {
+          this.toast.error('Image of height and width should be less than 3000px')
+          event.target.value = ''
+        } else {
+          this.uploadFile(event.target.files[0])
+        }
+      }, 1000);
+    }
+    // return data
+  }
+
+  uploadFile(file) {
+    const params = {
+      reason: 'lead',
+      customerId: this.controls.id.value
+    }
+    this.sharedServices.uploadFile(file, params).pipe(
+      map(res => {
+        if (res) {
+
+          this.controls.form60.patchValue(file.name)
+          // this.controls.panImage.patchValue(res.uploadFile.path)
+          // this.controls.panImg.patchValue(res.uploadFile.URL)
+
+          let formControl = this.getFormControlPanForm60()
+          this.controls[formControl.path].patchValue(res.uploadFile.path)
+          this.controls[formControl.URL].patchValue(res.uploadFile.URL)
+          if (this.controls.panType.value == 'pan')
+            this.getPanDetails()
+
+        }
+      }),
+      catchError(err => {
+        if (err.error.message) this.toast.error(err.error.message)
+        throw err
+      }),
+      finalize(() => {
+        if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
+        if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
+        this.ref.detectChanges()
+
+      })).subscribe()
+
+  }
   preview(value) {
     const img = value
     const ext = this.sharedService.getExtension(img)
@@ -285,30 +345,70 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  getPanDetails() {
+    this.controls.panCardNumber.reset()
+    this.isPanVerified = false
+    this.leadService.getPanDetailsFromKarza(this.controls.panImg.value, this.controls.id.value).subscribe(res => {
+
+      let name = res.data.name.split(" ")
+      let lastName = name[name.length - 1]
+      name.splice(name.length - 1, 1)
+      this.controls.firstName.patchValue(name.join(" "))
+      this.controls.lastName.patchValue(lastName)
+      this.name.pan.firstName = name.join(" ")
+      this.name.pan.lastName = lastName
+      this.controls.panCardNumber.patchValue(res.data.idNumber)
+      this.controls.dateOfBirth.patchValue(res.dob)
+      this.isPanVerified = res.data.isPanVerified
+      // if (res.data.isPanVerified)
+      //   this.resetOnPanChange = false
+      this.controls.panCardNumber.disable()
+      this.controls.firstName.disable()
+      this.controls.lastName.disable()
+    })
+  }
+
 
   verifyPAN() {
     // const panCardNumber = this.controls.panCardNumber.value;
-    // this.userDetailsService.verifyPAN({ panCardNumber }).subscribe(res => {
+    // const dateOfBirth = this.controls.dateOfBirth.value
+    // this.leadService.panDetails({ panCardNumber }).subscribe(res => {
     //   if (res) {
-    //     this.isPanVerified = true;
-    //   }
+    //     this.getVerified(panCardNumber, dateOfBirth, res.data.name)
+    //     console.log(res)
+    if (this.controls.panCardNumber.valid) {
+      this.isPanVerified = true;
+      // this.resetOnPanChange = false
+    }
     // });
+  }
 
-    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
-    //   this.panButton = false;
-    //   this.isPanVerified = true;
+  getVerified(panCardNumber, dateOfBirth, fullName) {
+    let data = { panCardNumber, dateOfBirth, fullName }
+    this.leadService.verifyPAN(data).subscribe(res => {
+      if (res.data.status == "Active") {
+        this.isPanVerified = true;
+      }
+    });
+  }
 
-    // } else {
-    //   this.panButton = true;
-    //   this.isPanVerified = false;
-    // }
+  public ageValidation() {
+    const today = new Date();
+    const birthDate = new Date(this.controls.dateOfBirth.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
 
-    this.isPanVerified = true;
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      this.controls.dateOfBirth.setErrors({ invalid: true })
+    }
+    // this.controls.age.patchValue(age);
+    // this.ageValidation()
   }
 
   submit() {
-    // console.log(this.userBasicForm.getRawValue())
-    // return
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
@@ -323,7 +423,7 @@ export class UserDetailsComponent implements OnInit {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
       this.userBasicForm.get('panCardNumber').patchValue(PAN)
     }
-    const basicForm = this.userBasicForm.value;
+    const basicForm = this.userBasicForm.getRawValue();
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
 
@@ -373,6 +473,7 @@ export class UserDetailsComponent implements OnInit {
           this.controls.form60Img.patchValue(null)
         }
         if (panType === 'form60') {
+          this.isPanVerified = false
           this.controls.panImage.patchValue(null)
           this.controls.panImg.patchValue(null)
         }
@@ -473,6 +574,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panCardNumber.updateValueAndValidity()
       this.controls.form60Image.setValidators([Validators.required])
       this.controls.form60Image.updateValueAndValidity()
+      this.userBasicForm.patchValue({ firstName: this.name.form60.firstName, lastName: this.name.form60.lastName })
+
     }
     if (panType == 'pan') {
 
@@ -483,6 +586,11 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panImage.updateValueAndValidity()
       this.controls.form60Image.setValidators([])
       this.controls.form60Image.updateValueAndValidity()
+      if(this.isPanVerified){
+      this.userBasicForm.patchValue({ firstName: this.name.pan.firstName, lastName: this.name.pan.lastName })
+      }
     }
+
+    this.userPersonalService.panType.next(panType)
   }
 }

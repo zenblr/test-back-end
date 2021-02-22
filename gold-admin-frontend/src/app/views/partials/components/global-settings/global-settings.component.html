@@ -136,6 +136,50 @@
                 </div>
             </div>
         </div>
+        <div class="row kt-padding-t-40" *ngIf="loanSetting || scrapSetting">
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 form-label text-color d-flex align-items-center mandatory">Confidence Score Pan (%)
+                    </div>
+                    <div class="col-6 per-gram align-items-center">
+                        <input type="text" class="form-control" formControlName="confidencePan" placeholder="8"
+                            [class.isError]="controls.confidencePan.invalid && controls.confidencePan.touched" ktZeroToHundredWhole>
+                        <mat-error *ngIf="controls.confidencePan.invalid && controls.confidencePan.touched">
+                            Field required</mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-padding-t-40" *ngIf="loanSetting || scrapSetting">
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 form-label text-color d-flex align-items-center mandatory">Confidence Score Aadhar (%)
+                    </div>
+                    <div class="col-6 per-gram align-items-center">
+                        <input type="text" class="form-control" formControlName="confidenceAadhar" placeholder="8"
+                            [class.isError]="controls.confidenceAadhar.invalid && controls.confidenceAadhar.touched" ktZeroToHundredWhole>
+                        <mat-error *ngIf="controls.confidenceAadhar.invalid && controls.confidenceAadhar.touched">
+                            Field required</mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-padding-t-40" *ngIf="loanSetting || scrapSetting">
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 form-label text-color d-flex align-items-center mandatory">Confidence Score Name (%)
+                    </div>
+                    <div class="col-6 per-gram align-items-center">
+                        <input type="text" class="form-control" formControlName="confidenceName" placeholder="8"
+                            [class.isError]="controls.confidenceName.invalid && controls.confidenceName.touched" ktZeroToHundredWhole>
+                        <mat-error *ngIf="controls.confidenceName.invalid && controls.confidenceName.touched">
+                            Field required</mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row kt-padding-t-40" *ngIf="scrapSetting">
             <div class="col">

@@ -36,6 +36,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'part_payment_percent',
             allowNull: false,
         },
+        confidencePan:{
+            type:DataTypes.FLOAT,
+            field: 'confidence_pan',
+        },
+        confidenceAadhar:{
+            type:DataTypes.FLOAT,
+            field: 'confidence_aadhar',
+        },
+        confidenceName:{
+            type:DataTypes.FLOAT,
+            field: 'confidence_name', 
+        },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',

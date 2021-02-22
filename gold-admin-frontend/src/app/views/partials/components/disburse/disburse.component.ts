@@ -27,6 +27,7 @@ export class DisburseComponent implements OnInit {
   disburseForm: FormGroup
   details: any;
   globalValue: any;
+  isDisable: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<DisburseComponent>,
@@ -205,7 +206,7 @@ export class DisburseComponent implements OnInit {
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
         this.setBankTransferTypeValidation()
 
-       
+
       }
     })
   }
@@ -287,6 +288,7 @@ export class DisburseComponent implements OnInit {
 
   action(event) {
     if (event) {
+      this.isDisable = true
       this.submit()
     } else if (!event) {
       this.location.back();
@@ -301,6 +303,7 @@ export class DisburseComponent implements OnInit {
   submit() {
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
+      this.isDisable = false
       return
     }
     this.formEnable()
@@ -316,6 +319,7 @@ export class DisburseComponent implements OnInit {
             this.toast.error(err.error.message);
           throw err
         }), finalize(() => {
+          this.isDisable = false
           this.formDisable()
           this.disableSchemeRelatedField()
         })).subscribe()
@@ -331,6 +335,7 @@ export class DisburseComponent implements OnInit {
           throw err
         }), finalize(() => {
           this.formDisable()
+          this.isDisable = false
           this.disableSchemeRelatedField()
         })).subscribe()
     }

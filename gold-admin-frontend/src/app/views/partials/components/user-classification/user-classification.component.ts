@@ -154,9 +154,9 @@ export class UserClassificationComponent implements OnInit {
       customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
       kycRatingFromCce: ['', [Validators.required]],
       kycRatingFromBM: [false, [Validators.required]],
-      kycStatusFromCce: ['', [Validators.required]],
+      kycStatusFromCce: [, [Validators.required]],
       reasonFromCce: [],
-      reasonForOther: [''],
+      reasonForOther: [],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
       reasonFromOperationalTeam: [''],
       moduleId: [this.customerDetails.moduleId],
@@ -205,7 +205,7 @@ export class UserClassificationComponent implements OnInit {
       this.showTextBoxCce = false;
     } else {
       this.custClassificationForm.get('reasonForOther').reset();
-      this.custClassificationForm.get('reasonForOther').patchValue('');
+      this.custClassificationForm.get('reasonForOther').patchValue(null);
       this.custClassificationForm.get('reasonForOther').setValidators(Validators.required);
       this.custClassificationForm.get('reasonForOther').updateValueAndValidity();
       this.showTextBoxCce = true;
@@ -345,7 +345,7 @@ export class UserClassificationComponent implements OnInit {
   }
 
   resetKYCStatus() {
-    this.cceControls.kycStatusFromCce.patchValue('')
+    this.cceControls.kycStatusFromCce.patchValue(null)
     this.cceControls.kycStatusFromCce.markAsUntouched()
   }
 }

@@ -18,7 +18,7 @@ export class LeadService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllLeads(data): Observable<any> {
+  getAllLeads(data,viewAllCustomer): Observable<any> {
     const reqParams: any = {};
     if (data && data.from) {
       reqParams.from = data.from;
@@ -32,6 +32,9 @@ export class LeadService {
     if (data && data.stageName) {
       reqParams.stageName = data.stageName;
     }
+    // if (data && data.viewAllCustomer) {
+    //   reqParams.viewAllCustomer = data.viewAllCustomer;
+    // }
     if (data && data.cityId) {
       reqParams.cityId = data.cityId;
     }
@@ -44,7 +47,7 @@ export class LeadService {
     if (data && data.modulePoint) {
       reqParams.modulePoint = data.modulePoint
     }
-    return this.http.get<any>(`/api/customer`, { params: reqParams })
+    return this.http.get<any>(`/api/customer?viewAllCustomer=${viewAllCustomer}`, { params: reqParams })
   }
 
   addLead(data): Observable<any> {
@@ -103,10 +106,29 @@ export class LeadService {
     return this.http.post<any>(`/api/customer/resend-otp`, data);
   }
 
-  verifyPAN(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/verify-pan`, data);
+  panDetails(data): Observable<any> {
+    return this.http.post<any>(`/api/e-kyc/pan-details`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      })
+    )
   }
 
+
+  verifyPAN(data): Observable<any> {
+    return this.http.post<any>(`/api/e-kyc/pan-status`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      })
+    )
+  }
+  
   getInternalBranhces(data?): Observable<any> {
     const reqParams: any = {};
     if (data && data.cityId) {
@@ -137,4 +159,14 @@ export class LeadService {
     );
   }
 
+  getPanDetailsFromKarza(fileUrl, customerId): Observable<any> {
+    // fileUrl = 'https://goldapi1.nimapinfotech.com/uploads/lead/1613208033841.jpeg'
+    return this.http.post<any>(`/api/e-kyc/ocr-pan`, { fileUrl, customerId }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
 }

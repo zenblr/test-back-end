@@ -101,6 +101,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
 
                 <div *ngIf="images.pan['URL']" class="row kt-margin-t-20 kt-margin-b-20">
@@ -109,7 +110,7 @@
                             <img *ngIf="!images.pan['URL']" class=""
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
                             <img *ngIf="images.pan['URL'] && !isPdf(images.pan['URL'])"
-                                (click)="preview(images.pan['URL'])" class="fetched-image" [src]="images.pan['URL']"
+                                (click)="preview(images.pan['URL'])" class="fetched-image kt-pointer" [src]="images.pan['URL']"
                                 style="border-radius: 15px;" alt="" />
                             <!-- <img *ngIf="images.pan['URL'] && modalData.action != 'view' && isEditable"
                                 src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
@@ -121,7 +122,7 @@
                             </div>
                         </div>
                         <div class="kt-margin-t-20 text-color font-11">
-                            (Click to view)
+                            (Click on image to view)
                         </div>
                     </div>
                 </div>
