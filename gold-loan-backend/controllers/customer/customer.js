@@ -868,6 +868,7 @@ exports.signUpCustomer = async (req, res) => {
 
     if (!check.isEmpty(customerExist)) {
       if (isCampaign) {
+        await models.customer.update({ isCampaign: true }, { where: { id: customerExist.dataValues.id }, transaction: t })
 
         Token = jwt.sign({
           id: customerExist.dataValues.id,
