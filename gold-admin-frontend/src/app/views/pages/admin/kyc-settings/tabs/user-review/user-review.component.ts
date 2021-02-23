@@ -1179,11 +1179,11 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       controls.pinCode.patchValue(this.aadharCardUserDetails.pincode)
       controls.address.patchValue(this.aadharCardUserDetails.address)
       if (this.aadharCardUserDetails) {
-        controls['controls'].pinCode.patchValue(this.aadharCardUserDetails.pincode ? this.aadharCardUserDetails.pincode : this.aadharCardUserDetails.pinCode)
-        controls['controls'].address.patchValue(this.aadharCardUserDetails.address)
+        controls.pinCode.patchValue(this.aadharCardUserDetails.pincode ? this.aadharCardUserDetails.pincode : this.aadharCardUserDetails.pinCode)
+        controls.address.patchValue(this.aadharCardUserDetails.address)
   
         if (this.aadharCardUserDetails.stateId) {
-          controls['controls'].stateId.patchValue(this.aadharCardUserDetails.stateId)
+          controls.stateId.patchValue(this.aadharCardUserDetails.stateId)
           await this.getCities(index)
          
         } else {
@@ -1192,14 +1192,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
               return res
           })
           if (stateId.length > 0) {
-            controls['controls'].stateId.patchValue(stateId[0]['id'])
+            controls.stateId.patchValue(stateId[0]['id'])
             await this.getCities(index)
           }
          
         }
   
         if (this.aadharCardUserDetails.cityId) {
-          controls['controls'].cityId.patchValue(this.aadharCardUserDetails.cityId)
+          controls.cityId.patchValue(this.aadharCardUserDetails.cityId)
           this.controls.isCityEdit.patchValue(true)
          
         } else {
@@ -1216,8 +1216,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           }
   
           if (city.length > 0) {
-            controls['controls'].cityId.patchValue(city[0]['id'])
-            controls['controls'].cityId.disable()
+            controls.cityId.patchValue(city[0]['id'])
+            controls.cityId.disable()
             this.controls.isCityEdit.patchValue(false)
           } else {
             let data = {
