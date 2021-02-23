@@ -52,7 +52,7 @@ exports.verifyPanCardData = async (req, res, next) => {
     if (panData.error == false) {
         return res.status(200).json({ message: 'Success', data: panData.data })
     } else {
-        if (nameData.status == 504) {
+        if (panData.status == 504) {
             return res.status(400).json({ message: 'Please try again' })
         }
         return res.status(400).json({ message: 'Invalid ID Number or combination of inputs' })
@@ -133,7 +133,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     let number = Math.floor(Math.random() * 10)
     console.log(number % 2)
     for (const fileUrl of fileUrls) {
-        let info = await ocrService(fileUrl, idProofType, customerId, i,number)
+        let info = await ocrService(fileUrl, idProofType, customerId, i, number)
         i++;
         if (info.error == 'Insufficient Credits') {
             return res.status(400).json({ message: 'Sorry, currently we are unable to process your request. Please contact support' })
@@ -287,11 +287,11 @@ exports.removePanAadhar = async (req, res, next) => {
     let { identityProofNumber, panCardNumber } = req.body
 
     if (identityProofNumber) {
-        
+
         let math = Math.random()
-       let x= await models.customerKycPersonalDetail.update({ identityProofNumber: math }, { where: { identityProofNumber } })
-       
-    } 
+        let x = await models.customerKycPersonalDetail.update({ identityProofNumber: math }, { where: { identityProofNumber } })
+
+    }
     if (panCardNumber) {
         let math = Math.random()
         await models.customer.update({ panCardNumber: math }, { where: { panCardNumber } })

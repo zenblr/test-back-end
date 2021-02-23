@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="panCardNumber" autocomplete="off"
-                                    placeholder="PAN"
+                                    placeholder="PAN" readonly
                                     [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                     maxlength="10" />
                                 <!-- <select class="form-control" formControlName="panCardNumber" disabled
@@ -54,7 +54,7 @@
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="dateOfBirth" (dateChange)="ageValidation()" [class.isError]="(controls.dateOfBirth.touched && controls.dateOfBirth.invalid) || 
                                     (controls.age.touched && controls.age.invalid)" readonly placeholder="DD/MM/YYYY"
-                                    [max]="maxDate" />
+                                    [max]="maxDate" readonly/>
                                 <mat-datepicker #picker></mat-datepicker>
                                 <mat-error *ngIf="controls.dateOfBirth.invalid && controls.dateOfBirth.touched">
                                     Field Required
