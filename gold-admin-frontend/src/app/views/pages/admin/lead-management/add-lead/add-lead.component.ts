@@ -184,7 +184,7 @@ export class AddLeadComponent implements OnInit {
       panImage: [null],
       panImg: [null],
       comment: [''],
-      leadSourceId: [null],
+      leadSourceId: [null,[Validators.required]],
       source: [''],
       moduleId: [, [Validators.required]],
       form60Image: [],
