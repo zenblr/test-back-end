@@ -16,6 +16,7 @@ module.exports = async (req, res, next) => {
     let url = req.url;
     if(url.slice(0,18) != "/api/customer/app/"){
         let skipUrls = [
+            "/api/app-version",
             // "/api/customer/banner",
             "/api/customer/offer",
             "/api/customer/lender-banner",
