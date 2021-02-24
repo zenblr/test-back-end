@@ -896,7 +896,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.toastr.error('Attach Aadhar card')
       return
     }
-    this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
+    this.userAddressService.getAaddharDetails(this.identityImageArray, this.data.customerId).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
       this.isAadharVerified =  res.data.isAahaarVerified

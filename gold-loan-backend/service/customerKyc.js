@@ -643,7 +643,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
         }
         //for approved the status by default
-        let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+        var { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
         let checkAddressProof = await models.customerKycAddressDetail.findAll({ where: { customerId, addressProofTypeId: { [Op.in]: [1, 3, 4, 5, 6] } } });
         let ekycData = await models.customerEKycDetails.findOne({ where: { customerId } });
         if (checkAddressProof.length == 0 && ekycData.isAahaarVerified && ekycData.isPanVerified && !isCityEdit && customerKycBasicDetails.panType == 'pan') {
@@ -799,6 +799,9 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } });
     let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+
+    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
 
     let ratingStage = 1;
     if (moduleId == 1 && KycClassification && (KycClassification.kycStatusFromCce == "pending" || !KycClassification.kycStatusFromCce)) {

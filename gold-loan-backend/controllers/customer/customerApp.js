@@ -150,7 +150,8 @@ exports.readMyLoan = async (req, res, next) => {
         where: { isActive: true, customerId: customerId, isLoanCompleted: true },
         order: [
             [models.customerLoan, 'id', 'asc'],
-            [models.customerLoan, models.customerLoanInterest, 'id', 'asc']
+            [models.customerLoan, models.customerLoanInterest, 'id', 'asc'],
+            // [models.partRelease, 'id', 'desc']
         ],
         include: [
             {
@@ -174,14 +175,16 @@ exports.readMyLoan = async (req, res, next) => {
 
                 ]
             },
-            {
-                model: models.partRelease,
-                as: 'partRelease',
-            },
-            {
-                model: models.fullRelease,
-                as: 'fullRelease',
-            },
+            // {
+            //     model: models.partRelease,
+            //     as: 'partRelease',
+            //     attributes: ['amountStatus', 'partReleaseStatus', 'id']
+            // },
+            // {
+            //     model: models.fullRelease,
+            //     as: 'fullRelease',
+            //     attributes: ['amountStatus', 'fullReleaseStatus', 'id']
+            // },
         ]
     });
 
@@ -207,6 +210,22 @@ exports.readMyLoan = async (req, res, next) => {
             element.dataValues.nextDueDate = nextDueDate
             element.dataValues.status = nextDueDate
         }
+
+        let partRelease = await models.partRelease.findOne({
+            where: { masterLoanId: element.id },
+            order: [['id', 'desc']]
+        })
+
+        element.dataValues.partRelease = partRelease
+
+        let fullRelease = await models.fullRelease.findOne({
+            where: { masterLoanId: element.id },
+            order: [['id', 'desc']]
+        })
+
+        element.dataValues.fullRelease = fullRelease
+
+
     }
 
     return res.status(200).json({ data: loanDetails })

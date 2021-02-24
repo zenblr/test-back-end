@@ -95,7 +95,7 @@ const env = process.env.KARZA_ENV || 'TEST';
 
 // Function to Insert into External API Logger
 
-let ocrService = async (fileUrl, idProofType, customerId, index) => {
+let ocrService = async (fileUrl, idProofType, customerId, index,number) => {
     let apiPath;
     let requestBody;
     try {
@@ -121,109 +121,212 @@ let ocrService = async (fileUrl, idProofType, customerId, index) => {
         requestBody = data;
         const apiType = 'Karza OCR';
 
-        // let options = {
-        //     method: 'POST',
-        //     url: karzaDetail.kycOcrUrl,
-        //     headers: {
-        //         'x-karza-key': karzaDetail.key,
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // }
+        let options = {
+            method: 'POST',
+            url: karzaDetail.kycOcrUrl,
+            headers: {
+                'x-karza-key': karzaDetail.key,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
         // static data
-        //static data
-        let result = await getOcrLocal(idProofType, index)
+        let result = await getOcrLocal(idProofType, index,number)
         const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
         return { data: ocrResp };
 
-        // return new Promise((resolve, reject) => {
-        //     request(options, async function (error, response, body) {
-        //         if (error) {
-        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
-        //             return resolve({ error: 'Something Went Wrong' });
-        //         }
-        //         const respBody = JSON.parse(body);
-        //         if (respBody.statusCode === 101) {
-        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
-        //             const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
-        //             if (ocrResp.error) {
-        //                 return resolve({ error: ocrResp.error });
-        //             }
-        //             const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
-        //             if (!validationResp.error) {
-        //                 return resolve({ data: ocrResp });
-        //             } else {
-        //                 return resolve({ error: validationResp.error });
-        //             }
+        return new Promise((resolve, reject) => {
+            request(options, async function (error, response, body) {
+                if (error) {
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
+                    return resolve({ error: 'Something Went Wrong' });
+                }
+                const respBody = JSON.parse(body);
+                if (respBody.statusCode === 101) {
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
+                    const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
+                    if (ocrResp.error) {
+                        return resolve({ error: ocrResp.error });
+                    }
+                    const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
+                    if (!validationResp.error) {
+                        return resolve({ data: ocrResp });
+                    } else {
+                        return resolve({ error: validationResp.error });
+                    }
 
-        //         } else {
-        //             await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
-        //             return resolve({ error: JSON.parse(body).error });
-        //         }
-        //     })
-        // })
+                } else {
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
+                    return resolve({ error: JSON.parse(body).error });
+                }
+            })
+        })
     } catch (err) {
         await insertInExternalApiLogger('Karza OCR', null, null, apiPath, JSON.stringify(requestBody), JSON.stringify(err), 'Error');
         return { error: 'Something Went Wrong' }
     }
 }
 
-let getOcrLocal = async (idProofType, index) => {
+let getOcrLocal = async (idProofType, index,number) => {
     if (idProofType.toLowerCase().includes('aadhaar card')) {
-        if (index == 0) {
+       
+        if(number % 2 == 0){
+            if (index == 0) {
 
-            let data = {
-                "statusCode": 101,
-                "requestId": "a14dd2c9-f2af-47fc-91ec-6d02ffa44171",
-                "result": [
-                    {
-                        "type": "Aadhaar Front Bottom",
-                        "details": {
-                            "qr": {
-                                "value": ""
-                            },
-                            "name": {
-                                "value": "Amit Ramashankar Prasad",
-                                "conf": 0.99
-                            },
-                            "dob": {
-                                "value": "03/06/1993",
-                                "conf": 0.9
-                            },
-                            "gender": {
-                                "value": "MALE",
-                                "conf": 0.77
-                            },
-                            "imageUrl": {
-                                "value": "https://download.karza.in/kyc-ocr/UzFhck9NZ0xFWXY5ZnNvRFpRMHByUWUyM3VTZU5YdWJSNTVoTVhxRm1pdDA4TmhXdnNpSndJYUNyaC9lcG9uT1J0M3lOWmxucEtDOTg1SnBxOVQzK3ZPb1F4NE9BTExvak1MUUgrMURJeXZycUJOWi83UDFLdlJPMVpjMzU1VVJ3Vk4rRjRYUHA5MTE0ejBNTytUaUFwM2ovTm1sZnpBa2wzcXdKM05MNUxrPQ=="
-                            },
-                            "father": {
-                                "value": "",
-                                "conf": 0.0
-                            },
-                            "yob": {
-                                "value": "",
-                                "conf": 0.0
-                            },
-                            "aadhaar": {
-                                "isMasked": "yes",
-                                "value": "861736345859",
-                                "conf": 0.9
-                            },
-                            "mother": {
-                                "value": "",
-                                "conf": 0.0
+                let data = {
+                    "statusCode": 101,
+                    "requestId": "a14dd2c9-f2af-47fc-91ec-6d02ffa44171",
+                    "result": [
+                        {
+                            "type": "Aadhaar Front Bottom",
+                            "details": {
+                                "qr": {
+                                    "value": ""
+                                },
+                                "name": {
+                                    "value": "Amit Ramashankar Prasad",
+                                    "conf": 0.99
+                                },
+                                "dob": {
+                                    "value": "03/06/1993",
+                                    "conf": 0.9
+                                },
+                                "gender": {
+                                    "value": "MALE",
+                                    "conf": 0.77
+                                },
+                                "imageUrl": {
+                                    "value": "https://download.karza.in/kyc-ocr/UzFhck9NZ0xFWXY5ZnNvRFpRMHByUWUyM3VTZU5YdWJSNTVoTVhxRm1pdDA4TmhXdnNpSndJYUNyaC9lcG9uT1J0M3lOWmxucEtDOTg1SnBxOVQzK3ZPb1F4NE9BTExvak1MUUgrMURJeXZycUJOWi83UDFLdlJPMVpjMzU1VVJ3Vk4rRjRYUHA5MTE0ejBNTytUaUFwM2ovTm1sZnpBa2wzcXdKM05MNUxrPQ=="
+                                },
+                                "father": {
+                                    "value": "",
+                                    "conf": 0.0
+                                },
+                                "yob": {
+                                    "value": "",
+                                    "conf": 0.0
+                                },
+                                "aadhaar": {
+                                    "isMasked": "yes",
+                                    "value": "861736345859",
+                                    "conf": 0.9
+                                },
+                                "mother": {
+                                    "value": "",
+                                    "conf": 0.0
+                                }
                             }
                         }
-                    }
-                ]
+                    ]
+                }
+                return data
+    
+            } else {
+                let data1 = { "statusCode": 101, "requestId": "d9c32abd-6bec-422d-94be-b4654633f5f7", "result": [{ "type": "Aadhaar Back", "details": { "qr": { "value": "" }, "pin": { "value": "411044", "conf": 0.9 }, "father": { "value": "", "conf": 0.0 }, "imageUrl": { "value": "https://download.karza.in/kyc-ocr/Rmw4UUYvaGNUVjRBenNrdmRoVTc1RFZOa0RHRmRVLzh0WGFyeFE0cmZnT2R2TkljUjdpdDdpSEQ4UUwvWGNPRVRBQlpEaDU3eVBDcnRWRVNWMEV3UTNuK05Va2Z1emZHUHM5Y2N5NkJGOFhzTjg2TEthQmEwZXV1K0pmTXFsZ1c2MStMUmpoVHluR2ZGd2U4c0hENkc3bzlRS2FheXdHai9zZVZCUS8zdHprPQ==" }, "addressSplit": { "city": "NIGADI GAOTHAN", "district": "Pune", "pin": "411044", "locality": "PRASUN PURAM", "line2": "NEAR MARUTI MANDIR, NIGADI GAOTHAN", "line1": "PRASUN PURAM , E- WING, ROOM NO- 12,", "state": "Maharashtra", "street": "", "landmark": "NEAR MARUTI MANDIR", "careOf": "", "houseNumber": "E- WING, ROOM NO- 12" }, "aadhaar": { "isMasked": "yes", "value": "861736345859", "conf": 0.9 }, "address": { "value": "PRASUN PURAM , E- WING, ROOM NO- 12,, NEAR MARUTI MANDIR, NIGADI GAOTHAN, Pune, Maharashtra - 411044 ", "conf": 0.6 }, "husband": { "value": "", "conf": 0.0 } } }] }
+                return data1
             }
-            return data
+        }else{
+            if (index == 0) {
 
-        } else {
-            let data1 = { "statusCode": 101, "requestId": "d9c32abd-6bec-422d-94be-b4654633f5f7", "result": [{ "type": "Aadhaar Back", "details": { "qr": { "value": "" }, "pin": { "value": "411044", "conf": 0.9 }, "father": { "value": "", "conf": 0.0 }, "imageUrl": { "value": "https://download.karza.in/kyc-ocr/Rmw4UUYvaGNUVjRBenNrdmRoVTc1RFZOa0RHRmRVLzh0WGFyeFE0cmZnT2R2TkljUjdpdDdpSEQ4UUwvWGNPRVRBQlpEaDU3eVBDcnRWRVNWMEV3UTNuK05Va2Z1emZHUHM5Y2N5NkJGOFhzTjg2TEthQmEwZXV1K0pmTXFsZ1c2MStMUmpoVHluR2ZGd2U4c0hENkc3bzlRS2FheXdHai9zZVZCUS8zdHprPQ==" }, "addressSplit": { "city": "NIGADI GAOTHAN", "district": "Pune", "pin": "411044", "locality": "PRASUN PURAM", "line2": "NEAR MARUTI MANDIR, NIGADI GAOTHAN", "line1": "PRASUN PURAM , E- WING, ROOM NO- 12,", "state": "Maharashtra", "street": "", "landmark": "NEAR MARUTI MANDIR", "careOf": "", "houseNumber": "E- WING, ROOM NO- 12" }, "aadhaar": { "isMasked": "yes", "value": "861736345859", "conf": 0.9 }, "address": { "value": "PRASUN PURAM , E- WING, ROOM NO- 12,, NEAR MARUTI MANDIR, NIGADI GAOTHAN, Pune, Maharashtra - 411044 ", "conf": 0.6 }, "husband": { "value": "", "conf": 0.0 } } }] }
-            return data1
+                let data =    {
+                        "statusCode":101,
+                        "requestId":"5210328e-7450-43b7-8253-ebec71f4e682",
+                        "result":[
+                           {
+                              "type":"Aadhaar Front Bottom",
+                              "details":{
+                                 "qr":{
+                                    "value":""
+                                 },
+                                 "name":{
+                                    "value":"Nanda Mohandas Lilani",
+                                    "conf":0.99
+                                 },
+                                 "dob":{
+                                    "value":"",
+                                    "conf":0.0
+                                 },
+                                 "gender":{
+                                    "value":"FEMALE",
+                                    "conf":0.83
+                                 },
+                                 "imageUrl":{
+                                    "value":"https://download.karza.in/kyc-ocr/azVTUzZpZ1RjRTJyNXg0QndkYVp6RWxLYUlBZmtkblZac0VLREVmNVhOaCtSa0ZXK0ZMSHkxL09Qc3c0cWx1QWxyVDNHb2FHcklkZEQxS1dUNGZwZi9OOXJ3MFo5K0Z1R1E5aWc4bTE3S3l6M3U5aXR5cGxqRXd5Uys1YTdLS3JqRDBocThPbElENlpYM2tZNVA2cWpFR2h0QkI0SzZha1U5bk14Ly85VFBZPQ=="
+                                 },
+                                 "father":{
+                                    "value":"",
+                                    "conf":0.0
+                                 },
+                                 "yob":{
+                                    "value":"",
+                                    "conf":0.0
+                                 },
+                                 "aadhaar":{
+                                    "isMasked":"yes",
+                                    "value":"442390912369",
+                                    "conf":0.9
+                                 },
+                                 "mother":{
+                                    "value":"",
+                                    "conf":0.0
+                                 }
+                              }
+                           }
+                        ]
+                }
+                return data
+    
+            } else {
+                let data1 = {
+                    "statusCode":101,
+                    "requestId":"5210328e-7450-43b7-8253-ebec71f4e682",
+                    "result":[
+                       {
+                          "type":"Aadhaar Front Bottom",
+                          "details":{
+                             "qr":{
+                                "value":""
+                             },
+                             "name":{
+                                "value":"Nanda Mohandas Lilani",
+                                "conf":0.99
+                             },
+                             "dob":{
+                                "value":"",
+                                "conf":0.0
+                             },
+                             "gender":{
+                                "value":"FEMALE",
+                                "conf":0.83
+                             },
+                             "imageUrl":{
+                                "value":"https://download.karza.in/kyc-ocr/azVTUzZpZ1RjRTJyNXg0QndkYVp6RWxLYUlBZmtkblZac0VLREVmNVhOaCtSa0ZXK0ZMSHkxL09Qc3c0cWx1QWxyVDNHb2FHcklkZEQxS1dUNGZwZi9OOXJ3MFo5K0Z1R1E5aWc4bTE3S3l6M3U5aXR5cGxqRXd5Uys1YTdLS3JqRDBocThPbElENlpYM2tZNVA2cWpFR2h0QkI0SzZha1U5bk14Ly85VFBZPQ=="
+                             },
+                             "father":{
+                                "value":"",
+                                "conf":0.0
+                             },
+                             "yob":{
+                                "value":"",
+                                "conf":0.0
+                             },
+                             "aadhaar":{
+                                "isMasked":"yes",
+                                "value":"442390912369",
+                                "conf":0.6
+                             },
+                             "mother":{
+                                "value":"",
+                                "conf":0.0
+                             }
+                          }
+                       }
+                    ]
+                 }
+                return data1
+            }
         }
+        
 
     } else {
         let data = {
