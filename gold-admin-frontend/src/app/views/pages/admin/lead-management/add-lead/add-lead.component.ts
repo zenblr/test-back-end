@@ -46,6 +46,7 @@ export class AddLeadComponent implements OnInit {
   leadSources = [];
   modules = [];
   resetPanOnChange = true;
+  name = { firstName: '', lastName: '' }
   @ViewChild("file", { static: false }) file;
 
   constructor(
@@ -193,7 +194,7 @@ export class AddLeadComponent implements OnInit {
       panImage: [null],
       panImg: [null],
       comment: [''],
-      leadSourceId: [null,[Validators.required]],
+      leadSourceId: [null, [Validators.required]],
       source: [''],
       moduleId: [, [Validators.required]],
       form60Image: [],
@@ -382,6 +383,8 @@ export class AddLeadComponent implements OnInit {
   verifyPAN() {
     const panCardNumber = this.controls.panCardNumber.value;
     const dateOfBirth = this.controls.dateOfBirth.value
+    this.name.firstName = this.controls.firstName.value
+    this.name.lastName = this.controls.lastName.value
     this.leadService.panDetails({ panCardNumber }).subscribe(res => {
       if (res) {
         this.getVerified(panCardNumber, dateOfBirth, res.data.name)
@@ -399,6 +402,13 @@ export class AddLeadComponent implements OnInit {
     this.leadService.verifyPAN(data).subscribe(res => {
       if (res.data.status == "Active") {
         this.isPanVerified = true;
+        let name = fullName.split(" ")
+        let lastName = name[name.length - 1]
+        name.splice(name.length - 1, 1)
+        this.controls.firstName.patchValue(name.join(" "))
+        this.controls.lastName.patchValue(lastName)
+        this.controls.firstName.disable()
+        this.controls.lastName.disable()
       }
     });
   }
@@ -434,7 +444,7 @@ export class AddLeadComponent implements OnInit {
       this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (res) {
-            // this.controls.form60.patchValue(event.target.files[0].name)
+            // this.controls..patchValue(event.target.files[0].name)
             let formControl = this.getFormControlPanForm60()
             this.controls[formControl.path].patchValue(res.uploadFile.path)
             this.controls[formControl.URL].patchValue(res.uploadFile.URL)
@@ -535,7 +545,7 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImage.patchValue(null)
       }
       this.enable();
-      const leadData = this.leadForm.value;
+      const leadData = this.leadForm.getRawValue();
 
       this.leadService.addLead(leadData).subscribe(res => {
 
@@ -689,10 +699,15 @@ export class AddLeadComponent implements OnInit {
         if (panType === 'pan') {
           this.controls.form60Image.patchValue(null)
           this.controls.form60Img.patchValue(null)
+
         }
         if (panType === 'form60') {
           this.controls.panImage.patchValue(null)
           this.controls.panImg.patchValue(null)
+          this.controls.firstName.patchValue(this.name.firstName)
+          this.controls.lastName.patchValue(this.name.lastName)
+          this.controls.lastName.disable()
+          this.controls.firstName.disable()
         }
       }
     }
