@@ -393,7 +393,7 @@ exports.getWithdrawPreviousData = async (req, res) => {
         for (let withdraw of withdrawDetail) {
           data = {};
           data.withdrawId = withdraw.transactionUniqueId;
-          data.userAccountId = withdraw.customer.customerUniqueId;
+          data.userAccountId = `${getCredential.prefix}${withdraw.customer.customerUniqueId}`;
           data.withdrawDate = moment(moment(withdraw.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
           data.userType = "Augmont";
           data.userAccountState = withdraw.customer.state.stateCode;

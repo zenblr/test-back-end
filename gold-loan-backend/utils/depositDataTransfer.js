@@ -410,7 +410,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
       for (let deposit of depositDetail) {
         data = {};
         data.depositeId = deposit.transactionUniqueId;
-        data.userAccountId = deposit.customer.customerUniqueId;
+        data.userAccountId = `${getCredential.prefix}${deposit.customer.customerUniqueId}`;
         data.userId = 0;
         data.userType = "Augmont";
         data.userAccountState = deposit.customer.state.stateCode;
