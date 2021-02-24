@@ -229,7 +229,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       organizationTypeId: [],
       dateOfIncorporation: [],
       form60Image: [],
-      form60Img: []
+      form60Img: [],
+      isCityEdit:[]
     })
     if(this.data.customerKycReview.panCardNumber){
       this.reviewForm.controls.panCardNumber.patchValue(this.data.customerKycReview.panCardNumber)
@@ -350,6 +351,16 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       if (this.data.customerKycReview.customerKycPersonal.martialStatus != 'married') {
         this.customerData['fatherName'] = this.data.customerKycReview.customerKycPersonal.spouseName
       }
+    }
+    const { customerKycAddress, customerKycPersonal, customerEKycDetails } = this.data.customerKycReview
+
+    if (customerKycAddress[0].addressProofTypeId == 2) {
+      this.aadharCardUserDetails = { ...customerKycAddress[0] }
+    }
+
+    else {
+      this.aadharCardUserDetails = { ...customerKycAddress[1] }
+
     }
 
     if (this.data.moduleId == 3) {
@@ -511,7 +522,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       customerKycBasicDetails: this.reviewForm.value,
       moduleId: this.data.moduleId,
       userType: this.data.userType,
-      customerOrganizationDetail: this.customerOrganizationDetail ? this.customerOrganizationDetail.value : null
+      customerOrganizationDetail: this.customerOrganizationDetail ? this.customerOrganizationDetail.value : null,
+      isCityEdit:this.controls.isCityEdit.value
     }
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
@@ -884,7 +896,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.toastr.error('Attach Aadhar card')
       return
     }
-    this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
+    this.userAddressService.getAaddharDetails(this.identityImageArray, this.data.customerId).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
       this.isAadharVerified =  res.data.isAahaarVerified
@@ -1153,6 +1165,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   async patchAaddarValue(index) {
+    this.controls.isCityEdit.patchValue(false)
     if (this.aadharCardUserDetails) {
       let controls
       let type
@@ -1165,36 +1178,63 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       }
       controls.pinCode.patchValue(this.aadharCardUserDetails.pincode)
       controls.address.patchValue(this.aadharCardUserDetails.address)
-      let stateId = this.states.filter(res => {
-        if (res.name == this.aadharCardUserDetails.state)
-          return res
-      })
-      if (stateId.length > 0) {
-        controls.stateId.patchValue(stateId[0]['id'])
-        await this.getCities(type)
-      }
-      if (index == 0) {
-        var city = this.cities0.filter(res => {
-          if (res.name == this.aadharCardUserDetails.city)
-            return res
-        })
-      } else {
-        city = this.cities1.filter(res => {
-          if (res.name == this.aadharCardUserDetails.city)
-            return res
-        })
-      }
-
-      if (city.length > 0) {
-        controls.cityId.patchValue(city[0]['id'])
-        controls.cityId.disable()
-      } else {
-        let data = {
-          stateId: stateId[0]['id'],
-          cityName: this.aadharCardUserDetails.city,
-          cityUniqueId: null
+      if (this.aadharCardUserDetails) {
+        controls['controls'].pinCode.patchValue(this.aadharCardUserDetails.pincode ? this.aadharCardUserDetails.pincode : this.aadharCardUserDetails.pinCode)
+        controls['controls'].address.patchValue(this.aadharCardUserDetails.address)
+  
+        if (this.aadharCardUserDetails.stateId) {
+          controls['controls'].stateId.patchValue(this.aadharCardUserDetails.stateId)
+          await this.getCities(index)
+         
+        } else {
+          var stateId = this.states.filter(res => {
+            if (res.name == this.aadharCardUserDetails.state)
+              return res
+          })
+          if (stateId.length > 0) {
+            controls['controls'].stateId.patchValue(stateId[0]['id'])
+            await this.getCities(index)
+          }
+         
         }
-        this.sharedService.newCity(data).subscribe()
+  
+        if (this.aadharCardUserDetails.cityId) {
+          controls['controls'].cityId.patchValue(this.aadharCardUserDetails.cityId)
+          this.controls.isCityEdit.patchValue(true)
+         
+        } else {
+          if (index == 0) {
+            var city = this.cities0.filter(res => {
+              if (res.name == this.aadharCardUserDetails.city)
+                return res
+            })
+          } else {
+            city = this.cities1.filter(res => {
+              if (res.name == this.aadharCardUserDetails.city)
+                return res
+            })
+          }
+  
+          if (city.length > 0) {
+            controls['controls'].cityId.patchValue(city[0]['id'])
+            controls['controls'].cityId.disable()
+            this.controls.isCityEdit.patchValue(false)
+          } else {
+            let data = {
+              stateId: stateId[0]['id'],
+              cityName: this.aadharCardUserDetails.city,
+              cityUniqueId: null
+            }
+            this.sharedService.newCity(data).subscribe()
+            this.controls.isCityEdit.patchValue(true)
+  
+          }
+        }
+  
+  
+  
+        // controls.disable()
+  
       }
       // controls.disable()
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -10,6 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 export class UserPersonalService {
 
   kycDetails;
+  panType = new BehaviorSubject('')
+  panType$ = this.panType.asObservable()
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 

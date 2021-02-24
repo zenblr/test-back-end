@@ -34,6 +34,7 @@ module.exports = async (req, res, next) => {
             "/api/customer/loan-detail",
             "/api/customer/customer-feedback",
             "/api/single-sign-on",
+            "/api/e-kyc/remove",
             // "/api/kyc/submit-kyc",
             // "/api/kyc/get-assigned-customer",
     

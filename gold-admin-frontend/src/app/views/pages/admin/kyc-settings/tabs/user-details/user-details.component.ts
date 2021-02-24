@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../partials/components';
-import { UserDetailsService } from '../../../../../../core/kyc-settings';
+import { UserDetailsService, UserPersonalService } from '../../../../../../core/kyc-settings';
 import { map, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -27,9 +27,12 @@ export class UserDetailsComponent implements OnInit {
   isOpverified = true;
   @ViewChild("pan", { static: false }) pan;
   @ViewChild('editPan', { static: false }) editPan;
-
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+  name: any = {
+    pan: { firstName: '', lastName: '' },
+    form60: { firstName: '', lastName: '' }
+  };
 
   showVerifyPAN = false;
   organizationTypes: any;
@@ -49,7 +52,8 @@ export class UserDetailsComponent implements OnInit {
     private toast: ToastrService,
     private sharedService: SharedService,
     private router: Router,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private userPersonalService:UserPersonalService
   ) { }
 
   ngOnInit() {
@@ -171,8 +175,11 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.name.form60['firstName'] = this.controls.firstName.value
+        this.name.form60['lastName'] = this.controls.lastName.value
         if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
+          this.userPersonalService.panType.next(res.customerInfo.panType)
         }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
         if (this.controls.moduleId.value == 1) {
@@ -299,7 +306,7 @@ export class UserDetailsComponent implements OnInit {
           this.controls[formControl.path].patchValue(res.uploadFile.path)
           this.controls[formControl.URL].patchValue(res.uploadFile.URL)
           if (this.controls.panType.value == 'pan')
-          this.getPanDetails()
+            this.getPanDetails()
 
         }
       }),
@@ -348,11 +355,13 @@ export class UserDetailsComponent implements OnInit {
       name.splice(name.length - 1, 1)
       this.controls.firstName.patchValue(name.join(" "))
       this.controls.lastName.patchValue(lastName)
+      this.name.pan.firstName = name.join(" ")
+      this.name.pan.lastName = lastName
       this.controls.panCardNumber.patchValue(res.data.idNumber)
       this.controls.dateOfBirth.patchValue(res.dob)
       this.isPanVerified = res.data.isPanVerified
-      if (res.data.isPanVerified)
-        this.resetOnPanChange = false
+      // if (res.data.isPanVerified)
+      //   this.resetOnPanChange = false
       this.controls.panCardNumber.disable()
       this.controls.firstName.disable()
       this.controls.lastName.disable()
@@ -369,7 +378,7 @@ export class UserDetailsComponent implements OnInit {
     //     console.log(res)
     if (this.controls.panCardNumber.valid) {
       this.isPanVerified = true;
-      this.resetOnPanChange = false
+      // this.resetOnPanChange = false
     }
     // });
   }
@@ -464,6 +473,7 @@ export class UserDetailsComponent implements OnInit {
           this.controls.form60Img.patchValue(null)
         }
         if (panType === 'form60') {
+          this.isPanVerified = false
           this.controls.panImage.patchValue(null)
           this.controls.panImg.patchValue(null)
         }
@@ -564,6 +574,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panCardNumber.updateValueAndValidity()
       this.controls.form60Image.setValidators([Validators.required])
       this.controls.form60Image.updateValueAndValidity()
+      this.userBasicForm.patchValue({ firstName: this.name.form60.firstName, lastName: this.name.form60.lastName })
+
     }
     if (panType == 'pan') {
 
@@ -574,6 +586,11 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panImage.updateValueAndValidity()
       this.controls.form60Image.setValidators([])
       this.controls.form60Image.updateValueAndValidity()
+      if(this.isPanVerified){
+      this.userBasicForm.patchValue({ firstName: this.name.pan.firstName, lastName: this.name.pan.lastName })
+      }
     }
+
+    this.userPersonalService.panType.next(panType)
   }
 }
