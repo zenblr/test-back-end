@@ -47,7 +47,7 @@ exports.checkNameSimilarity = async (req, res, next) => {
 
 exports.verifyPanCardData = async (req, res, next) => {
     let { panCardNumber, fullName, dateOfBirth } = req.body;
-    let date = moment(dateOfBirth).format('DD/MM/YYYY');
+    let date = moment(moment(dateOfBirth).utcOffset("+05:30")).format('DD/MM/YYYY');
     let panData = await verifyPANCard(panCardNumber, fullName, date)
     if (panData.error == false) {
         return res.status(200).json({ message: 'Success', data: panData.data })
