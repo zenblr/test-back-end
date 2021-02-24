@@ -1,0 +1,188 @@
+<kt-portlet>
+    <kt-modal-header [title]='"ADD Customer"' (action)="action($event)" [hideCancel]="true"></kt-modal-header>
+
+    <kt-portlet-body>
+        <div class="row mx-0 mt-2 sip-background-white">
+            <div class="col-12 m-auto">
+                <div class="sip-background-white dg-rounded dg-border">
+                    <form [formGroup]="createCustomerForm">
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 p-0 pr-md-3 pb-3">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <label class="font-weight-500 text-color mandatory">First
+                                            Name</label>
+                                    </div>
+                                    <div class=" col-8">
+                                        <input class="form-control" formControlName="firstName" ktAlphabets
+                                            placeholder="Enter First Name"
+                                            [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.firstName.touched && controls.firstName.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 p-0 pr-md-3 pb-3">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <label class="font-weight-500 text-color mandatory">Last Name</label>
+                                    </div>
+                                    <div class=" col-8">
+                                        <input class="form-control" formControlName="lastName" ktAlphabets
+                                            placeholder="Enter Last Name"
+                                            [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.lastName.touched && controls.lastName.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 p-0 pr-md-3 pb-3">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <label class="font-weight-500 text-color mandatory">Mobile Number</label>
+                                    </div>
+                                    <div [ngClass]="data.action == 'add' ? 'col-5' : 'col-8'">
+                                        <input class="form-control" type="text" formControlName="mobileNumber"
+                                            numbersOnly autocomplete="off" placeholder="Enter mobile number" margin
+                                            [class.isError]="
+											controls.mobileNumber.touched &&
+											controls.mobileNumber.invalid
+										" maxlength="10" readonly />
+                                        <mat-error *ngIf="
+											controls.mobileNumber.errors?.required &&
+											controls.mobileNumber.touched
+										">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error *ngIf="
+											controls.mobileNumber.errors?.pattern &&
+											controls.mobileNumber.touched
+										">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                    <div class="col-3" *ngIf="data.action == 'add'">
+                                        <div *ngIf="!otpSent">
+                                            <kt-button [myClass]="'w-100'" [isDisabled]="otpButton || viewOnly"
+                                                [type]="'button'" [value]="'Send OTP'" (action)="sendOTP()">
+                                            </kt-button>
+                                        </div>
+                                        <div *ngIf="otpSent && !isMobileVerified">
+                                            <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+                                                [value]="'Sent'">
+                                            </kt-button>
+                                        </div>
+                                        <div *ngIf="isMobileVerified">
+                                            <button class="w-100 success-button" mat-raised-button color="success"
+                                                matTooltip="OTP Verified">Verified</button>
+                                        </div>
+                                    </div>
+
+                                    <ng-container *ngIf="otpSent && !isMobileVerified">
+                                        <!-- OTP -->
+                                        <div class="col-4 kt-padding-t-15"></div>
+
+                                        <div class="col-5 kt-padding-t-15">
+                                            <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                            <input class="form-control" numbersOnly maxlength="4" formControlName="otp"
+                                                autocomplete="off" placeholder="Enter OTP"
+                                                [class.isError]="controls.otp.touched && controls.otp.invalid">
+                                            <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">
+                                                Required field
+                                            </mat-error>
+                                            <mat-error *ngIf="controls.otp.errors?.pattern && controls.otp.touched">
+                                                Invalid
+                                                Input
+                                            </mat-error>
+                                            <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.verifyOTP">
+                                                Mobile number not verfied
+                                            </mat-error>
+                                            <mat-hint class="kt-pointer" (click)="resendOTP()">Didn't get an OTP?
+                                                <strong>Resend</strong>
+                                            </mat-hint>
+                                            <!-- </mat-form-field> -->
+                                        </div>
+
+                                        <div class="col-3 kt-padding-t-15">
+                                            <div *ngIf="!isMobileVerified">
+                                                <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
+                                                    [isDisabled]="isOpverified" (action)="verifyOTP()">
+                                                </kt-button>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 p-0 pr-md-3 pb-3">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <label class="font-weight-500 text-color mandatory">State</label>
+                                    </div>
+
+                                    <div class="col-8">
+                                        <select class="form-control" formControlName="stateId" (change)="getCities()"
+                                            margin
+                                            [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                            <option disabled selected value=""> Select State</option>
+                                            <option *ngFor="let state of states" [value]="state.id">
+                                                {{state.name}}
+                                            </option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                            Required field
+                                        </mat-error>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 p-0 pr-md-3 pb-3">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <label class="font-weight-500 text-color mandatory">City</label>
+                                    </div>
+    
+                                    <div class="col-8">
+                                        <select class="form-control" formControlName="cityId" (change)="getBranchFromCity()"
+                                            [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                            <option selected value="" disabled> Select City</option>
+                                            <option *ngFor="let city of cities" [value]="city.id">
+                                                {{city.name}}
+                                            </option>
+                                        </select>
+                                        <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
+                                            Required field</mat-error>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'"
+                [hideCancel]="true">
+            </kt-modal-footer>
+        </div>
+
+    </kt-portlet-footer>
+</kt-portlet>
