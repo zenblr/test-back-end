@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'emi_navision_db_config',
         })
 
-        NavisionDbConfig.getNavisionDbConfig = () => NavisionDbConfig.findOne();
+    NavisionDbConfig.getNavisionDbConfig = (moduleName) => NavisionDbConfig.findOne({ where: { moduleName: moduleName } });
 
     return NavisionDbConfig;
 }
