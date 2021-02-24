@@ -16,7 +16,8 @@ exports.getDepositData = async (req, res) => {
 
     dateObj.setDate(dateObj.getDate() - 1);
     let moduleName = 'digigold'
-    const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+    // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+    const getCredential = await models.navisionDbConfig.findAll({ where: { moduleName: moduleName } })
 
     var config = {
       user: getCredential.serverUserName,
@@ -324,17 +325,18 @@ exports.getDepositDataCron = async (req, res) => {
 
 exports.getDepositDataOfPrevious = async (req, res) => {
   try {
-  
+
     // async function getDepositData() {
 
 
     // dateObj.setDate(dateObj.getDate() - 1);
     let moduleName = 'digigold'
-    const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+    // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+    const getCredential = await models.navisionDbConfig.findAll({ where: { moduleName: moduleName } })
 
     var dateObject = new Date();
 
-    var dateObj =  dateObject.setDate(dateObject.getDate() - 1);
+    var dateObj = dateObject.setDate(dateObject.getDate() - 1);
     var config = {
       user: getCredential.serverUserName,
       password: getCredential.serverPassword,
@@ -343,7 +345,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
     };
 
     let connectionString = await sql.connect(config);
-    
+
     let DepositNewData = [];
     let depositDetail;
     let whereClause;
@@ -358,24 +360,24 @@ exports.getDepositDataOfPrevious = async (req, res) => {
     let startDateNew = moment(moment(dateObj).utcOffset("+05:30").startOf('day'));
     console.log(endDateNew, startDateNew)
     if (connectionString) {
-  
-    //  return;
+
+      //  return;
       // const result = await connectionString.query`DELETE FROM [AGTPL$Online Deposite]`;
       // const result = await connectionString.query`DROP TABLE [AGTPL$Online Deposite]`;
       // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
-    //  return
+      //  return
 
       // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Deposite ID]));`
       // console.log(creatDeposistTable);
-     
+
 
       // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
       // console.log(x);
-     
-  
+
+
       // let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
-  
-  
+
+
       // let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
 
       whereClause = {
@@ -402,7 +404,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
         include: includeArray,
 
       });
-console.log("depositDetaildepositDetail",depositDetail.length)
+      console.log("depositDetaildepositDetail", depositDetail.length)
 
       for (let deposit of depositDetail) {
         data = {};
@@ -433,7 +435,7 @@ console.log("depositDetaildepositDetail",depositDetail.length)
 
         DepositNewData.push(data);
       }
-      console.log("DepositNewData",DepositNewData.length);
+      console.log("DepositNewData", DepositNewData.length);
       // return;
       if (DepositNewData.length != 0) {
 
