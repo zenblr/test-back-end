@@ -53,7 +53,7 @@ export class UserDetailsComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
     private leadService: LeadService,
-    private userPersonalService:UserPersonalService
+    private userPersonalService: UserPersonalService
   ) { }
 
   ngOnInit() {
@@ -177,6 +177,8 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.patchValue(res.customerInfo);
         this.name.form60['firstName'] = this.controls.firstName.value
         this.name.form60['lastName'] = this.controls.lastName.value
+        this.name.pan['firstName'] = this.controls.firstName.value
+        this.name.pan['lastName'] = this.controls.lastName.value
         if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
           this.userPersonalService.panType.next(res.customerInfo.panType)
@@ -197,6 +199,7 @@ export class UserDetailsComponent implements OnInit {
 
         if (res.customerInfo.panCardNumber !== null) {
           this.isPanVerified = true;
+
         } else {
           this.showVerifyPAN = true;
         }
@@ -586,8 +589,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.panImage.updateValueAndValidity()
       this.controls.form60Image.setValidators([])
       this.controls.form60Image.updateValueAndValidity()
-      if(this.isPanVerified){
-      this.userBasicForm.patchValue({ firstName: this.name.pan.firstName, lastName: this.name.pan.lastName })
+      if (this.isPanVerified) {
+        this.userBasicForm.patchValue({ firstName: this.name.pan.firstName, lastName: this.name.pan.lastName })
       }
     }
 
