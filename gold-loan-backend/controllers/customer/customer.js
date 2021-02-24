@@ -156,7 +156,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" ||  process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc")  {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -196,7 +196,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" ||  process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc")  {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -220,7 +220,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" ||  process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc")  {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -255,7 +255,7 @@ exports.sendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" ||  process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc")  {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
