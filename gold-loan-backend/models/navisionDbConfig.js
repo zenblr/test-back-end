@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
         serverDbName: {
             type: DataTypes.STRING,
             field: 'server_db_name'
+        },
+        prefix: {
+            type: DataTypes.STRING,
+            field: 'prefix'
+        },
+        moduleName: {
+            tyep: DataTypes.STRING,
+            field: 'module_name'
         }
     },
         {
