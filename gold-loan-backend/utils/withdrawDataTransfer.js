@@ -16,7 +16,7 @@ exports.getWithdrawData = async (req, res) => {
   dateObj.setDate(dateObj.getDate() - 1);
   let moduleName = 'digigold'
     // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
-    const getCredential = await models.navisionDbConfig.findAll({ where: { moduleName: moduleName } })
+    const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
 
   var config = {
     user: getCredential.serverUserName,
@@ -147,7 +147,9 @@ exports.getDepositDataCron = async (req, res) => {
     if (cronData) {
       var dateObj = new Date(cronData.date);
       dateObj.setDate(dateObj.getDate() - 1);
-      const getCredential = await models.navisionDbConfig.findOne();
+      // const getCredential = await models.navisionDbConfig.findOne();
+    const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
+
 
       var config = {
         user: getCredential.serverUserName,
@@ -323,7 +325,7 @@ exports.getWithdrawPreviousData = async (req, res) => {
       var dateObj =  dateObject.setDate(dateObject.getDate() - 1);
       let moduleName = 'digigold'
       // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
-    const getCredential = await models.navisionDbConfig.findAll({ where: { moduleName: moduleName } })
+    const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
 
     
       var config = {
