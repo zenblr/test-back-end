@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'prefix'
         },
         moduleName: {
-            tyep: DataTypes.STRING,
+            type: DataTypes.STRING,
             field: 'module_name'
         }
     },
