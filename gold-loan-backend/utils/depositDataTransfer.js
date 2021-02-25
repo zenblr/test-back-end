@@ -7,6 +7,8 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const fs = require('fs');
 const _ = require("lodash");
+const { data } = require("pdfkit/js/reference");
+const { del } = require("request");
 
 // getDepositData();
 exports.getDepositData = async (req, res) => {
@@ -412,6 +414,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
 
       for (let deposit of depositDetail) {
         data = {};
+        data.failedId = deposit.id
         data.depositeId = deposit.transactionUniqueId;
         data.userAccountId = `${getCredential.prefix}${deposit.customer.customerUniqueId}`;
         data.userId = 0;
