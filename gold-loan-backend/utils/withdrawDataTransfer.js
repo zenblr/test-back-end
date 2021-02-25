@@ -47,7 +47,7 @@ exports.getWithdrawData = async (req, res) => {
     // console.log(result); 
 
 
-    // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
+    // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
     // console.log(creatDepositTable);
 
 
@@ -122,7 +122,7 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
   console.log(DepositNewData);
 
   for (let ele of DepositNewData) {
-    const addDepositData = `INSERT INTO [AGTPL$Online Withdraw] ([Withdraw ID],[User Account Id], [Withdraw Date], [User Type], [User Account State], [Withdraw Amount],[Withdraw Bank], [Withdraw Branch], [Withdraw IFSC], [Withdraw Account], [Atom Txn Id], [Mode of Payment], [Withdraw TransactionId], [processed], [Chq No_], [User Id], [Sell ID], [Manual], [Creation Date],[Partner]) VALUES('${ele.withdrawId}','${ele.userAccountId}', '${ele.withdrawDate}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.withdrawAmount}', '${ele.withdrawBank}', '${ele.withdrawBranch}', '${ele.withdrawIfsc}', '${ele.withdrawAccount}', '${ele.atomTxnId}', '${ele.modeOfPayment}', '${ele.withdrawTransactionId}', '${ele.processed}', '${ele.chqNo}', '${ele.userId}','${ele.sellId}', '${ele.Manual}', '${ele.creationDate}','Nimap')`;
+    const addDepositData = `INSERT INTO [AGTPL$Online Withdraw] ([Withdraw ID],[User Account Id], [Withdraw Date], [User Type], [User Account State], [Withdraw Amount],[Withdraw Bank], [Withdraw Branch], [Withdraw IFSC], [Withdraw Account], [Atom Txn Id], [Mode of Payment], [Withdraw TransactionId], [processed], [Chq No_], [User Id], [Sell ID], [Manual], [Creation Date]) VALUES('${ele.withdrawId}','${ele.userAccountId}', '${ele.withdrawDate}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.withdrawAmount}', '${ele.withdrawBank}', '${ele.withdrawBranch}', '${ele.withdrawIfsc}', '${ele.withdrawAccount}', '${ele.atomTxnId}', '${ele.modeOfPayment}', '${ele.withdrawTransactionId}', '${ele.processed}', '${ele.chqNo}', '${ele.userId}','${ele.sellId}', '${ele.Manual}', '${ele.creationDate}')`;
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
@@ -357,7 +357,7 @@ exports.getWithdrawPreviousData = async (req, res) => {
         // console.log(result); 
         // return
 
-        // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
+        // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
         // console.log(creatDepositTable);
         
 
