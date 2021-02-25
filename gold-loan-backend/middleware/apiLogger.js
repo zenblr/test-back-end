@@ -67,6 +67,8 @@ module.exports = async (req, res, next) => {
             "/api/address-proof-type",
             "/api/occupation",
             "/api/organization-type",
+            "/api/app-version",
+
 
             "/api/digital-gold/rates",
             "/api/digital-gold/bank",
@@ -108,7 +110,7 @@ module.exports = async (req, res, next) => {
             "/api/customer/app/part-payment/payment",
             "/api/customer/app/jewellery-release/full-release",
             "/api/customer/app/jewellery-release/part-release",
-            "/api/customer/app/contact-us"
+            "/api/customer/app/contact-us",
         ];
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {
