@@ -137,7 +137,10 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
-        console.log(err);
+        if(err.ErrorMessageToken.number != '2627'){
+          console.log(ele)
+          console.log(err);
+        }
       } else {
         console.log("success");
       };
