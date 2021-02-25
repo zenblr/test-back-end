@@ -130,20 +130,20 @@ exports.getDepositData = async (req, res) => {
 }
 
 async function dataTransfer(DepositNewData, connectionString, startDateTime, endDateTime, whereClause) {
-console.log(DepositNewData)
-  for (let ele of DepositNewData) {
-    console.log(ele)
-    // const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date],[Partner]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}','Nimap')`
 
-    // connectionString.query(addDepositData, async function (err, result, fields) {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log("success");
-    //   };
-    // })
+  for (let ele of DepositNewData) {
+
+    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date],[Partner]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}','Nimap')`
+
+    connectionString.query(addDepositData, async function (err, result, fields) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("success");
+      };
+    })
   }
-  // let query = await models.agtplDepositTransfer.create({ fromTime: startDateTime, toTime: endDateTime, whereClause: JSON.stringify(whereClause) });
+  let query = await models.agtplDepositTransfer.create({ fromTime: startDateTime, toTime: endDateTime, whereClause: JSON.stringify(whereClause) });
 }
 
 
