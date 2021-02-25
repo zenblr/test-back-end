@@ -49,7 +49,7 @@ exports.getDepositData = async (req, res) => {
       // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
 
 
-      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Deposite ID]));`
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Deposite ID]));`
       // console.log(creatDeposistTable);
 
 
@@ -133,7 +133,7 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
 
   for (let ele of DepositNewData) {
 
-    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date],[Partner]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}','Nimap')`
+    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}')`
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
@@ -368,7 +368,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
       // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
       //  return
 
-      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime,[Partner] nvarchar(100),PRIMARY KEY ([Deposite ID]));`
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Deposite ID]));`
       // console.log(creatDeposistTable);
 
 
