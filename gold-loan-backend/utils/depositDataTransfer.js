@@ -7,8 +7,6 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const fs = require('fs');
 const _ = require("lodash");
-const { data } = require("pdfkit/js/reference");
-const { del } = require("request");
 
 // getDepositData();
 exports.getDepositData = async (req, res) => {
