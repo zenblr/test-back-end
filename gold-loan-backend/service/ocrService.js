@@ -130,10 +130,10 @@ let ocrService = async (fileUrl, idProofType, customerId, index, number) => {
             },
             body: JSON.stringify(data)
         }
-        // // static data
-        // let result = await getOcrLocal(idProofType, index,number)
-        // const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
-        // return { data: ocrResp };
+        // static data
+        let result = await getOcrLocal(idProofType, index,number)
+        const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
+        return { data: ocrResp };
 
         return new Promise((resolve, reject) => {
             request(options, async function (error, response, body) {
@@ -377,8 +377,8 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     };
 
     if (proofType.includes('aadhaar card')) {
-        // const extractedData = await getAadhaarResp(responseBody.result, confidenceValue, userDetailBody);
-        const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
+        const extractedData = await getAadhaarResp(responseBody.result, confidenceValue, userDetailBody);
+        // const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
         return { extractedData, idProofType };
     } else if (proofType.includes('driving license')) {
         const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody);
@@ -387,8 +387,8 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
         return { extractedData, idProofType };
     } else if (proofType.includes('pan card')) {
-        // const extractedData = await getPanCardResp(responseBody.result, confidenceValue, userDetailBody);
-        const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
+        const extractedData = await getPanCardResp(responseBody.result, confidenceValue, userDetailBody);
+        // const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
         return { extractedData, idProofType };
     }
 }
