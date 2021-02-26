@@ -21,7 +21,7 @@ export class GoldRateService {
     return this.http.get(`/api/gold-rate/log`).pipe(
       map(res => res),
       catchError(err => {
-        if (err.error.message) {
+        if (err.error.message || err.error.message != 'auth failed') {
           this.toastr.error(err.error.message);
         }
         throw (err);

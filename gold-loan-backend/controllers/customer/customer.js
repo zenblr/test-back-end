@@ -156,7 +156,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -196,7 +196,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc") {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -220,7 +220,7 @@ exports.customerSignUp = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc") {
       otp = 1234
     } else {
       otp = Math.floor(1000 + Math.random() * 9000);
@@ -255,7 +255,7 @@ exports.sendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "uat" || process.env.NODE_ENV == "ekyc") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -404,7 +404,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, isCampaign, viewAllCustomer } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, viewAllCustomer, isCampaign } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -868,7 +868,7 @@ exports.signUpCustomer = async (req, res) => {
 
     if (!check.isEmpty(customerExist)) {
       if (isCampaign) {
-        await models.customer.update({ isCampaign: true }, { where: { id: customerExist.dataValues.id }, transaction: t })
+        await models.customer.update({ isCampaign: true, updatedAt: moment() }, { where: { id: customerExist.dataValues.id }, transaction: t })
 
         Token = jwt.sign({
           id: customerExist.dataValues.id,
@@ -929,7 +929,7 @@ exports.signUpCustomer = async (req, res) => {
     let moduleId = 4
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: 1, moduleId: moduleId, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, isCampaign, internalBranchId: 1 },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1, internalBranchId: 1, isCampaign },
       { transaction: t }
     );
 

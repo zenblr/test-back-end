@@ -895,7 +895,7 @@ let getKycInfo = async (customerId) => {
     if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
         customerKycReview.dataValues.customerKycPersonal = {}
         customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
-        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB, 'DD-MM-YYYY').format("YYYY-MM-DD")
+        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.aahaarDOB, 'DD-MM-YYYY').format("YYYY-MM-DD")
         customerKycReview.dataValues.customerKycPersonal['age'] = customerKycReview.age
     }
     //dob changes
@@ -1294,7 +1294,7 @@ let submitKycInfo = async (req) => {
             if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
                 customerKycReview.dataValues.customerKycPersonal = {}
                 customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
-                customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB).format("YYYY-MM-DD")
+                customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.aahaarDOB).format("YYYY-MM-DD")
                 customerKycReview.dataValues.customerKycPersonal['age'] = customerKycReview.age
 
             }
@@ -1868,7 +1868,7 @@ let kycPersonalDetail = async (req) => {
         if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
             customerKycReview.dataValues.customerKycPersonal = {}
             customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
-            customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.panDOB).format("YYYY-MM-DD")
+            customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.aahaarDOB).format("YYYY-MM-DD")
             customerKycReview.dataValues.customerKycPersonal['age'] = customerKycReview.age
         }
     } else if (moduleId == 3) {
