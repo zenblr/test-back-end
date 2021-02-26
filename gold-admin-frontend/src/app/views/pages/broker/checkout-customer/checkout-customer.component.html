@@ -448,7 +448,7 @@
                                     Card</label>
                             </div>
                             <div class="col-8">
-                                <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
+                                <ng-container *ngIf="isPanEditAble">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
                                         [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
                                         [reason]="'broker'" (upload)="uploadImage($event)"
@@ -463,16 +463,23 @@
                                             Field is required</mat-error>
                                     </div>
                                 </ng-container>
-                                <ng-container *ngIf="existingCustomerData?.customerDetails?.kycDetails">
+                                <ng-container *ngIf="!isPanEditAble">
                                     <a class="text-body"
                                         [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.URL"
                                         download="{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}"
                                         target="_blank">
                                         <span>{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}</span>
-                                        <span class="pl-2">
-                                            <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                        <span class="pl-2" *ngIf="existingCustomerData?.customerDetails?.digiKycApplied?.status == 'approved'">
+                                            <img height="12" width="12" [src]="'assets/media/icons/_download.svg'"
+                                                >
                                         </span>
+
                                     </a>
+                                    <span class="pl-2" *ngIf="existingCustomerData?.customerDetails?.digiKycApplied?.status != 'approved' || !existingCustomerData?.customerDetails?.digiKycApplied">
+
+                                        <img height="12" width="12" [src]="'assets/media/icons/cancel.png'"
+                                          (click)="removeImage(0)"  >
+                                    </span>
                                 </ng-container>
                             </div>
                         </div>
@@ -488,8 +495,8 @@
                         <div class="col-8 font-weight-500">
                             <div class="row">
                                 <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                <div class="col-6"><span
-                                        class="currency">{{checkoutData?.invoiceAmount | indianCurrencyFormat}}</span>
+                                <div class="col-6"><span class="currency">{{checkoutData?.invoiceAmount |
+                                        indianCurrencyFormat}}</span>
                                 </div>
                                 <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
                                 <div class="col-6"><span class="currency">
