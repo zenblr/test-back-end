@@ -375,6 +375,11 @@ export class TopbarComponent implements OnInit {
 			this.listType = "state,leadStatus";
             
 		}
+
+		if (this.path == "campaign-list") {
+			this.dataSourceHeader();
+		}
+
 		if (location.href.includes('/admin/transaction/')) {
 			// this.dataSourceHeader();
 			this.showfilter = true;

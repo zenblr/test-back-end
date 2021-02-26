@@ -88,6 +88,7 @@ export class SelectPaymentComponent implements OnInit {
       }
       else {
         this.paymentValueFinal.emit(this.paymentValue['paymentType']);
+        this.showPaymentValue.patchValue(this.paymentValue['paymentType'])
       }
       this.paymentData.emit(this.paymentValue)
       this.ref.detectChanges()

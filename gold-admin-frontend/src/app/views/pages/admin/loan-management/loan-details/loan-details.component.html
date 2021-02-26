@@ -109,14 +109,14 @@
                 <ng-container matColumnDef="partRelease">
                     <mat-header-cell *matHeaderCellDef>Part Release</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <div *ngIf="!loan?.partRelease">
+                        <div *ngIf="!loan?.partRelease || loan?.partRelease?.amountStatus == 'rejected'">
                             -
                         </div>
                         <div *ngIf="loan?.partRelease">
-                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'pending'">
+                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'pending' && (loan?.partRelease?.amountStatus == 'completed' || loan?.partRelease?.amountStatus == 'pending')">
                                 Release <br> Initiated
                             </div>
-                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'released'">
+                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'released' && loan?.partRelease?.amountStatus == 'completed'" >
                                 Release <br> Completed
                             </div>
                         </div>
@@ -127,12 +127,12 @@
                 <ng-container matColumnDef="fullRelease">
                     <mat-header-cell *matHeaderCellDef>Full Release</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <div *ngIf="!loan?.fullRelease"> - </div>
+                        <div *ngIf="!loan?.fullRelease || loan?.fullRelease?.amountStatus == 'rejected'"> - </div>
                         <div *ngIf="loan?.fullRelease">
-                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'pending'">
+                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'pending' && (loan?.fullRelease?.amountStatus == 'completed' || loan?.fullRelease?.amountStatus == 'pending')">
                                 Release <br> Initiated
                             </div>
-                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'released'">
+                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'released' && loan?.fullRelease?.amountStatus == 'completed'" >
                                 Release <br> Completed
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                         <mat-menu #menu="matMenu" xPosition="before">
                             <button *ngxPermissionsOnly="['loanDetailsView']" mat-menu-item
                                 (click)="viewLoan(loan)">View Loan</button>
-                            <ng-container *ngIf="!(loan.partRelease || loan.fullRelease)">
+                            <ng-container *ngIf="checkForRelease(loan)">
                                 <button *ngxPermissionsOnly="['addQuickPay']" mat-menu-item
                                     (click)="interestEmi(loan)">Quick Pay</button>
                                 <ng-container *ngIf="show(loan)">

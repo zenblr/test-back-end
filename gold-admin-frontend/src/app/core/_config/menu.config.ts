@@ -113,6 +113,11 @@ export class MenuConfig {
 									title: "Customer Request List",
 									page: "/admin/lead-management/registered-customers",
 									// permission: !this.permissionsArr.includes('customerRegistrationView')
+								},
+								{
+									title: "Campaign Customer List",
+									page: "/admin/lead-management/campaign-list",
+									// permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
 							],
 						},
