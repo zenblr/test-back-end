@@ -8,8 +8,9 @@
 		<!-- begin::Body -->
 		<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
 			<!-- begin:: Aside Left -->
+			<!-- applied d-none class in button for hiding cross sign of close -->
 			<ng-container *ngIf="asideDisplay">
-				<button class="kt-aside-close" id="kt_aside_close_btn"><i class="la la-close"></i></button>
+				<button class="kt-aside-close d-none" id="kt_aside_close_btn"><i class="la la-close"></i></button>
 				<kt-aside-left></kt-aside-left>
 			</ng-container>
 			<!-- end:: Aside Left -->

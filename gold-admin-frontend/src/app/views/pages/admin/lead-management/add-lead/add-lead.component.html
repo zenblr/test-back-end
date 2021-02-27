@@ -85,8 +85,8 @@
                             <div class="col-4 form-label">
                                 <mat-label class="mandatory">Mobile Number</mat-label>
                             </div>
-
-                            <div [ngClass]="data.action == 'add' ? 'col-5' : 'col-8'">
+                                <!-- changes display column for responsive  -->
+                            <div [ngClass]="data.action == 'add' ? 'col-4 col-sm-5' : 'col-8'">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
                                     autocomplete="off" placeholder="Enter mobile number" maxlength="10"
@@ -107,8 +107,8 @@
                                 </mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
-
-                            <div class="col-3" *ngIf="data.action == 'add'">
+                                <!-- changes display column for responsive  -->
+                            <div class="col-4 col-sm-3" *ngIf="data.action == 'add'">
                                 <div *ngIf="!otpSent">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="otpButton || viewOnly"
                                         [type]="'button'" [value]="'Send OTP'" (action)="sendOTP()">
@@ -128,8 +128,8 @@
                             <ng-container *ngIf="otpSent && !isMobileVerified">
                                 <!-- OTP -->
                                 <div class="col-4 kt-padding-t-15"></div>
-
-                                <div class="col-5 kt-padding-t-15">
+                                <!-- changes display column for responsive  -->
+                                <div class="col-4 col-sm-5 kt-padding-t-15">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                     <input class="form-control" numbersOnly maxlength="4" formControlName="otp"
                                         autocomplete="off" placeholder="Enter OTP"
@@ -176,7 +176,8 @@
                                 <div class="col-4 align-self-center form-label">
                                     <label class="mandatory  text-color font-weight-500">FORM 60 </label>
                                 </div>
-                                <div class="offset-5 col" *ngIf="!controls.form60Img.value">
+                                <!-- changes display column for responsive  -->                                
+                                <div class="offset-4 offset-sm-5 col" *ngIf="!controls.form60Img.value">
                                     <input type="file" #file (input)="getFileInfo($event)" class="d-none">
                                     <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
                                         (click)="file.click()">
@@ -198,8 +199,8 @@
                                 <div class="col-4 form-label">
                                     <mat-label class="mandatory">PAN</mat-label>
                                 </div>
-
-                                <div [ngClass]="data.action != 'view'?'col-5':'col-8'">
+                                <!-- changes display column for responsive  -->
+                                <div [ngClass]="data.action != 'view'?'col-4 col-sm-5':'col-8'">
                                     <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                         placeholder="PAN" maxlength="10"
                                         [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
@@ -228,7 +229,8 @@
 
                             </div>
                             <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
-                                <div class="offset-9 col" *ngIf="!controls.panImg.value">
+                                <!-- changes display column for responsive  -->                                
+                                <div class="offset-8 offset-sm-9 col" *ngIf="!controls.panImg.value">
                                     <input type="file" #file (input)="getFileInfo($event)" class="d-none">
                                     <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
                                         (click)="file.click()">
