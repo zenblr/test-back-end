@@ -267,6 +267,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
+      landMark:[this.data.customerKycReview.customerKycAddress[0].landMark]
     })
 
     if (this.data.moduleId == 1 || (this.data.moduleId == 3 && this.data.userType == 'Corporate')) {
@@ -283,6 +284,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
         addressProofFileName: [],
         addressProofTypeId: [''],
         addressProofNumber: [],
+        landMark:[]
       })
 
       if (this.data.customerKycReview.customerKycAddress.length > 1) {
