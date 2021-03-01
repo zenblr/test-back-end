@@ -70,3 +70,11 @@
 		background-color: #f2f3f7;
 	}
 }
+
+// added media query for responsive
+@media (max-width: 1024px){
+	.kt-header__topbar {
+		height:90px;
+	}
+}
+	
