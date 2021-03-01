@@ -16,7 +16,8 @@
     </div>
     <div class="row justify-content-center"
         [ngClass]="{'heightLowerTopbar': showSubHeader}">
-        <div class="col-6 offset-4 align-self-center">
+        <!-- changes display column for responsive -->
+        <div class="col-md-6 offset-md-4 col-10 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
                 [title]="dropdownTitle" (dropdownResult)="selectedValue($event)">
@@ -44,7 +45,8 @@
                 </mat-button-toggle-group>
             </span>
         </div>
-        <div class="col-2 justify-content-end d-inline-flex align-self-center">
+        <!-- changes display column for responsive -->
+        <div class="col-md-2 col-2 justify-content-end d-inline-flex align-self-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
             <kt-button  [value]="'../../../../../assets/media/icons/globe.svg'" [type]='"image"' (click)="navigate()"
                 class="kt-margin-r-10 kt-margin-l-10" *ngIf="globalMap">
