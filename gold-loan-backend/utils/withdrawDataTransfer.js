@@ -335,6 +335,7 @@ exports.getWithdrawPreviousData = async (req, res) => {
         database: getCredential.serverDbName
       };
      
+      console.log(config)
       let connectionString = await sql.connect(config);
       console.log("connectionString",connectionString)
       let withdrawNewData = [];
