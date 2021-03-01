@@ -1,4 +1,6 @@
 // added css for responsive
-.kt-header-mobile .kt-header-mobile__toolbar .kt-header-mobile__toggler span::before,.kt-header-mobile__toggler span::after ,.kt-header-mobile__toggler span {
+.kt-header-mobile .kt-header-mobile__toolbar .kt-header-mobile__toggler span,
+.kt-header-mobile .kt-header-mobile__toolbar .kt-header-mobile__toggler span::before,
+.kt-header-mobile .kt-header-mobile__toolbar .kt-header-mobile__toggler span::after {
     background: black;
 }

@@ -7,7 +7,7 @@
         </div>
         <div class="col align-self-center">
             <div class="kt-subheader__main m-0" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
-                <label *ngIf="title" class="kt-subheader__title">{{title}}</label>
+                <label *ngIf="title" class="kt-subheader__title pt-3 pt-md-0">{{title}}</label>
                 <span class="kt-subheader__divider" *ngIf="totalRecords">|</span>
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}} Total</label>
             </div>
