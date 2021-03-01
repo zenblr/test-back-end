@@ -26,7 +26,7 @@ export class CampaignListService {
       reqParams.isCampaign = data.isCampaign;
     }
   
-    return this.http.get<any>(`/api/customer`, { params: reqParams })
+    return this.http.get<any>(`/api/customer/campaign-list`, { params: reqParams })
       .pipe(map(res => res),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message)
