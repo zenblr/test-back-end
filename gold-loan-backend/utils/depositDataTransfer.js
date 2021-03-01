@@ -362,94 +362,97 @@ exports.getDepositDataOfPrevious = async (req, res) => {
     let endDateNew = moment(moment(dateObj).utcOffset("+05:30").endOf('day'));
     let startDateNew = moment(moment(dateObj).utcOffset("+05:30").startOf('day'));
     console.log(endDateNew, startDateNew)
-    // if (connectionString) {
+    if (connectionString) {
 
-    //   //  return;
-    //   // const result = await connectionString.query`DELETE FROM [AGTPL$Online Deposite]`;
-    //   // const result = await connectionString.query`DROP TABLE [AGTPL$Online Deposite]`;
-    //   // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
-    //   //  return
+      //  return;
+      // const result = await connectionString.query`DELETE FROM [AGTPL$Online Deposite]`;
+      // const result = await connectionString.query`DROP TABLE [AGTPL$Online Deposite]`;
+      // console.log(result); DROP TABLE dbo.PurchaseOrderDetail;  
+      //  return
 
-    //   // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Deposite ID]));`
-    //   // console.log(creatDeposistTable);
-
-
-    //   // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
-    //   // console.log(x);
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Deposite] ([Deposite ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[User Id] nvarchar(100),[User Type] nvarchar(100),[User Account State] nvarchar(20),[Deposit Mode of Payment] nvarchar(100), [Deposit Date] datetime,[Deposit TransactionId] nvarchar(100),[Mode Of Payment] nvarchar(100),[Deposit Amount] decimal(17),[Delivery charge] decimal(17),[Delivery Type] nvarchar(100),  [Atom Txn Id] nvarchar(100),[processed] tinyint,[Chq No_] nvarchar(200),[Purchase ID] nvarchar(100),[Approved Date] datetime,[Deposit Creation Date] datetime,[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Deposite ID]));`
+      // console.log(creatDeposistTable);
 
 
-    //   // let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+      // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
+      // console.log(x);
 
 
-    //   // let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
+      // let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
 
-    //   whereClause = {
-    //     depositApprovedDate: { [Op.lt]: dateObj },
-    //     orderTypeId: { [Op.in]: [4] },
-    //     depositStatus: { [Op.in]: ['completed'] }
-    //   }
-    //   whereClauseString = `{depositApprovedDate: { [Op.between] : [${startDateNew}, ${endDateNew}] }, orderTypeId: {[Op.in]: [4]}, depositStatus: {[Op.in]: ['completed']}}`
 
-    //   const includeArray = [
-    //     {
-    //       model: models.customer,
-    //       as: 'customer',
-    //       attributes: ['customerUniqueId'],
-    //       include: {
-    //         model: models.state,
-    //         as: 'state'
-    //       }
-    //     }
-    //   ];
+      // let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
 
-    //   depositDetail = await models.walletTransactionDetails.findAll({
-    //     where: whereClause,
-    //     include: includeArray,
+      whereClause = {
+        depositApprovedDate: { [Op.lt]: dateObj },
+        orderTypeId: { [Op.in]: [4] },
+        depositStatus: { [Op.in]: ['completed'] }
+      }
+      whereClauseString = `{depositApprovedDate: { [Op.between] : [${startDateNew}, ${endDateNew}] }, orderTypeId: {[Op.in]: [4]}, depositStatus: {[Op.in]: ['completed']}}`
 
-    //   });
-    //   console.log("depositDetaildepositDetail", depositDetail.length)
+      const includeArray = [
+        {
+          model: models.customer,
+          as: 'customer',
+          attributes: ['customerUniqueId'],
+          include: {
+            model: models.state,
+            as: 'state'
+          }
+        }
+      ];
 
-    //   for (let deposit of depositDetail) {
-    //     data = {};
-    //     data.failedId = deposit.id
-    //     data.depositeId = deposit.transactionUniqueId;
-    //     data.userAccountId = `${getCredential.prefix}${deposit.customer.customerUniqueId}`;
-    //     data.userId = 0;
-    //     data.userType = "Augmont";
-    //     data.userAccountState = deposit.customer.state.stateCode;
-    //     data.depositModeofPayment = deposit.paymentType;
-    //     data.depositDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
-    //     data.depositTransactionId = deposit.transactionUniqueId;
-    //     data.modeOfPayment = "";
-    //     data.depositAmount = deposit.transactionAmount;
-    //     data.deliveryCharge = 0;
-    //     data.deliveryType = "";
-    //     data.processed = 0;
-    //     data.chqNo = "";
-    //     data.purchaseId = "";
-    //     data.approvedDate = moment(moment(deposit.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
-    //     data.depositCreationDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
-    //     data.Manual = 0;
-    //     data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
-    //     if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
-    //       data.atomTxnId = deposit.razorpayPaymentId;
-    //     } else {
-    //       data.atomTxnId = deposit.bankTransactionUniqueId;
-    //     }
+      depositDetail = await models.walletTransactionDetails.findAll({
+        where: whereClause,
+        include: includeArray,
 
-    //     DepositNewData.push(data);
-    //   }
-    //   console.log("DepositNewData", DepositNewData.length);
-    //   // return;
-    //   if (DepositNewData.length != 0) {
+      });
+      console.log("depositDetaildepositDetail", depositDetail.length)
 
-    //     await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
-    //   } else {
-    //     console.log("no data found");
-    //   }
-    // } else {
-    //   console.log("connection fail");
-    // }
+      for (let deposit of depositDetail) {
+        data = {};
+        data.failedId = deposit.id
+        data.depositeId = deposit.transactionUniqueId;
+        data.userAccountId = `${getCredential.prefix}${deposit.customer.customerUniqueId}`;
+        data.userId = 0;
+        data.userType = "Augmont";
+        data.userAccountState = deposit.customer.state.stateCode;
+        data.depositModeofPayment = deposit.paymentType;
+        data.depositDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.depositTransactionId = deposit.transactionUniqueId;
+        data.modeOfPayment = "";
+        data.depositAmount = deposit.transactionAmount;
+        data.deliveryCharge = 0;
+        data.deliveryType = "";
+        data.processed = 0;
+        data.chqNo = "";
+        data.purchaseId = "";
+        data.approvedDate = moment(moment(deposit.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.depositCreationDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.Manual = 0;
+        data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
+        if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
+          data.atomTxnId = deposit.razorpayPaymentId;
+        } else {
+          data.atomTxnId = deposit.bankTransactionUniqueId;
+        }
+
+        DepositNewData.push(data);
+      }
+      console.log("DepositNewData", DepositNewData.length);
+      // return;
+      if (DepositNewData.length != 0) {
+
+        let singledata = []
+        singledata.push(DepositNewData[1])
+console.log(singledata)
+        // await dataTransfer(singledata, connectionString, startDateNew, endDateNew, whereClauseString);
+      } else {
+        console.log("no data found");
+      }
+    } else {
+      console.log("connection fail");
+    }
   } catch (err) {
     console.log(err);
   }
