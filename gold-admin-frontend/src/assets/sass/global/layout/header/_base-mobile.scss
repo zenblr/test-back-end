@@ -27,7 +27,7 @@
 		.kt-header-mobile--fixed & {
 			position: fixed;
 			top: 0;
-			right: 0;
+			right: 4rem;
 			left: 0;
 			z-index: kt-get($kt-header-config, base, mobile, self, fixed, zindex);
 		}
