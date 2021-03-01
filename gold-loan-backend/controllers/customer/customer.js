@@ -636,7 +636,7 @@ exports.getAllCampaignList = async (req, res) => {
     }],
     isActive: true,
     merchantId: 1,
-    isCampaign = true
+    isCampaign : true
   };
 
   // if (isCampaign) {
