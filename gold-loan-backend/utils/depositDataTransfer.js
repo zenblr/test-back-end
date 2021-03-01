@@ -445,7 +445,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
 
         let singledata = []
         singledata.push(DepositNewData[1])
-console.log(singledata)
+        console.log(singledata)
         // await dataTransfer(singledata, connectionString, startDateNew, endDateNew, whereClauseString);
       } else {
         console.log("no data found");
