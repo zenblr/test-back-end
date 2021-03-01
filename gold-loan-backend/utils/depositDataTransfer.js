@@ -344,6 +344,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
       server: getCredential.serverIp,
       database: getCredential.serverDbName
     };
+    console.log(config)
 
     let connectionString = await sql.connect(config);
 
