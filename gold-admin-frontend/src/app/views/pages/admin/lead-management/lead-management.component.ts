@@ -73,7 +73,7 @@ export class LeadManagementComponent implements OnInit {
     this.dataTableService.topBarCheck$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
       if (res) {
         this.viewAllCustomer = res.checked;
-        this.loadLeadsPage();
+        // this.loadLeadsPage();
       }
     });
   }
