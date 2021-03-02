@@ -29,6 +29,7 @@ export class ReportsComponent implements OnInit {
 	merchantList = [];
 	orderStatusList = [];
 	clearData: boolean = false;
+	userDetails: any;
 	@Output() next: EventEmitter<any> = new EventEmitter<any>();
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
@@ -41,7 +42,9 @@ export class ReportsComponent implements OnInit {
 		private toast: ToastrService,
 		private router: Router,
 		private ngxPermissionService: NgxPermissionsService
-	) { }
+	) {
+		this.getUserDetails();
+	}
 
 	ngOnInit() {
 		this.ngxPermissionService.permissions$.subscribe((res) => {
@@ -101,9 +104,19 @@ export class ReportsComponent implements OnInit {
 		if (this.reportForm) return this.reportForm.controls;
 	}
 
+	getUserDetails() {
+		this.sharedService.getTokenDecode().subscribe(res => this.userDetails = res);
+	}
+
 	getMerchant() {
 		this.sharedService.getMerchant().subscribe((res) => {
-			this.merchantList = res;
+			if (res.length) {
+				if (!(this.userDetails.userTypeId == 4)) {
+					this.merchantList = res.filter(e => e.id == 1)
+				} else {
+					this.merchantList = res;
+				}
+			}
 		});
 	}
 

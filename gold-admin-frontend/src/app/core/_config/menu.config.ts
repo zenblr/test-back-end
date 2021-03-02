@@ -463,7 +463,8 @@ export class MenuConfig {
 											title: "Notification Settings",
 											root: true,
 											bullet: 'dot',
-											permission: false,
+											permission: !(this.userType === 4),
+
 
 											submenu: [
 												{

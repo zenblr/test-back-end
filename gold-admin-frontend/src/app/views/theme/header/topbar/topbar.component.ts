@@ -116,6 +116,7 @@ export class TopbarComponent implements OnInit {
 	notTitleCase: boolean = false;
 	showSubHeader: boolean;
 	globalMap: boolean;
+	showSecondInput: any;
 
 	constructor(
 		public sharedService: SharedService,
@@ -1132,6 +1133,17 @@ export class TopbarComponent implements OnInit {
 
 	topBarCheck(value) {
 		this.dataTableService.topBarCheck.next(value);
+		this.showInput = !value.checked
+		this.showSecondInput = value.checked
+		if(!value.checked){
+			this.dataTableService.searchInput.next('')
+		}
+	}
+
+	searchByMobile(data){
+		if(data.length == 10){
+			this.dataTableService.searchInput.next(data)
+		}
 	}
 
 	sort() {

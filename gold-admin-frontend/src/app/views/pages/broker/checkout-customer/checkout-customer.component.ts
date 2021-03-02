@@ -291,13 +291,13 @@ export class CheckoutCustomerComponent implements OnInit {
       } else {
         stateData = this.controls.stateName.value.id;
       }
-     let res = await this.sharedService.getCities(stateData)
-        this.cityList = res['data'];
-        this.ref.detectChanges();
+      let res = await this.sharedService.getCities(stateData)
+      this.cityList = res['data'];
+      this.ref.detectChanges();
     }
   }
 
-  getShippingCities() {
+  async getShippingCities() {
     if (this.controls.shippingStateName.value == '') {
       this.shippingCityList = [];
     } else {
@@ -307,15 +307,15 @@ export class CheckoutCustomerComponent implements OnInit {
       } else {
         stateData = this.controls.shippingStateName.value.id;
       }
-      let res = this.sharedService.getCities(stateData)
+      let res = await this.sharedService.getCities(stateData)
 
-        if (this.shippingCityCounter > 1) {
-          this.controls.shippingCityName.patchValue('');
-        }
-        this.shippingCityCounter ++
- 
-        this.shippingCityList = res['data'];
-        this.ref.detectChanges();
+      if (this.shippingCityCounter > 1) {
+        this.controls.shippingCityName.patchValue('');
+      }
+      this.shippingCityCounter++
+
+      this.shippingCityList = res['data'];
+      this.ref.detectChanges();
     }
   }
 
@@ -502,7 +502,6 @@ export class CheckoutCustomerComponent implements OnInit {
         });
     });
   }
-
 
   checkCityStateIfSame() {
     const stateName = this.controls.stateName.value;
