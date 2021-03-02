@@ -114,6 +114,7 @@ export class TopbarComponent implements OnInit {
 	notTitleCase: boolean = false;
 	showSubHeader: boolean;
 	globalMap: boolean;
+	isHeaderVisible: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -213,6 +214,9 @@ export class TopbarComponent implements OnInit {
 	ngOnInit() {
 		this.setTopbar(this.router.url);
 		this.checkForSubHeader()
+		this.sharedService.isSubHeaderVisible$.subscribe(res=>{
+			this.isHeaderVisible = res
+		})
 
 	}
 
