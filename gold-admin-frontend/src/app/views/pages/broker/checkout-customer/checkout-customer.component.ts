@@ -11,6 +11,7 @@ import { CreateCustomerComponent } from '../customers/create-customer/create-cus
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
 import { map } from 'rxjs/operators';
 import { AppliedKycService } from '../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -43,7 +44,7 @@ export class CheckoutCustomerComponent implements OnInit {
   isSameAddress: boolean = false;
   pan: any = { name: { firstName: '', lastName: '' }, userName: { firstName: '', lastName: '' } };
   internalBranchId: any;
-  isPanEditAble: boolean = true;
+  isPanEditAble: boolean = false;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -55,7 +56,7 @@ export class CheckoutCustomerComponent implements OnInit {
     private razorpayPaymentService: RazorpayPaymentService,
     public dialog: MatDialog,
     private leadService: LeadService,
-    private appliedKycService:AppliedKycService
+    private appliedKycService: AppliedKycService
   ) { }
 
   ngOnInit() {
@@ -64,6 +65,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.getStates();
     this.sharedService.getTokenDecode().subscribe(res => {
       this.internalBranchId = res.internalBranchId
+      this.controls.customerId.patchValue(res.id)
     })
   }
 
@@ -94,7 +96,8 @@ export class CheckoutCustomerComponent implements OnInit {
       panImg: [],
       customerId: [],
       isPanVerified: [false],
-      isAppliedForKyc: [false]
+      isAppliedForKyc: [false],
+      dateOfBirth: []
     });
     this.setPanDetailsValidators();
 
@@ -265,13 +268,14 @@ export class CheckoutCustomerComponent implements OnInit {
           this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
           this.controls['panCardNumber'].enable();
           this.controls['panCardFileId'].enable();
+          this.removeImage()
         }
         // if (this.showPrefilledDataFlag) {
         //   const msg = 'Customer already exist. The Details will be automatically pre-filled';
         //   this.toastr.successToastr(msg);
         //   this.showPrefilledDataFlag = false;
         // }
-        if (res.customerDetails.digiKycApplied) {
+        if (res.customerDetails.digiKycApplied && this.checkoutData.kycRequired) {
           if (res.customerDetails.digiKycApplied.status == 'approved') {
             this.controls.isPanVerified.patchValue(true)
           }
@@ -287,6 +291,7 @@ export class CheckoutCustomerComponent implements OnInit {
           }
         } else {
           this.isPanEditAble = true;
+          this.ref.detectChanges();
         }
       });
       this.showformFlag = true;
@@ -412,7 +417,9 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardFileId: this.controls.panCardFileId.value,
       blockId: this.checkoutData.blockId,
       isAppliedForKyc: this.controls.isAppliedForKyc.value,
-      panImg: this.controls.panImg.value
+      panImg: this.controls.panImg.value,
+      dateOfBirth: this.controls.dateOfBirth.value,
+      customerId:this.controls.customerId.value
     }
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
@@ -480,12 +487,12 @@ export class CheckoutCustomerComponent implements OnInit {
         isPanVerified: this.controls.isPanVerified.value,
         customerId: this.controls.customerId.value
       }
-      this.checkoutCustomerService.createDigigKyc(data).pipe(map(res => {
+      this.checkoutCustomerService.createDigiKyc(data).pipe(map(res => {
         if (res.message == 'KYC Pending') {
 
           this.router.navigate(['/broker/shop'])
           this.toastr.errorToastr("Your KYC is pending")
-        
+
         } else if (res.message == 'KYC Approved') {
           this.editDigiGoldKyc(res.data)
           this.verify()
@@ -499,10 +506,10 @@ export class CheckoutCustomerComponent implements OnInit {
 
   }
 
-  editDigiGoldKyc(data){
+  editDigiGoldKyc(data) {
     data['panCardNumber'] = this.controls.panCardNumber.value
     data['panAttachment'] = this.controls.panImg.value
-    this.appliedKycService.editDigiGoldKyc(data).pipe(map(res=>res)).subscribe()
+    this.appliedKycService.editDigiGoldKyc(data).pipe(map(res => res)).subscribe()
   }
 
   verify() {
@@ -552,7 +559,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue(
       data.uploadData.id
     );
-    let url = data.uploadData.url.substring(data.uploadData.url.indexOf('/')+1)
+    let url = data.uploadData.url.substring(data.uploadData.url.indexOf('/') + 1)
     this.checkoutCustomerForm.controls['panImg'].patchValue(
       url
     );
@@ -574,18 +581,19 @@ export class CheckoutCustomerComponent implements OnInit {
       this.pan.name.firstName = name.join(" ")
       this.pan.name.lastName = lastName
       this.controls.panCardNumber.patchValue(res.data.idNumber)
-      // this.controls.dateOfBirth.patchValue(res.dob)
+      this.controls.dateOfBirth.patchValue(moment(res.data.dob, "DD/MM/YYYY").format("YYYY-MM-DD"))
       // this.isPanVerified = res.data.isPanVerified
       // if (res.data.isPanVerified)
       this.controls.isPanVerified.patchValue(res.data.isPanVerified)
       // this.resetOnPanChange = false
       this.controls.panCardNumber.disable()
       this.controls.nameOnPanCard.disable()
+      console.log(res.data.dob)
       // this.controls.lastName.disable()
     })
   }
 
-  removeImage(data) {
+  removeImage(data?) {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
     this.checkoutCustomerForm.controls['panCardNumber'].patchValue('');
     this.checkoutCustomerForm.controls['nameOnPanCard'].patchValue('');

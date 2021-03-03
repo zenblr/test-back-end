@@ -451,7 +451,7 @@
                                 <ng-container *ngIf="isPanEditAble">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
                                         [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                        [reason]="'broker'" (upload)="uploadImage($event)"
+                                        [reason]="'broker'" (upload)="uploadImage($event)" [image]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.URL" [selectedFileForKyc]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname"
                                         (remove)="removeImage($event)">
                                     </kt-uplod-preview-image>
                                     <input type="text" formControlName="panCardFileId" class="form-control"
@@ -469,7 +469,7 @@
                                         download="{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}"
                                         target="_blank">
                                         <span>{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}</span>
-                                        <span class="pl-2" *ngIf="existingCustomerData?.customerDetails?.digiKycApplied?.status == 'approved'">
+                                        <span class="pl-2">
                                             <img height="12" width="12" [src]="'assets/media/icons/_download.svg'"
                                                 >
                                         </span>

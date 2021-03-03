@@ -2004,13 +2004,13 @@ let digiOrEmiKyc = async (req) => {
 
 let applyDigiKyc = async (req) => {
 
-    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age, isPanVerified, firstName, lastName } = req.body
+    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age, isPanVerified, firstName, lastName, moduleId } = req.body
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
     let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
 
     let customer = await models.customer.findOne({ where: { id: customerId } })
-    let moduleId
+    // let moduleId
     if (customer.moduleId) {
         moduleId = customer.moduleId
     } else {
@@ -2048,6 +2048,27 @@ let applyDigiKyc = async (req) => {
                 await models.digiKycApplied.create({ customerId: customerId, status: 'approved', moduleId }, { transaction: t })
             }
             await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+
+            let url;
+            if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+                url = process.env.BASE_URL + customer.panImage
+            } else {
+                url = customer.panImage
+            }
+            //change
+
+            let panBase64 = await pathToBase64(url)
+
+            if (!panBase64.success) {
+                return res.status(panBase64.status).json({ data: panBase64.message })
+            }
+
+            req.body.panNumber = req.body.panCardNumber
+            req.body.panAttachment = panBase64.data
+            req.body.panCardNumber = panCardNumber
+            req.body.customerId = customerId
+            var data = await digiOrEmiKyc(req)
+
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
 
 

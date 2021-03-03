@@ -20,6 +20,7 @@ export class UplodPreviewImageComponent implements OnInit {
   @Input() fileAcceptType: any;
   @Input() reason: string;
   @Input() validate: boolean;
+  @Input() selectedFileForKyc: any;
   @Output() upload = new EventEmitter();
   @Output() remove = new EventEmitter();
   formData: any;
@@ -37,7 +38,7 @@ export class UplodPreviewImageComponent implements OnInit {
   ngOnInit() { }
 
   validateImage(event) {
-    if(this.formFieldName == 'panCardFileId'){
+    if (this.formFieldName == 'panCardFileId') {
       this.getFileInfo(event)
       return
     }
@@ -163,6 +164,7 @@ export class UplodPreviewImageComponent implements OnInit {
       this.remove.emit(this.index);
     }
     this.selectedFile = null;
+    this.selectedFileForKyc = null;
     this.file.nativeElement.value = '';
   }
 }

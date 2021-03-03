@@ -26,7 +26,7 @@ export class CheckoutCustomerService {
         return this.http.post<any>(API_ENDPOINT + `api/order/place`, data);
     }
 
-    createDigigKyc(data): Observable<any> {
+    createDigiKyc(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/order/digi-kyc`, data);
     }
 }
