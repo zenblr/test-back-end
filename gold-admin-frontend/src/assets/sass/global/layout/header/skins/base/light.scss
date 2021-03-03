@@ -184,7 +184,7 @@ $kt-header-item-hover-bg: rgba(#4d5995, 0.06);
 @include kt-tablet-and-mobile {
 	// Mobile header
 	.kt-header-mobile {
-		box-shadow: 0px 0px 40px 0px rgba(82,63,105,0.1);
+		// box-shadow: 0px 0px 40px 0px rgba(82,63,105,0.1);
 	}
 
 	// Topbar
