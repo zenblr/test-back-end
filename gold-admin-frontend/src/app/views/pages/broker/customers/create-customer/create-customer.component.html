@@ -157,7 +157,7 @@
                                     </div>
     
                                     <div class="col-8">
-                                        <select class="form-control" formControlName="cityId" (change)="getBranchFromCity()"
+                                        <select class="form-control" formControlName="cityId" 
                                             [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                             <option selected value="" disabled> Select City</option>
                                             <option *ngFor="let city of cities" [value]="city.id">
