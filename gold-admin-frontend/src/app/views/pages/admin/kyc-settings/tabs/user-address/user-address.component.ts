@@ -275,6 +275,7 @@ export class UserAddressComponent implements OnInit {
       this.toastr.error("Attach Addhar Image")
       return 
     }
+    this.isAadharVerified = false;
     this.controls.identityProofNumber.reset()
     this.userAddressService.getAaddharDetails(this.images.identityProof, this.controls.customerId.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
@@ -674,7 +675,7 @@ export class UserAddressComponent implements OnInit {
         this.isCityEdit = true
       }
       // controls.disable()
-      if (this.aadharCardUserDetails.isAahaarVerified) {
+      if (this.aadharCardUserDetails.isAahaarVerified == true) {
         this.disableAadharField(index)
       }
     }

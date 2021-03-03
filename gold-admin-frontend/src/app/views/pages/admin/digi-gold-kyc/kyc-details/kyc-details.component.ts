@@ -199,7 +199,7 @@ export class KycDetailsComponent implements OnInit {
         reader.readAsDataURL(file);
       }
     } else {
-      this.toastr.error('Upload Valid File Format');
+      // this.toastr.error('Upload Valid File Format');
     }
     event.target.value = ''
   }

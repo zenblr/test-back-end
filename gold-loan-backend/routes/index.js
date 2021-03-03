@@ -289,6 +289,9 @@ router.use('/web-hook', webhook);
 const appVersions = require('./appVersions');
 router.use('/app-version', appVersions);
 
+const dataTransfer = require('./dataTransfer');
+router.use('/data-transfer', dataTransfer);
+
 
 
 module.exports = router;

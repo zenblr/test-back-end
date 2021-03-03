@@ -82,14 +82,17 @@ export class NewRequestAddComponent implements OnInit, AfterViewInit {
   setForm() {
 
     this.requestForm.patchValue(this.data.leadData)
+    console.log(this.data.leadData);
+    
     this.requestForm.patchValue({internalBranchId:this.userDetails.internalBranchId})
     console.log(this.requestForm.value)
     if (this.data.action === 'edit') {
       this.requestForm.patchValue({
         customerId: this.data.leadData.customer.id,
         customerUniqueId: this.data.leadData.customer.customerUniqueId,
-        mobileNumber: this.data.leadData.customer.mobileNumber,
+        mobileNumber: this.data.leadData.customer.mobileNumber,      
         customerName: `${this.data.leadData.customer.firstName} ${this.data.leadData.customer.lastName}`,
+        internalBranchId: this.data.leadData.internalBranchId
       })
       this.title = 'Update Request'
     } else {

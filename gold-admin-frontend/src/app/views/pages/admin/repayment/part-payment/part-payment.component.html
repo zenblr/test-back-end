@@ -159,13 +159,13 @@
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
                 <div class="col-8 text-center">
-                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="partAmountContinue()"></kt-button>
+                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="partAmountContinue();partAmount.disable()"></kt-button>
                     <span class="kt-padding-5"></span>
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                     <span class="kt-padding-5"></span>
 
                     <kt-button [value]="'Cancel'" [type]="'reset'"
-                        (click)="partAmount.reset();payableAmountSummary='';paymentDetails=null">
+                        (click)="partAmount.enable();payableAmountSummary='';paymentDetails=null">
                     </kt-button>
                 </div>
             </div>

@@ -96,7 +96,7 @@ exports.updateAppraiserRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
     let { moduleId, customerId, internalBranchId } = req.body;
-    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, internalBranchId, customerId: customerId, status: 'incomplete' } })
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, internalBranchId, customerId: { [Op.not]: customerId }, status: 'incomplete' } })
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
