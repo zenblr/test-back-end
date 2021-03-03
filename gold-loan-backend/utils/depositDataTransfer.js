@@ -443,10 +443,10 @@ exports.getDepositDataOfPrevious = async (req, res) => {
       // return;
       if (DepositNewData.length != 0) {
 
-        let singledata = []
-        singledata.push(DepositNewData[1])
-        console.log(singledata)
-        // await dataTransfer(singledata, connectionString, startDateNew, endDateNew, whereClauseString);
+        // let singledata = []
+        // singledata.push(DepositNewData[1])
+        // console.log(singledata)
+        await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
       } else {
         console.log("no data found");
       }

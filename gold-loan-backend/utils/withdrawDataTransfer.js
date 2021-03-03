@@ -419,11 +419,11 @@ exports.getWithdrawPreviousData = async (req, res) => {
         // return
         if (withdrawNewData.length != 0) {
 
-          let singledata = []
-        singledata.push(withdrawNewData[1])
-        console.log(singledata)
+        //   let singledata = []
+        // singledata.push(withdrawNewData[1])
+        // console.log(singledata)
 
-          // await dataTransfer(singledata, connectionString, startDateNew, endDateNew, whereClauseString);
+          await dataTransfer(withdrawNewData, connectionString, startDateNew, endDateNew, whereClauseString);
         } else {
           console.log("no data found");
         }
