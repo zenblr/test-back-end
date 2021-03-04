@@ -5,7 +5,7 @@
         <button class="submit" ktDebounceClick mat-raised-button [disabled]="isDisabled"
             (debounceClick)="onSubmit()" >{{value | titlecase}}</button>
         &nbsp;
-        <kt-button [type]="'reset'" [value]="'Cancel'" (click)="closeModal()" [isDisabled]="isDisabled">
+        <kt-button [type]="'reset'" [value]="'Cancel'" (click)="closeModal()" [isDisabled]="isDisabled" *ngIf="!hideCancel">
         </kt-button>
     </div>
 </div>

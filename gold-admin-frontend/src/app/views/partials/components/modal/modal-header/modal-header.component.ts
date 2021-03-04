@@ -10,7 +10,7 @@ export class ModalHeaderComponent implements OnInit {
   @Input() title;
   @Input() noTitleCase: boolean;
   @Output() action = new EventEmitter();
-
+  @Input() hideCancel
 
   constructor() { }
 

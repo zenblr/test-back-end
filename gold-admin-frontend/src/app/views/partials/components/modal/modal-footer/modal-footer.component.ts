@@ -10,6 +10,7 @@ export class ModalFooterComponent implements OnInit {
   @Input() isDisabled: boolean;
   @Input() value
   @Output() action = new EventEmitter();
+  @Input() hideCancel
   constructor() { }
 
   ngOnInit() {

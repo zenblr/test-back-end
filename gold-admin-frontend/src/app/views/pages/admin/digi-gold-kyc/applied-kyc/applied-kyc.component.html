@@ -55,9 +55,9 @@
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editKyc(role.customerId, role.id)" class="kt-pointer">
-                                <span *ngxPermissionsOnly="['digiGoldKycApproval']">
+                                <!-- <span *ngxPermissionsOnly="['digiGoldKycApproval']"> -->
                                     <strong *ngIf="role.status == 'waiting'">Action ></strong>
-                                </span>
+                                <!-- </span> -->
                             </div>
                         </div>
                     </mat-cell>

@@ -20,6 +20,7 @@ export class UplodPreviewImageComponent implements OnInit {
   @Input() fileAcceptType: any;
   @Input() reason: string;
   @Input() validate: boolean;
+  @Input() selectedFileForKyc: any;
   @Output() upload = new EventEmitter();
   @Output() remove = new EventEmitter();
   formData: any;
@@ -37,6 +38,10 @@ export class UplodPreviewImageComponent implements OnInit {
   ngOnInit() { }
 
   validateImage(event) {
+    if (this.formFieldName == 'panCardFileId') {
+      this.getFileInfo(event)
+      return
+    }
     if (this.validate) {
       const file = event.target.files[0];
       const reader = new FileReader();
@@ -60,6 +65,56 @@ export class UplodPreviewImageComponent implements OnInit {
     } else {
       this.uploadFile(event);
     }
+  }
+
+  getFileInfo(event) {
+    if (this.sharedService.fileValidator(event)) {
+      let data = this.getImageValidationForKarza(event)
+      console.log(data)
+    } else {
+      event.target.value = ''
+    }
+  }
+
+  getImageValidationForKarza(event) {
+    var details = event.target.files
+    let ext = this.sharedService.getExtension(details[0].name)
+    if (Math.round(details[0].size / 1024) > 4000 && ext != 'pdf') {
+      this.toast.error('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+
+    if (ext == 'pdf') {
+      if (Math.round(details[0].size / 1024) > 2000) {
+        this.toast.error('Maximun size is 2MB')
+      } else {
+        this.uploadFile(event)
+      }
+      event.target.value = ''
+      return
+    }
+
+    var reader = new FileReader()
+    var reader = new FileReader();
+    const img = new Image();
+
+    img.src = window.URL.createObjectURL(details[0]);
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if (width > 3000 || height > 3000) {
+          this.toast.error('Image of height and width should be less than 3000px')
+          event.target.value = ''
+        } else {
+          this.uploadFile(event)
+        }
+      }, 1000);
+    }
+    // return data
   }
 
   uploadFile(event) {
@@ -109,6 +164,7 @@ export class UplodPreviewImageComponent implements OnInit {
       this.remove.emit(this.index);
     }
     this.selectedFile = null;
+    this.selectedFileForKyc = null;
     this.file.nativeElement.value = '';
   }
 }
