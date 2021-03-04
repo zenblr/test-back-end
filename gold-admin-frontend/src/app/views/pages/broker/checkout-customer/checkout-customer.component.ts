@@ -153,6 +153,9 @@ export class CheckoutCustomerComponent implements OnInit {
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
         this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
         this.customerKyc = this.checkoutData.kycRequired;
+        if(this.checkoutData.kycRequired){
+          this.isPanEditAble = true
+        }
       }
     },
       error => {
