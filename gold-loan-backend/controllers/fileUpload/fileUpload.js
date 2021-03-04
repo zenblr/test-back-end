@@ -50,6 +50,8 @@ exports.uploadFile =
             destination = `public/uploads/fullRelease/${fullReleaseId}/`;
         } else if (fileFor == "ecsForm") {
             destination = `public/uploads/sip/ecsForm/${customerId}`;
+        } else if (fileFor == "cancelOrder") {
+            destination = `public/uploads/sip/cancelOrder/`;
         } else {
             return res.status(422).json({ message: 'Reason not found' });
         }
