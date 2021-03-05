@@ -16,7 +16,6 @@ const fs = require('fs');
 const FormData = require('form-data');
 let sms = require('../utils/SMS');
 let { verifyName } = require('./karzaService');
-const fs = require('fs');
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
