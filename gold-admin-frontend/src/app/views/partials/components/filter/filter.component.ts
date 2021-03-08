@@ -163,7 +163,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							this.cronType()
 							break
 						case 'modulePoint':
-							this.getModulePoints()
+							this.getModulePoints();
+							this.status();
 					}
 				}
 			}
@@ -640,6 +641,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	getModulePoints() {
 		this.sharedService.getModulePoints().subscribe((res) => {
 			this.modules = res;
+			console.log(this.modules);
+			
 		});
 	}
 
