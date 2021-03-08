@@ -153,6 +153,9 @@ export class CheckoutCustomerComponent implements OnInit {
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
         this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
         this.customerKyc = this.checkoutData.kycRequired;
+        if(this.checkoutData.kycRequired){
+          this.isPanEditAble = true
+        }
       }
     },
       error => {
@@ -346,7 +349,7 @@ export class CheckoutCustomerComponent implements OnInit {
     }
   }
 
-  getShippingCities() {
+  async getShippingCities() {
     if (this.controls.shippingStateName.value == '') {
       this.shippingCityList = [];
     } else {
@@ -356,7 +359,7 @@ export class CheckoutCustomerComponent implements OnInit {
       } else {
         stateData = this.controls.shippingStateName.value.id;
       }
-      let res = this.sharedService.getCities(stateData)
+      let res = await this.sharedService.getCities(stateData)
 
       if (this.shippingCityCounter > 1) {
         this.controls.shippingCityName.patchValue('');
@@ -628,7 +631,6 @@ export class CheckoutCustomerComponent implements OnInit {
         });
     });
   }
-
 
   checkCityStateIfSame() {
     const stateName = this.controls.stateName.value;

@@ -6,7 +6,7 @@
                     <mat-header-cell *matHeaderCellDef>Merchant Name</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.merchantName | titlecase}}
+                            {{merchant?.merchantName | titlecase}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -14,7 +14,7 @@
                     <mat-header-cell *matHeaderCellDef>Initial</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.initial | uppercase}}
+                            {{merchant?.initial | uppercase}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -23,8 +23,8 @@
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.user.firstName | titlecase}}
-                            {{merchant.user.lastName | titlecase}}
+                            {{merchant?.user?.firstName | titlecase}}
+                            {{merchant?.user?.lastName | titlecase}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -33,7 +33,7 @@
                     <mat-header-cell *matHeaderCellDef>Mobile No</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.user.mobileNumber}}
+                            {{merchant?.user?.mobileNumber}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -42,7 +42,7 @@
                     <mat-header-cell *matHeaderCellDef>User Email</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.user.email}}
+                            {{merchant?.user?.email}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -51,7 +51,7 @@
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.user.address[0].state.name}}
+                            {{merchant?.user?.address[0]?.state?.name}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -60,13 +60,13 @@
                     <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant.user.address[0].city.name}}
+                            {{merchant?.user?.address[0]?.city?.name}}
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef>PinCode</mat-header-cell>
-                    <mat-cell *matCellDef="let merchant">{{merchant.user.address[0].postalCode}}</mat-cell>
+                    <mat-cell *matCellDef="let merchant">{{merchant?.user?.address[0]?.postalCode}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>

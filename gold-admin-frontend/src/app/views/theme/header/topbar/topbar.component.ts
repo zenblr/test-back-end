@@ -116,6 +116,8 @@ export class TopbarComponent implements OnInit {
 	notTitleCase: boolean = false;
 	showSubHeader: boolean;
 	globalMap: boolean;
+	showSecondInput: any;
+	isHeaderVisible: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -216,6 +218,9 @@ export class TopbarComponent implements OnInit {
 	ngOnInit() {
 		this.setTopbar(this.router.url);
 		this.checkForSubHeader()
+		this.sharedService.isSubHeaderVisible$.subscribe(res=>{
+			this.isHeaderVisible = res
+		})
 
 	}
 
@@ -1132,6 +1137,17 @@ export class TopbarComponent implements OnInit {
 
 	topBarCheck(value) {
 		this.dataTableService.topBarCheck.next(value);
+		this.showInput = !value.checked
+		this.showSecondInput = value.checked
+		if(!value.checked){
+			this.dataTableService.searchInput.next('')
+		}
+	}
+
+	searchByMobile(data){
+		if(data.length == 10){
+			this.dataTableService.searchInput.next(data)
+		}
 	}
 
 	sort() {

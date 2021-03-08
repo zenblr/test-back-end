@@ -60,7 +60,7 @@ kt-auth,
 		border       : 1px solid #454c67;
 		border-radius: 25px;
 		background   : #454c67;
-		width        : 75%;
+		width        : 90%;
 		min-height   : 450px;
 	}
 
@@ -179,4 +179,13 @@ input[type="number"]:focus.login-form-input {
 
 .footer {
 	padding: 0 0 20px;
+}
+// added media query for responsive login form
+@media only screen and (min-width:768px){
+	kt-auth,
+	.kt-login {
+		.login-card {
+			width: 75%;
+		}
+	}
 }

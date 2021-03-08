@@ -465,6 +465,7 @@ export class MenuConfig {
 											bullet: 'dot',
 											permission: !(this.userType === 4),
 
+
 											submenu: [
 												{
 													title: "Email Template",

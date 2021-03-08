@@ -1,9 +1,9 @@
 <div ngbDropdown #userDropdown="ngbDropdown" placement="bottom-right" *ngIf="user$ | async as _user"
-	class="kt-header__topbar-item kt-header__topbar-item--user">
+	class="kt-header__topbar-item kt-header__topbar-item--user pt-2 pt-md-0">
 	<div ngbDropdownToggle class="kt-header__topbar-wrapper">
 		<div class="kt-header__topbar-user" [ngClass]="{'kt-header__topbar-icon': icon}">
 			<!-- <span class="kt-header__topbar-welcome kt-hidden-mobile" *ngIf="greeting">Hi,</span> -->
-			<span class="kt-header__topbar-username kt-hidden-mobile"
+			<span class="kt-header__topbar-username kt-hidden-mobile d-none d-xl-block"
 				*ngIf="greeting">{{(_user?.firstName + ' ' + _user?.lastName ) | titlecase}}</span>
 			<i *ngIf="icon" class="flaticon2-user-outline-symbol"></i>
 			<!-- <img *ngIf="(_user?.userDetail?.data?.UserImage != 'NA')" alt="Pic"
