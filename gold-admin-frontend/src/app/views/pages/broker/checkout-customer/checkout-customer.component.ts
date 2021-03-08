@@ -255,6 +255,18 @@ export class CheckoutCustomerComponent implements OnInit {
         //   this.showPrefilledDataFlag = false;
         // }
       });
+
+      if (res.customerDetails.digiKycApplied && res.kycRequired) {
+        if (res.customerDetails.digiKycApplied.status == 'rejected') {
+          this.toastr.errorToastr("Your can't proceed futher,Since your KYC as been rejected")
+          this.router.navigate(['/broker/shop'])
+
+        } else if (res.customerDetails.digiKycApplied.status == 'waiting') {
+          this.toastr.errorToastr("Your can't proceed futher,Since your KYC as not been approved")
+          this.router.navigate(['/broker/shop'])
+        } 
+      }
+
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
