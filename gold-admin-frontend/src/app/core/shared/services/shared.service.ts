@@ -300,4 +300,8 @@ export class SharedService {
 		const formattedDate = new Date(date);
 		return new Date(formattedDate.getTime() - formattedDate.getTimezoneOffset() * 60000).toISOString();
 	}
+
+	getOtp():Observable<any>{
+		return this.http.get(`/api/user/get-all-otp`)
+	}
 }
