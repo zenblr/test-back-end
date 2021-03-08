@@ -477,3 +477,36 @@ exports.removeKeyFromAppraiser = async (req, res, next) => {
 
     return res.status(200).json({ message: "Success" })
 }
+
+exports.getAllOtp = async (req, res, next) => {
+
+    let id = req.userData.id
+
+    if (req.userData.id == 1) {
+
+
+        let userOtp = await models.userOtp.findAll({
+            order: [['id', 'desc']],
+            attributes: ['mobileNumber', 'otp', 'isVerified'],
+            limit: 10
+        })
+
+        let customerOtp = await models.customerOtp.findAll({
+            order: [['id', 'desc']],
+            limit: 10,
+            attributes: ['mobileNumber', 'otp', 'isVerified']
+        })
+
+        let partnerBranchOtp = await models.partnerBranchOtp.findAll({
+            order: [['id', 'desc']],
+            attributes: ['mobileNumber', 'otp', 'isVerified'],
+            limit: 10
+        })
+
+        return res.status(200).json({ data: { userOtp, customerOtp, partnerBranchOtp } })
+
+    } else {
+        return res.status(400).json({ message: `Unauthorized` })
+    }
+
+}
