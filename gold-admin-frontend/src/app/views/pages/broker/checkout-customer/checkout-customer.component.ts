@@ -8,6 +8,8 @@ import { RazorpayPaymentService } from '../../../../core/shared/services/razorpa
 import { MatCheckbox, MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
 import { element } from 'protractor';
+import { PdfViewerComponent } from 'ng2-pdf-viewer';
+import { ImagePreviewDialogComponent } from '../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -38,6 +40,7 @@ export class CheckoutCustomerComponent implements OnInit {
   finalOrderNew: any;
   shippingCityCounter = 1;
   isSameAddress: boolean = false;
+  formData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +83,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
+      panImg: [],
       kycRequired: [false],
     });
     this.setPanDetailsValidators();
@@ -238,17 +242,17 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls['shippingCityName'].enable();
         this.controls['shippingPostalCode'].enable();
         this.getShippingCities();
-        if (res.customerDetails.kycDetails) {
-          this.checkoutCustomerForm.patchValue({
-            panCardNumber: res.customerDetails.kycDetails.panCardNumber,
-            nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
-            panCardFileId: res.customerDetails.kycDetails.panCardFileId
-          });
-        } else {
-          this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
-          this.controls['panCardNumber'].enable();
-          this.controls['panCardFileId'].enable();
-        }
+        // if (res.customerDetails.kycDetails) {
+        //   this.checkoutCustomerForm.patchValue({
+        //     panCardNumber: res.customerDetails.kycDetails.panCardNumber,
+        //     nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
+        //     panCardFileId: res.customerDetails.kycDetails.panCardFileId
+        //   });
+        // } else {
+        //   this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
+        //   this.controls['panCardNumber'].enable();
+        //   this.controls['panCardFileId'].enable();
+        // }
         // if (this.showPrefilledDataFlag) {
         //   const msg = 'Customer already exist. The Details will be automatically pre-filled';
         //   this.toastr.successToastr(msg);
@@ -257,14 +261,30 @@ export class CheckoutCustomerComponent implements OnInit {
       });
 
       if (res.customerDetails.digiKycApplied && res.kycRequired) {
-        if (res.customerDetails.digiKycApplied.status == 'rejected') {
-          this.toastr.errorToastr("Your can't proceed futher,Since your KYC as been rejected")
-          this.router.navigate(['/broker/shop'])
-
-        } else if (res.customerDetails.digiKycApplied.status == 'waiting') {
-          this.toastr.errorToastr("Your can't proceed futher,Since your KYC as not been approved")
-          this.router.navigate(['/broker/shop'])
-        } 
+        switch (res.customerDetails.digiKycApplied.status) {
+          case 'rejected':
+            this.toastr.errorToastr("Your can't proceed futher,Since your KYC as been rejected")
+            this.router.navigate(['/broker/shop'])
+            break;
+          case 'waiting':
+            this.toastr.errorToastr("Your can't proceed futher,Since your KYC as not been approved")
+            this.router.navigate(['/broker/shop'])
+            break;
+          case 'approved':
+            this.checkoutCustomerForm.patchValue({
+              panCardFileId: res.customerDetails.kycDetails.panCardFileId,
+              panCardNumber: res.customerDetails.panCardNumber,
+              nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
+              panImg: res.customerDetails.panImg
+            });
+            break;
+          case 'pending':
+            this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
+            this.controls['panCardNumber'].enable();
+            break;
+          default:
+            break;
+        }
       }
 
       this.showformFlag = true;
@@ -378,6 +398,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: this.controls.panCardNumber.value,
       nameOnPanCard: this.controls.nameOnPanCard.value,
       panCardFileId: this.controls.panCardFileId.value,
+      panImg: this.controls.panImg.value,
       blockId: this.checkoutData.blockId
     }
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
@@ -478,6 +499,83 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
+  }
+
+  validateImage(event) {
+    // if (this.validate) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    const img = new Image();
+    img.src = window.URL.createObjectURL(file);
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if ((width > 1500 || height > 1500) || (file.size > 200000)) {
+          this.toastr.errorToastr('Please Upload Image of Valid Size');
+          event.target.value = '';
+        } else {
+          this.uploadFile(event);
+        }
+        this.ref.detectChanges();
+      }, 2000);
+    }
+    // } else {
+    //   this.uploadFile(event);
+    // }
+  }
+
+  uploadFile(event) {
+    this.formData = new FormData();
+    for (const file of event.target.files) {
+      this.formData.append("avatar", file);
+    }
+    this.sharedService.fileUpload(this.formData, 'broker').subscribe(
+      res => {
+        this.checkoutCustomerForm.patchValue({
+          panCardFileId: res.uploadFile.id,
+          panImg: res.uploadFile.URL
+        })
+        // event.nativeElement.value = '';
+        this.ref.detectChanges();
+      },
+      err => {
+        event.nativeElement.value = '';
+        this.toastr.errorToastr(err['error']['message']);
+        this.ref.detectChanges();
+      }
+    );
+  }
+
+  preview(value) {
+    const img = value
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [img],
+          index: 0,
+        },
+        width: "auto"
+      })
+    }
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
   uploadImage(data) {
