@@ -480,7 +480,7 @@ export class CheckoutCustomerComponent implements OnInit {
       return;
     }
 
-    if ((this.checkoutData.kycRequired || this.existingCustomerData.kycRequired) && this.internalBranchId) {
+    if ((this.checkoutData.kycRequired || (this.existingCustomerData && this.existingCustomerData.kycRequired)) && this.internalBranchId) {
       let data = {
         panCardNumber: this.controls.panCardNumber.value,
         panImg: this.controls.panImg.value,
