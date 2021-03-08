@@ -2048,9 +2048,15 @@ let applyDigiKyc = async (req) => {
             } else {
                 await models.digiKycApplied.create({ customerId: customerId, status: 'approved' }, { transaction: t })
             }
-            await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
-            await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
+            if(firstName || lastName){
+             await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+            }else{
+             await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
+            }
+            await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
+            let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+            await createKyc(customer)
 
         } else {
             if (checkApplied) {
