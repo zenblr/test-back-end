@@ -571,7 +571,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
 							page: "/otp",
-							permission: !(this.userType === 1),
+							permission: !(this.userType === 4),
 						},
 						{
 							title: "Log Out",
