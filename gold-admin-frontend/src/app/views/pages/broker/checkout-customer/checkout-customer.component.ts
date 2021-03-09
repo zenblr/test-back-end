@@ -292,10 +292,16 @@ export class CheckoutCustomerComponent implements OnInit {
           default:
             break;
         }
-      } else if (this.controls.panImg.value) {
-        this.existingCustomerData.customerDetails.digiKycApplied.status == 'approved'
+      } else if (res.customerDetails.panCardNumber) {
+        this.existingCustomerData.customerDetails['digiKycApplied'] = {}
+        this.existingCustomerData.customerDetails['digiKycApplied']['status'] = 'approved'
+        this.checkoutCustomerForm.patchValue({
+          panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
+          panCardNumber: res.customerDetails.panCardNumber,
+          nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
+          panImg: res.customerDetails.panImg
+        });
       }
-console.log(this.existingCustomerData.customerDetails.digiKycApplied.status)
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
