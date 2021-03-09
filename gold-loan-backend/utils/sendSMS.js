@@ -20,7 +20,7 @@ let sendSms = async (mobileNumber, message, smsFrom) => {
                     {
                         "dest": [91${mobileNumber}],
                         "text": "${message}",
-                        "send": "AUGMNT",
+                        "send": "AUGTPL",
                         "dcs": "0",
                         "udhi_inc": "0",
                         "dlr_req": "1",
