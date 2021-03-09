@@ -290,6 +290,8 @@ export class CheckoutCustomerComponent implements OnInit {
           default:
             break;
         }
+      }else if(this.controls.panImg.value){
+        this.existingCustomerData.digiKycApplied.status == 'approved'
       }
 
       this.showformFlag = true;
