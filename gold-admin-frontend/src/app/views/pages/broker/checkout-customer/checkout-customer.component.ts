@@ -279,7 +279,12 @@ export class CheckoutCustomerComponent implements OnInit {
             });
             break;
           case 'pending':
-            this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
+            this.checkoutCustomerForm.patchValue({
+              panCardFileId: res.customerDetails.kycDetails.panCardFileId,
+              panCardNumber: res.customerDetails.panCardNumber,
+              nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
+              panImg: res.customerDetails.panImg
+            });
             this.controls['panCardNumber'].enable();
             break;
           default:
