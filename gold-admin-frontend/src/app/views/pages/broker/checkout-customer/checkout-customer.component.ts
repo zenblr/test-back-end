@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
@@ -15,6 +15,7 @@ import { ImagePreviewDialogComponent } from '../../../../views/partials/componen
   selector: 'kt-checkout-customer',
   templateUrl: './checkout-customer.component.html',
   styleUrls: ['./checkout-customer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -192,7 +193,7 @@ export class CheckoutCustomerComponent implements OnInit {
       invoiceAmount: this.checkoutData.invoiceAmount
     }
     this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
-      this.existingCustomerData = res;
+      this.existingCustomerData = { ...res };
       setTimeout(() => {
         this.checkoutCustomerForm.patchValue({
           firstName: res.customerDetails.firstName,
@@ -259,6 +260,7 @@ export class CheckoutCustomerComponent implements OnInit {
         //   this.showPrefilledDataFlag = false;
         // }
       });
+      this.checkoutCustomerForm.disable();
 
       if (res.customerDetails.digiKycApplied && res.kycRequired) {
         switch (res.customerDetails.digiKycApplied.status) {
@@ -272,7 +274,7 @@ export class CheckoutCustomerComponent implements OnInit {
             break;
           case 'approved':
             this.checkoutCustomerForm.patchValue({
-              panCardFileId: res.customerDetails.kycDetails.panCardFileId,
+              panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
               panCardNumber: res.customerDetails.panCardNumber,
               nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
               panImg: res.customerDetails.panImg
@@ -280,7 +282,7 @@ export class CheckoutCustomerComponent implements OnInit {
             break;
           case 'pending':
             this.checkoutCustomerForm.patchValue({
-              panCardFileId: res.customerDetails.kycDetails.panCardFileId,
+              panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
               panCardNumber: res.customerDetails.panCardNumber,
               nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
               panImg: res.customerDetails.panImg
@@ -290,16 +292,15 @@ export class CheckoutCustomerComponent implements OnInit {
           default:
             break;
         }
-      }else if(this.controls.panImg.value){
-        this.existingCustomerData.digiKycApplied.status == 'approved'
+      } else if (this.controls.panImg.value) {
+        this.existingCustomerData.customerDetails.digiKycApplied.status == 'approved'
       }
-
+console.log(this.existingCustomerData.customerDetails.digiKycApplied.status)
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
       this.showShippingCustomerFlag = true;
       this.finalOrderData = null;
-      this.checkoutCustomerForm.disable();
       this.ref.detectChanges();
     },
       error => {
