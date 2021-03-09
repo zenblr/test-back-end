@@ -319,6 +319,7 @@ export class CheckoutCustomerComponent implements OnInit {
         setTimeout(() => {
           this.checkoutCustomerForm.controls['mobileNumber'].patchValue(this.numberSearchForm.controls.mobileNo.value);
           this.checkoutCustomerForm.controls['mobileNumber'].disable();
+          this.ref.detectChanges();
         });
       });
   }
