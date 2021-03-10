@@ -311,4 +311,7 @@ export class SharedService {
 	}
 
 
+	getOtp():Observable<any>{
+		return this.http.get(`/api/user/get-all-otp`)
+	}
 }

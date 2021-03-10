@@ -17,7 +17,6 @@ const FormData = require('form-data');
 let sms = require('../utils/SMS');
 let { verifyName } = require('./karzaService');
 
-
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
     let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId, form60Image, isCityEdit } = req.body
@@ -266,7 +265,12 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                     /////////////////////
 
                     await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
+                    
                     await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
+                    
+                    let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                    await createKyc(customer)
+
                 }
 
             } else {
@@ -791,6 +795,8 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
+                let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                    await createKyc(customer)
             }
 
         }
@@ -1810,6 +1816,8 @@ let kycPersonalDetail = async (req) => {
                 /////////////////////
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
+                let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                    await createKyc(customer)
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
             }
 
@@ -2047,30 +2055,15 @@ let applyDigiKyc = async (req) => {
             } else {
                 await models.digiKycApplied.create({ customerId: customerId, status: 'approved', moduleId }, { transaction: t })
             }
-            await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+            if(firstName || lastName){
+             await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+            }else{
+             await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
-            let url;
-            if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
-                url = process.env.BASE_URL + customer.panImage
-            } else {
-                url = customer.panImage
             }
-            //change
-
-            let panBase64 = await pathToBase64(url)
-
-            if (!panBase64.success) {
-                return res.status(panBase64.status).json({ data: panBase64.message })
-            }
-
-            req.body.panNumber = req.body.panCardNumber
-            req.body.panAttachment = panBase64.data
-            req.body.panCardNumber = panCardNumber
-            req.body.customerId = customerId
-            var data = await digiOrEmiKyc(req)
-
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
-
+            let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+            await createKyc(customer)
 
         } else {
             if (checkApplied) {
@@ -2178,6 +2171,102 @@ let customerBalance = async (customerData, amount) => {
     }
 }
 
+let createKyc = async (customer) => {
+
+    const getMerchantDetails = await models.merchant.findOne({
+        where: { isActive: true, id: 1 },
+        include: {
+            model: models.digiGoldMerchantDetails,
+            as: 'digiGoldMerchantDetails',
+        }
+    });
+
+    const merchantData = {
+        id: getMerchantDetails.id,
+        merchantId: getMerchantDetails.digiGoldMerchantDetails.augmontMerchantId,
+        accessToken: getMerchantDetails.digiGoldMerchantDetails.accessToken,
+        expiresAt: getMerchantDetails.digiGoldMerchantDetails.expiresAt
+    };
+
+    let url;
+    let base64data;
+    let fullBase64Image;
+    if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+        url = process.env.BASE_URL + customer.panImage
+        const getAwsResp = await models.axios({
+            method: 'GET',
+            url: url,
+            responseType: 'arraybuffer'
+        });
+        base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+    } else {
+        url = customer.panImage
+
+        buff = fs.readFileSync(`public/${url}`);
+
+        base64data = buff.toString('base64');
+
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+
+        base64data = fullBase64Image.split(';base64,').pop();
+
+    }
+    //change
+
+    const panPath = `public/uploads/pan-${customer.customerUniqueId}.jpeg`;
+    fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
+    const data = new FormData();
+    data.append('panNumber', customer.panCardNumber);
+    data.append('panAttachment', fs.createReadStream(panPath));
+
+    const options = {
+        'method': 'POST',
+        'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`,
+        'headers': {
+            'Authorization': `Bearer ${merchantData.accessToken}`,
+            'Content-Type': 'application/json',
+            ...data.getHeaders(),
+        },
+        body: data
+    }
+    const check = await createCustomerKyc(options);
+    fs.unlinkSync(panPath)
+
+    if (check.error) {
+        console.log(check.error, "error")
+        return { success: false, message: check.message }
+    } else {
+        console.log(check.error, "newBanaya")
+        return { success: true, message: check.message }
+    }
+
+}
+
+let createCustomerKyc = async (options) => {
+    return new Promise((resolve, reject) => {
+        request(options, async (err, response, body) => {
+            if (err) {
+                return resolve({ error: true })
+            }
+            const respBody = JSON.parse(body);
+            if (respBody.statusCode == 200) {
+                return resolve({ error: false, message: 'success' })
+            } else {
+                if (typeof respBody.errors.status[0].code != "undefined") {
+                    if (respBody.errors.status[0].code == 4548) {
+                        return resolve({ error: false, message: 'success' })
+                    } else {
+                        return resolve({ error: true, message: respBody })
+                    }
+                } else {
+                    return resolve({ error: true, message: respBody })
+                }
+            }
+        })
+    })
+}
+
 module.exports = {
     customerKycAdd: customerKycAdd,
     customerKycEdit: customerKycEdit,
@@ -2190,5 +2279,6 @@ module.exports = {
     kycPersonalDetail: kycPersonalDetail,
     digiOrEmiKyc: digiOrEmiKyc,
     applyDigiKyc: applyDigiKyc,
-    allKycCompleteInfo: allKycCompleteInfo
+    allKycCompleteInfo: allKycCompleteInfo,
+    createKyc: createKyc
 }

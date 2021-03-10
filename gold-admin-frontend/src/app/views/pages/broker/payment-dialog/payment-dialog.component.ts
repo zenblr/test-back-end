@@ -17,7 +17,7 @@ export class PaymentDialogComponent implements OnInit {
   branches = [];
   details: any;
   file: any;
-  minDate = new Date()
+  // minDate = new Date()
   maxDate = new Date()
   // currentDate = new Date();
 
@@ -31,7 +31,7 @@ export class PaymentDialogComponent implements OnInit {
   ) {
     // this.minDate.setDate(this.minDate.getDate() - 1);
     if (this.data.isEMI) {
-      this.minDate = this.data.createdAt
+      // this.minDate = this.data.createdAt
     }
   }
 

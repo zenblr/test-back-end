@@ -465,6 +465,7 @@ export class MenuConfig {
 											bullet: 'dot',
 											permission: !(this.userType === 4),
 
+
 											submenu: [
 												{
 													title: "Email Template",
@@ -565,6 +566,13 @@ export class MenuConfig {
 									permission: !(this.userType === 4)
 								},
 							]
+						},
+						{
+							title: "Otp",
+							root: true,
+							src: "assets/media/aside-icons/icons-29.svg",
+							page: "/otp",
+							permission: !(this.userType === 4),
 						},
 						{
 							title: "Log Out",

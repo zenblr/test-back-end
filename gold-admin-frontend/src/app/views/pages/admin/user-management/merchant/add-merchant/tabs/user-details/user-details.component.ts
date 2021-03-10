@@ -85,7 +85,7 @@ export class UserDetailsComponent implements OnInit {
       email: merchantDetails.user.email,
       mobileNumber: merchantDetails.user.mobileNumber,
       stateId: merchantDetails.user.address[0].state.id,
-      cityId: merchantDetails.user.address[0].city.id,
+      cityId: merchantDetails.user.address[0].city?merchantDetails.user.address[0].city.id:null,
       pinCode: merchantDetails.user.address[0].postalCode,
       initial: merchantDetails.initial
     }

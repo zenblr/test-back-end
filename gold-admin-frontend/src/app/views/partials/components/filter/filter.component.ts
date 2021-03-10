@@ -68,6 +68,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	cronStatusArray: { name: string; value: string; }[];
 	cronTypeArray: { name: string; value: string; }[];
 	modules = [];
+	userDetails: any;
 
 	constructor(
 		private fb: FormBuilder,
@@ -101,6 +102,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				});
 			}
 		});
+
+		this.getUserDetails();
 	}
 
 	ngOnInit() {
@@ -163,7 +166,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							this.cronType()
 							break
 						case 'modulePoint':
-							this.getModulePoints()
+							this.getModulePoints();
+							this.status();
 					}
 				}
 			}
@@ -630,15 +634,27 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
+	getUserDetails() {
+		this.sharedService.getTokenDecode().subscribe(res => this.userDetails = res);
+	}
+
 	getMerchant() {
 		this.sharedService.getMerchant().subscribe((res) => {
-			this.merchantList = res;
+			if (res.length) {
+				if (!(this.userDetails.userTypeId == 4)) {
+					this.merchantList = res.filter(e => e.id == 1)
+				} else {
+					this.merchantList = res;
+				}
+			}
 		});
 	}
 
 	getModulePoints() {
 		this.sharedService.getModulePoints().subscribe((res) => {
 			this.modules = res;
+			console.log(this.modules);
+			
 		});
 	}
 
