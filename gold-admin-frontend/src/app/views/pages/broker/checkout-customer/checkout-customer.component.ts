@@ -461,6 +461,7 @@ export class CheckoutCustomerComponent implements OnInit {
       this.finalOrderData = res;
       // const msg = 'OTP has been sent successfully.';
       this.toastr.successToastr(res.message);
+      this.ref.detectChanges()
     },
       error => {
         console.log(error.error.message);
