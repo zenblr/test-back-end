@@ -120,7 +120,7 @@ exports.addCustomer = async (req, res, next) => {
     // });
 
     if (panCardNumber != null && panImage != null && statusId == 1) {
-      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' }, { transaction: t })
+      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting', moduleId }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
       // applied
@@ -349,7 +349,9 @@ exports.editCustomer = async (req, res, next) => {
     );
 
     if (panCardNumber != null && panImage != null && statusId == 1) {
-      await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
+      let customer = await models.customer.findOne({ where: { id: customerId } })
+
+      await models.digiKycApplied.create({ customerId: customerId, status: 'waiting', moduleId: customer.moduleId }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
       await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);

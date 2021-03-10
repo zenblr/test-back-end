@@ -113,8 +113,8 @@ export class SharedService {
 		return this.http.get(`/api/city?stateId=${id}`).toPromise();
 	}
 
-	newCity(data):Observable<any>{
-		return this.http.post(`/api/city/new-city`,data);
+	newCity(data): Observable<any> {
+		return this.http.post(`/api/city/new-city`, data);
 	}
 
 	uploadFile(files, data?): Observable<any> {
@@ -304,7 +304,11 @@ export class SharedService {
 		const formattedDate = new Date(date);
 		return new Date(formattedDate.getTime() - formattedDate.getTimezoneOffset() * 60000).toISOString();
 	}
-	 
+
+
+	createEmiCustomer(data): Observable<any> {
+		return this.http.post(API_ENDPOINT + `api/customer/create-emi-customer`, data ).pipe(map(res => res))
+	}
 
 
 }

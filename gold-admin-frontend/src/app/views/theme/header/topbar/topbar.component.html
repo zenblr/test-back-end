@@ -1,5 +1,6 @@
 <!-- begin:: Header Topbar -->
-<div class="kt-header__topbar">
+<div class="kt-header__topbar"
+[ngClass]="{'is-header-height': isHeaderVisible, 'header-height': !isHeaderVisible}">
     <div class="row justify-content-center">
         <div class="align-self-center" *ngIf="showBackButton" (click)="goBack()">
             <img style="margin-bottom: 0.5rem;" src="../../../../../assets//media/icons/arrow_back.svg"
@@ -7,7 +8,7 @@
         </div>
         <div class="col align-self-center">
             <div class="kt-subheader__main m-0" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
-                <label *ngIf="title" class="kt-subheader__title">{{title}}</label>
+                <label *ngIf="title" class="kt-subheader__title pt-3 pt-md-0">{{title}}</label>
                 <span class="kt-subheader__divider" *ngIf="totalRecords">|</span>
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}} Total</label>
             </div>
@@ -15,7 +16,8 @@
         <kt-user-profile></kt-user-profile>
     </div>
     <div class="row justify-content-center" [ngClass]="{'heightLowerTopbar': showSubHeader}">
-        <div class="col-6 offset-4 align-self-center">
+        <!-- changes display column for responsive -->
+        <div class="col-md-6 offset-md-4 col-10 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <input type="text" #searchInput class="form-control form-control-search" placeholder="enter mobile number"
                 *ngIf="showSecondInput" (input)="searchByMobile(searchInput.value)" numbersOnly>
@@ -46,7 +48,8 @@
                 </mat-button-toggle-group>
             </span>
         </div>
-        <div class="col-2 justify-content-end d-inline-flex align-self-center">
+        <!-- changes display column for responsive -->
+        <div class="col-md-2 col-2 justify-content-end d-inline-flex align-self-xl-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
             <kt-button [value]="'../../../../../assets/media/icons/globe.svg'" [type]='"image"' (click)="navigate()"
                 class="kt-margin-r-10 kt-margin-l-10" *ngIf="globalMap">
@@ -81,5 +84,8 @@
     <kt-button *ngIf="value5" [value]='value5' [type]='type5' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
-    <mat-checkbox *ngIf="value6" (change)="topBarCheck($event)">{{value6}}</mat-checkbox>
+    <div *ngIf="value6" class="d-xl-inline text-center text-xl-left">
+        <mat-checkbox  (change)="topBarCheck($event)">{{value6}}</mat-checkbox>
+    </div>
+    
 </ng-template>

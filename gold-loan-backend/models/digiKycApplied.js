@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         reasonForDigiKyc: {
             type: DataTypes.TEXT,
             field: 'reason_for_digi_kyc'
+        },
+
+        moduleId: {
+            type: DataTypes.INTEGER,
+            field: 'module_id',
+            defaultValue:1
         }
 
     },

@@ -18,6 +18,7 @@
 	);
 	.kt-aside--minimize & {
 		display: block;
+		height: auto;
 	}
 
 	.kt-aside__brand-logo {
@@ -125,5 +126,20 @@
 @include kt-tablet-and-mobile {
 	.kt-aside__brand {
 		display: none;
+
+		.kt-aside__brand-logo {
+			justify-content: center;
+		}
+	}
+
+	.kt-aside__gold-rate {
+		.gold-rate__label {
+			.kt-aside--minimize & {
+				display: inline;
+			}
+		}
+		.kt-aside--minimize & {
+			padding: 1rem 0 0;
+		}
 	}
 }

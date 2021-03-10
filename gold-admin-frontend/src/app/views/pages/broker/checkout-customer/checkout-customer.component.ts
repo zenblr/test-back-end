@@ -7,7 +7,11 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/b
 import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
 import { MatCheckbox, MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
-import { element } from 'protractor';
+import { CreateCustomerComponent } from '../customers/create-customer/create-customer.component';
+import { LeadService } from '../../../../core/lead-management/services/lead.service';
+import { map } from 'rxjs/operators';
+import { AppliedKycService } from '../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -38,7 +42,9 @@ export class CheckoutCustomerComponent implements OnInit {
   finalOrderNew: any;
   shippingCityCounter = 1;
   isSameAddress: boolean = false;
-
+  pan: any = { name: { firstName: '', lastName: '' }, userName: { firstName: '', lastName: '' } };
+  internalBranchId: any;
+  isPanEditAble: boolean = false;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -49,12 +55,18 @@ export class CheckoutCustomerComponent implements OnInit {
     private zone: NgZone,
     private razorpayPaymentService: RazorpayPaymentService,
     public dialog: MatDialog,
+    private leadService: LeadService,
+    private appliedKycService: AppliedKycService
   ) { }
 
   ngOnInit() {
     this.formInitialize();
     this.getCheckoutCart();
     this.getStates();
+    this.sharedService.getTokenDecode().subscribe(res => {
+      this.internalBranchId = res.internalBranchId
+      this.controls.customerId.patchValue(res.id)
+    })
   }
 
   formInitialize() {
@@ -81,6 +93,11 @@ export class CheckoutCustomerComponent implements OnInit {
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
       kycRequired: [false],
+      panImg: [],
+      customerId: [],
+      isPanVerified: [false],
+      isAppliedForKyc: [false],
+      dateOfBirth: []
     });
     this.setPanDetailsValidators();
 
@@ -136,6 +153,9 @@ export class CheckoutCustomerComponent implements OnInit {
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
         this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
         this.customerKyc = this.checkoutData.kycRequired;
+        if(this.checkoutData.kycRequired){
+          this.isPanEditAble = true
+        }
       }
     },
       error => {
@@ -196,7 +216,10 @@ export class CheckoutCustomerComponent implements OnInit {
           mobileNumber: res.customerDetails.mobileNumber,
           email: res.customerDetails.email,
           kycRequired: res.kycRequired,
+          customerId: res.customerDetails.id
         });
+        this.pan.userName.firstName = res.customerDetails.firstName
+        this.pan.userName.lastName = res.customerDetails.lastName
         if (res.customerDetails.customeraddress.length) {
           this.checkoutCustomerForm.patchValue({
             address: res.customerDetails.customeraddress[0].address,
@@ -248,12 +271,31 @@ export class CheckoutCustomerComponent implements OnInit {
           this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
           this.controls['panCardNumber'].enable();
           this.controls['panCardFileId'].enable();
+          this.removeImage()
         }
         // if (this.showPrefilledDataFlag) {
         //   const msg = 'Customer already exist. The Details will be automatically pre-filled';
         //   this.toastr.successToastr(msg);
         //   this.showPrefilledDataFlag = false;
         // }
+        if (res.customerDetails.digiKycApplied && this.checkoutData.kycRequired) {
+          if (res.customerDetails.digiKycApplied.status == 'approved') {
+            this.controls.isPanVerified.patchValue(true)
+          }
+          else if (res.customerDetails.digiKycApplied.status == 'rejected') {
+            this.toastr.errorToastr("Your can't proceed futher,Since your KYC as been rejected")
+            this.router.navigate(['/broker/shop'])
+
+          } else if (res.customerDetails.digiKycApplied.status == 'waiting') {
+            this.toastr.errorToastr("Your can't proceed futher,Since your KYC as not been approved")
+            this.router.navigate(['/broker/shop'])
+          } else if (res.customerDetails.digiKycApplied.status == 'pending') {
+            this.isPanEditAble = false;
+          }
+        } else {
+          this.isPanEditAble = true;
+          this.ref.detectChanges();
+        }
       });
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
@@ -270,6 +312,16 @@ export class CheckoutCustomerComponent implements OnInit {
           this.toastr.errorToastr(msg);
         }
         this.checkCustomerType('new');
+        const dialogRef = this.dialog.open(CreateCustomerComponent, { data: { action: 'add', mobileNumber: this.numberSearchForm.controls.mobileNo.value }, width: '500px' });
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            this.checkoutCustomerForm.controls['customerId'].patchValue(res.id)
+            this.checkoutCustomerForm.controls['firstName'].patchValue(res.firstName)
+            this.checkoutCustomerForm.controls['lastName'].patchValue(res.lastName)
+            this.checkoutCustomerForm.controls['firstName'].disable()
+            this.checkoutCustomerForm.controls['lastName'].disable()
+          }
+        })
         setTimeout(() => {
           this.checkoutCustomerForm.controls['mobileNumber'].patchValue(this.numberSearchForm.controls.mobileNo.value);
           this.checkoutCustomerForm.controls['mobileNumber'].disable();
@@ -366,7 +418,11 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: this.controls.panCardNumber.value,
       nameOnPanCard: this.controls.nameOnPanCard.value,
       panCardFileId: this.controls.panCardFileId.value,
-      blockId: this.checkoutData.blockId
+      blockId: this.checkoutData.blockId,
+      isAppliedForKyc: this.controls.isAppliedForKyc.value,
+      panImg: this.controls.panImg.value,
+      dateOfBirth: this.controls.dateOfBirth.value,
+      customerId:this.controls.customerId.value
     }
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
@@ -426,6 +482,40 @@ export class CheckoutCustomerComponent implements OnInit {
       this.otpForm.markAllAsTouched();
       return;
     }
+
+    if ((this.checkoutData.kycRequired || (this.existingCustomerData && this.existingCustomerData.kycRequired)) && this.internalBranchId) {
+      let data = {
+        panCardNumber: this.controls.panCardNumber.value,
+        panImg: this.controls.panImg.value,
+        isPanVerified: this.controls.isPanVerified.value,
+        customerId: this.controls.customerId.value
+      }
+      this.checkoutCustomerService.createDigiKyc(data).pipe(map(res => {
+        if (res.message == 'KYC Pending') {
+
+          this.router.navigate(['/broker/shop'])
+          this.toastr.errorToastr("Your KYC is pending")
+
+        } else if (res.message == 'KYC Approved') {
+          this.editDigiGoldKyc(res.data)
+          this.verify()
+          return
+
+        }
+      })).subscribe()
+    } else {
+      this.verify()
+    }
+
+  }
+
+  editDigiGoldKyc(data) {
+    data['panCardNumber'] = this.controls.panCardNumber.value
+    data['panAttachment'] = this.controls.panImg.value
+    this.appliedKycService.editDigiGoldKyc(data).pipe(map(res => res)).subscribe()
+  }
+
+  verify() {
     const verifyOTPData = {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
@@ -472,10 +562,49 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue(
       data.uploadData.id
     );
+    let url = data.uploadData.url.substring(data.uploadData.url.indexOf('/') + 1)
+    this.checkoutCustomerForm.controls['panImg'].patchValue(
+      url
+    );
+    console.log(url)
+    this.getPanDetails()
   }
 
-  removeImage(data) {
+  getPanDetails() {
+    this.controls.panCardNumber.reset()
+    this.controls.isPanVerified.patchValue(false)
+    this.leadService.getPanDetailsFromKarza(this.checkoutCustomerForm.controls.panImg.value, this.checkoutCustomerForm.controls.customerId.value).subscribe(res => {
+      this.controls.isAppliedForKyc.patchValue(true)
+      let name = res.data.name.split(" ")
+      let lastName = name[name.length - 1]
+      name.splice(name.length - 1, 1)
+      this.controls.nameOnPanCard.patchValue(res.data.name)
+      this.controls.lastName.patchValue(lastName)
+      this.controls.firstName.patchValue(name.join(" "))
+      this.pan.name.firstName = name.join(" ")
+      this.pan.name.lastName = lastName
+      this.controls.panCardNumber.patchValue(res.data.idNumber)
+      this.controls.dateOfBirth.patchValue(moment(res.data.dob, "DD/MM/YYYY").format("YYYY-MM-DD"))
+      // this.isPanVerified = res.data.isPanVerified
+      // if (res.data.isPanVerified)
+      this.controls.isPanVerified.patchValue(res.data.isPanVerified)
+      // this.resetOnPanChange = false
+      this.controls.panCardNumber.disable()
+      this.controls.nameOnPanCard.disable()
+      console.log(res.data.dob)
+      // this.controls.lastName.disable()
+    })
+  }
+
+  removeImage(data?) {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
+    this.checkoutCustomerForm.controls['panCardNumber'].patchValue('');
+    this.checkoutCustomerForm.controls['nameOnPanCard'].patchValue('');
+    this.controls.panCardNumber.enable()
+    this.controls.nameOnPanCard.enable()
+    this.controls.firstName.patchValue(this.pan.userName.firstName)
+    this.controls.lastName.patchValue(this.pan.userName.lastName)
+    this.isPanEditAble = true
   }
 
   razorPayResponsehandler(response) {
