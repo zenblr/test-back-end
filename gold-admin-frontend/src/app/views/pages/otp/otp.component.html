@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-6">
+        <h3 class="py-2">customer</h3>
+        <div class="table-div">
+            <table class="table">
+                <thead>
+
+                    <th>Mobile Number</th>
+                    <th>Otp</th>
+                </thead>
+                <tr *ngFor="let gold of customer;">
+                    <td>
+                        {{gold.mobileNumber }}
+                    </td>
+                    <td>
+                        {{gold.otp }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <h3 class="py-2">partner</h3>
+        <div class="table-div">
+            <table class="table">
+                <thead>
+
+                    <th>Mobile Number</th>
+                    <th>Otp</th>
+                </thead>
+                <tr *ngFor="let gold of partner;">
+                    <td>
+                        {{gold.mobileNumber }}
+                    </td>
+                    <td>
+                        {{gold.otp }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <div class="col-6">
+        <h3 class="py-2">User</h3>
+        <div class="table-div">
+            <table class="table">
+                <thead>
+
+                    <th>Mobile Number</th>
+                    <th>Otp</th>
+                </thead>
+                <tr *ngFor="let gold of user;">
+                    <td>
+                        {{gold.mobileNumber }}
+                    </td>
+                    <td>
+                        {{gold.otp }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
