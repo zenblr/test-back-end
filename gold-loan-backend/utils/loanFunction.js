@@ -3373,9 +3373,8 @@ let partPaymnetSettlement = async (transactionId, status, paymentReceivedDate, m
 
 
 
-            // let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
-
-            // await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
+            let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+            await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
 
         })
 
