@@ -76,3 +76,20 @@
         background: #dee2e68f;
     }
 }
+
+.is-header-height{ 
+	height: 102px;
+}
+.header-height{
+	height: 44px;
+}
+@media only screen and (min-width:768px){
+	.is-header-height{ 
+		height: 92px;
+	}
+	.header-height{
+		height: 44px;
+	}
+}
+
+	

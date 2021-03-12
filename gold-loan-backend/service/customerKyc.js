@@ -2022,7 +2022,7 @@ let applyDigiKyc = async (req) => {
     if (customer.moduleId) {
         moduleId = customer.moduleId
     } else {
-        let module = await models.customer.findOne({ where: { moduleName: "digital gold" } })
+        let module = await models.module.findOne({ where: { moduleName: "digital gold" } })
         moduleId = module['id']
     }
 
