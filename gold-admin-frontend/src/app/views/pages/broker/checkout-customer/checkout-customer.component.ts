@@ -465,7 +465,8 @@ export class CheckoutCustomerComponent implements OnInit {
       isAppliedForKyc: this.controls.isAppliedForKyc.value,
       panImg: this.controls.panImg.value,
       dateOfBirth: this.controls.dateOfBirth.value,
-      customerId:this.controls.customerId.value
+      customerId: this.controls.customerId.value,
+      isPanVerified:this.controls.isPanVerified.value
     }
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
@@ -508,11 +509,18 @@ export class CheckoutCustomerComponent implements OnInit {
 
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
-      console.log(res);
-      this.finalOrderData = res;
-      // const msg = 'OTP has been sent successfully.';
-      this.toastr.successToastr(res.message);
-      this.ref.detectChanges()
+      if (res.message == 'KYC Pending') {
+
+        this.router.navigate(['/broker/shop'])
+        this.toastr.errorToastr("Your KYC is pending")
+
+      } else {
+        console.log(res);
+        this.finalOrderData = res;
+        // const msg = 'OTP has been sent successfully.';
+        this.toastr.successToastr(res.message);
+        this.ref.detectChanges()
+      }
     },
       error => {
         console.log(error.error.message);
@@ -527,39 +535,6 @@ export class CheckoutCustomerComponent implements OnInit {
       return;
     }
 
-    if ((this.checkoutData.kycRequired || this.existingCustomerData.kycRequired) && this.internalBranchId) {
-      let data = {
-        panCardNumber: this.controls.panCardNumber.value,
-        panImg: this.controls.panImg.value,
-        isPanVerified: this.controls.isPanVerified.value,
-        customerId: this.controls.customerId.value
-      }
-      this.checkoutCustomerService.createDigiKyc(data).pipe(map(res => {
-        if (res.message == 'KYC Pending') {
-
-          this.router.navigate(['/broker/shop'])
-          this.toastr.errorToastr("Your KYC is pending")
-
-        } else if (res.message == 'KYC Approved') {
-          this.editDigiGoldKyc(res.data)
-          this.verify()
-          return
-
-        }
-      })).subscribe()
-    } else {
-      this.verify()
-    }
-
-  }
-
-  editDigiGoldKyc(data) {
-    data['panCardNumber'] = this.controls.panCardNumber.value
-    data['panAttachment'] = this.controls.panImg.value
-    this.appliedKycService.editDigiGoldKyc(data).pipe(map(res => res)).subscribe()
-  }
-
-  verify() {
     const verifyOTPData = {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
@@ -600,7 +575,15 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
+
   }
+
+  editDigiGoldKyc(data) {
+    data['panCardNumber'] = this.controls.panCardNumber.value
+    data['panAttachment'] = this.controls.panImg.value
+    this.appliedKycService.editDigiGoldKyc(data).pipe(map(res => res)).subscribe()
+  }
+
 
   validateImage(event) {
     // if (this.validate) {
