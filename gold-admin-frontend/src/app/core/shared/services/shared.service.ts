@@ -222,15 +222,21 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount, masterLoanId): Observable<any> {
-		return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
-			map(res => res)
-		)
-	}
+	// paymentGateWay(amount, masterLoanId): Observable<any> {
+	// 	return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
+	// 		map(res => res)
+	// 	)
+	// }
 
 	//  for quick pay and part payment 
 	paymentGateWayForFullAndPart(masterLoanId, ornamentId): Observable<any> {
 		return this.http.post(`api/jewellery-release/razor-pay`, { masterLoanId, ornamentId }).pipe(
+			map(res => res)
+		)
+	}
+
+	paymentGateWay(data): Observable<any> {
+		return this.http.post(`api/razor-pay`, data).pipe(
 			map(res => res)
 		)
 	}
@@ -304,7 +310,8 @@ export class SharedService {
 		const formattedDate = new Date(date);
 		return new Date(formattedDate.getTime() - formattedDate.getTimezoneOffset() * 60000).toISOString();
 	}
-	 
 
-
+	getOtp():Observable<any>{
+		return this.http.get(`/api/user/get-all-otp`)
+	}
 }
