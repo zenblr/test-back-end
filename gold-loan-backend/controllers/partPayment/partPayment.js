@@ -825,9 +825,9 @@ exports.partPayment = async (req, res, next) => {
                     }
                 }
 
-                // let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                // await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
+                await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
             }
             ///////////
             return customerLoanTransaction

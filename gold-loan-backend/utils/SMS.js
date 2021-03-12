@@ -2,14 +2,15 @@ const sms = require('./sendSMS');
 const models = require('../models');
 // const smsLink = `https://www.indiapost.gov.in/_layouts/15/DOP.Portal.Tracking/TrackConsignment.aspx`;
 // const smsLink = `Gold loan admin panel`
-
+const moment = require('moment')
 
 exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Login with OTP');
+    time = moment(time).format("DD/MM/YYYY HH:mm:ss")
     // Dear <User name>, Please use OTP <OTP number> valid upto <Time> to log in to your Augmont gold loan account.  Please visit <Web site> to log in
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<User name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time).replace("<Web site>", smsLink)
-      
+
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -20,14 +21,15 @@ exports.sendMessageOtpForLogin = async (mobileNumber, otp) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<OTP number>', otp)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
- 
+
 
 exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Forgot password');
+    time = moment(time).format("DD/MM/YYYY HH:mm:ss")
     // Dear <User name>, Your request has been received. OTP is <OTP number> valid upto <Time>.  Please visit <Web site> to reset your password
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<User name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time).replace("<Web site>", smsLink)
@@ -39,10 +41,11 @@ exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time, smsLink) 
 
 exports.sendOtpToLeadVerification = async (mobileNumber, firstName, otp, time) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Send OTP (LOAN)');
+    time = moment(time).format("DD/MM/YYYY HH:mm:ss")
     // Dear <Lead name>, We look forward to have you as a customer. OTP is <OTP number>, valid up to <Time>, for mobile verification purposes.  Please merely confirm that you have received the OTP
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<Lead name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time)
-        console.log("sendOtpToLeadVerification",message)
+        console.log("sendOtpToLeadVerification", message)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -163,8 +166,9 @@ exports.sendFullReleaseRequestMessage = async (mobileNumber, customerName, loanU
 exports.sendFullReleaseRequestApprovalMessage = async (mobileNumber, customerName, loanUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Full Release Request Approval(By ops) (LOAN)');
     //Dear <Customer Name>, Your Jewellery release request against gold loan (<loan id>) has been approved
+    //Dear {#var#}, Your Jewellery release request against gold loan ({#var#}) has been approved. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -181,8 +185,9 @@ exports.sendFullReleaseAssignAppraiserMessage = async (mobileNumber, customerNam
 exports.sendJewelleryFullReleaseCompletedMessage = async (mobileNumber, customerName, loanUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Jewellery Full Release Completed (LOAN)');
     //Dear <Customer Name>, Your jewellery release request has been completed against gold loan (<loan id>)
+    //Dear {#var#}, Your jewellery release request has been completed against gold loan {#var#}. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -190,8 +195,9 @@ exports.sendJewelleryFullReleaseCompletedMessage = async (mobileNumber, customer
 exports.sendTransferLoanRequestMessage = async (mobileNumber, customerName) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Transfer Loan Request (LOAN)');
     //Dear <Customer Name>, We have received the loan transfer request, we will check and update you in 48 hrs
+    //Dear {#var#}, We have received the loan transfer request, we will check and update you in 48 hrs. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName)
+        let message = await messageTemplate.content.replace("{#var#}", customerName)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -251,7 +257,7 @@ exports.sendMessageForKycUpdate = async (mobileNumber) => {
     }
 }
 
-exports.sendMessageForKycApproved = async (mobileNumber,accountId) => {
+exports.sendMessageForKycApproved = async (mobileNumber, accountId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Kyc Approved');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<accountId>", accountId);
@@ -295,56 +301,56 @@ exports.sendMessageForKycRejected = async (mobileNumber, accountId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<accountId>", accountId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
 
-exports.sendMessageAfterKycApproved= async (mobileNumber, accountId) => {
+exports.sendMessageAfterKycApproved = async (mobileNumber, accountId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Verification(Approve)');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<accountId>", accountId)
-        let smsFrom = "customer" 
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
-exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
+exports.sendMessageForKycPending = async (mobileNumber, memberId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Update(Pending)');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<memberId>", memberId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
 ///for wallet buy sell deposit withdraw 
-exports.sendMessageForBuy = async (mobileNumber,quantity, metalType, amount) => {
+exports.sendMessageForBuy = async (mobileNumber, quantity, metalType, amount) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
-exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount,type) => {
-if(type=="bankAccount"){
-    let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
-    if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
-        let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+exports.sendMessageForSell = async (mobileNumber, quantity, metalType, amount, type) => {
+    if (type == "bankAccount") {
+        let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+        if (messageTemplate) {
+            let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
+            let smsFrom = "customer"
+            await sms.sendSms(mobileNumber, message, smsFrom);
+        }
+    } else if (type == "augmontWallet") {
+        let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet');
+        if (messageTemplate) {
+            let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
+            let smsFrom = "customer"
+
+            await sms.sendSms(mobileNumber, message, smsFrom);
+        }
     }
-}else if (type=="augmontWallet"){
-    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet');
-    if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
-        let smsFrom = "customer"
-      
-        await sms.sendSms(mobileNumber, message,smsFrom);
-    }
-}
-    
+
 }
 
 // exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
@@ -362,7 +368,7 @@ exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-           await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
@@ -371,7 +377,7 @@ exports.sendMessageForDepositRequestAccepted = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
@@ -380,7 +386,7 @@ exports.sendMessageForDepositRequestRejected = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
@@ -389,7 +395,7 @@ exports.sendMessageForWithdrawalPaymentCompleted = async (mobileNumber, amount) 
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 exports.sendMessageForWithdrawalRejected = async (mobileNumber, amount) => {
@@ -397,7 +403,7 @@ exports.sendMessageForWithdrawalRejected = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
@@ -406,7 +412,7 @@ exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<orderId>", orderId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 ///
@@ -415,53 +421,62 @@ exports.sendMessageForDeliveredToClient = async (mobileNumber, orderId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<orderId>", orderId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
-exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber, customerName, orderId, courierCompany, trackingId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let message = await messageTemplate.content.replace("<customerName>", customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
-exports.sendMessageForRto = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+exports.sendMessageForRto = async (mobileNumber, customerName, orderId, courierCompany, trackingId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('rto');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let message = await messageTemplate.content.replace("<customerName>", customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
-exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+exports.sendMessageForRedispach = async (mobileNumber, customerName, orderId, courierCompany, trackingId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('ReDispatched');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let message = await messageTemplate.content.replace("<customerName>", customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
 //withdraw req placed 
-exports.sendMessageForWithdrawalReqPlaced = async (mobileNumber,customerName) => {
+exports.sendMessageForWithdrawalReqPlaced = async (mobileNumber, customerName) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw request placed');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let message = await messageTemplate.content.replace("<customerName>", customerName)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
     }
 }
 
 //kyc status kept pending from admin side
-exports.sendMessageForKycPendingFromAdmin = async (mobileNumber,customerName) => {
+exports.sendMessageForKycPendingFromAdmin = async (mobileNumber, customerName) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC reverification (admin panel)');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let message = await messageTemplate.content.replace("<customerName>", customerName)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+        await sms.sendSms(mobileNumber, message, smsFrom);
+    }
+}
+
+exports.sendDisbursalMessageLoanTransfer = async (mobileNumber, customerName, loanUniqueId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Disbursal (LOAN TRANSFER)');
+    // Dear {#var#}, Your request for gold loan transfer has been approved and amount has been transfered to your bank account against loan id {#var#}. Team Augmont
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
+        await sms.sendSms(mobileNumber, message);
     }
 }

@@ -341,7 +341,7 @@ let addPanImage = async (customer, accessToken) => {
     const data = new FormData();
     data.append('panNumber', customer.panCardNumber);
     data.append('panAttachment', fs.createReadStream(panPath));
-
+    console.log(`${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`)
     const options = {
         'method': 'POST',
         'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`,
@@ -376,15 +376,15 @@ let createPanCustomerKyc = async (options) => {
                 return resolve({ error: false, message: 'success' })
             } else {
                 console.log(respBody)
-                if (typeof respBody.errors.status[0].code != "undefined") {
-                    if (respBody.errors.status[0].code == 4548) {
-                        return resolve({ error: false, message: 'success' })
-                    } else {
-                        return resolve({ error: true, message: respBody })
-                    }
+                // if (typeof respBody.errors.status[0].code != "undefined") {
+                if (respBody && respBody.errors && respBody.errors.status && respBody.errors.status[0].code == 4548) {
+                    return resolve({ error: false, message: 'success' })
                 } else {
                     return resolve({ error: true, message: respBody })
                 }
+                // } else {
+                //     return resolve({ error: true, message: respBody })
+                // }
             }
         })
     })

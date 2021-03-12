@@ -722,7 +722,7 @@ exports.getAllCampaignList = async (req, res) => {
     return res.status(200).json({ data: [] });
   }
   return res.status(200).json({ count: count.length, data: allCustomers });
-  
+
 
 }
 
