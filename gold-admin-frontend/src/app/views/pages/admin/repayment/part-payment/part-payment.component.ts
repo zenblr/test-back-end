@@ -143,7 +143,7 @@ export class PartPaymentComponent implements OnInit {
         amount: this.partAmount.value,
         paymentDetails: this.paymentValue,
         paymentType: this.paymentValue.paymentType,
-        paymentFor: 'quickPay'
+        paymentFor: 'partPayment'
       }
       this.sharedService.paymentGateWay(data).subscribe(
         res => {
