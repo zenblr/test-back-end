@@ -912,7 +912,7 @@ let getKycInfo = async (customerId) => {
     if (customerKycReview.customerKycPersonal == null && customerKycReview.customerEKycDetails != null && customerKycReview.customerEKycDetails.fatherName != null) {
         customerKycReview.dataValues.customerKycPersonal = {}
         customerKycReview.dataValues.customerKycPersonal['spouseName'] = customerKycReview.customerEKycDetails.fatherName
-       customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.aahaarDOB ? customerKycReview.customerEKycDetails.aahaarDOB : customerKycReview.dateOfBirth, 'DD-MM-YYYY').format("YYYY-MM-DD")
+        customerKycReview.dataValues.customerKycPersonal['dateOfBirth'] = moment(customerKycReview.customerEKycDetails.aahaarDOB ? customerKycReview.customerEKycDetails.aahaarDOB : customerKycReview.dateOfBirth, 'DD-MM-YYYY').format("YYYY-MM-DD")
         customerKycReview.dataValues.customerKycPersonal['age'] = customerKycReview.age
     }
     //dob changes
@@ -2059,7 +2059,6 @@ let applyDigiKyc = async (req) => {
     let customerFullName = firstName + " " + lastName
 
     await sequelize.transaction(async (t) => {
-        let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
 
         if (isPanVerified) {
             if (checkApplied) {
@@ -2073,8 +2072,10 @@ let applyDigiKyc = async (req) => {
                 await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
             }
-            await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
+            let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+            
             let data = await createKyc(customer)
+            await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
             // if(!data.success){
             //     t.rollBack()
             // }
