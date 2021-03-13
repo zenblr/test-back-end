@@ -2034,7 +2034,7 @@ let applyDigiKyc = async (req) => {
 
     let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
 
-    let customer = await models.customer.findOne({ where: { id: customerId } })
+    // let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (checkDigiKycRejected !== null) {
         return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
@@ -2059,6 +2059,8 @@ let applyDigiKyc = async (req) => {
     let customerFullName = firstName + " " + lastName
 
     await sequelize.transaction(async (t) => {
+        let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+
         if (isPanVerified) {
             if (checkApplied) {
                 await models.digiKycApplied.update({ status: 'approved' }, { where: { id: id }, transaction: t })
@@ -2072,8 +2074,10 @@ let applyDigiKyc = async (req) => {
 
             }
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
-            let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-            await createKyc(customer)
+            let data = await createKyc(customer)
+            if(!data.success){
+                t.rollBack()
+            }
 
         } else {
             if (checkApplied) {
@@ -2084,9 +2088,6 @@ let applyDigiKyc = async (req) => {
             await models.customer.update({ firstName, lastName, digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
         }
-
-
-
 
     })
     if (isPanVerified) {
