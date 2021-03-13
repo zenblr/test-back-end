@@ -4,7 +4,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
 const cache = require('../../utils/cache');
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
+const { JWT_SECRETKEY,JWT__CUSTOMER_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
@@ -24,10 +24,10 @@ exports.customerLogin = async (req, res, next) => {
             email: checkCustomer.dataValues.email,
             userBelongsTo: "CustomerUser"
         },
-            JWT_SECRETKEY, {
+        JWT__CUSTOMER_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
-        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
@@ -90,11 +90,11 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             email: checkUser.dataValues.email,
             userBelongsTo: "customer"
         },
-            JWT_SECRETKEY, {
+        JWT__CUSTOMER_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
 
-        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 

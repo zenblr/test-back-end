@@ -2,6 +2,7 @@ module.exports = {
 
     //global jwt secret key  
     JWT_SECRETKEY: "gold",
+    JWT__CUSTOMER_SECRETKEY:"goldcustomer",
 
     //global jwt expiration time
     JWT_EXPIRATIONTIME: "24h",
