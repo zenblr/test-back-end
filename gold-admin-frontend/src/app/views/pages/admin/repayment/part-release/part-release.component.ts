@@ -147,7 +147,7 @@ export class PartReleaseComponent implements OnInit {
       let data = {
         ornamentId: ornamnentIds,
         masterLoanId: Number(this.id),
-        paymentDetails: this.paymentValue,
+        paymentType: this.paymentValue.paymentType,
         paymentFor: 'jewelleryRelease'
       }
 
