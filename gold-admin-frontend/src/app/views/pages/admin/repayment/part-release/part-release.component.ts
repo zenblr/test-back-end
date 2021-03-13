@@ -144,7 +144,14 @@ export class PartReleaseComponent implements OnInit {
 
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
     if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
-      this.sharedService.paymentGateWayForFullAndPart(Number(this.id), ornamnentIds).subscribe(
+      let data = {
+        ornamentId: ornamnentIds,
+        masterLoanId: Number(this.id),
+        paymentDetails: this.paymentValue,
+        paymentFor: 'jewelleryRelease'
+      }
+
+      this.sharedService.paymentGateWay(data).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;

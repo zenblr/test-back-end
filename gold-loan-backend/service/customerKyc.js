@@ -2075,9 +2075,9 @@ let applyDigiKyc = async (req) => {
             }
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
             let data = await createKyc(customer)
-            if(!data.success){
-                t.rollBack()
-            }
+            // if(!data.success){
+            //     t.rollBack()
+            // }
 
         } else {
             if (checkApplied) {
