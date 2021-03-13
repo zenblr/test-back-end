@@ -16,6 +16,7 @@ const fs = require('fs');
 const FormData = require('form-data');
 let sms = require('../utils/SMS');
 let { verifyName } = require('./karzaService');
+let { sendKYCApprovalStatusMessage } = require('../utils/SMS')
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
@@ -143,7 +144,10 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                 if (panAndAadhaarDOBMatch && panAndAadhaarNameMatch) {
                     console.log("success")
                     //////////////////////
+                    let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                    let moduleName
                     if (moduleId == 1) {
+                        moduleName = "Gold Loan"
                         //if loan => scrap and loan true
                         await models.customerKyc.update(
                             { isVerifiedByCce: true, isKycSubmitted: true, isScrapKycSubmitted: true },
@@ -167,7 +171,6 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // //add complete kyc point
                         // let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
                         //add complete kyc point
-                        let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
                         // cust- check - scrap kyc complete
                         // customerKycClassification get data of cce
                         let customerKyc = await models.customerKyc.findOne({ where: { customerId }, transaction: t })
@@ -237,6 +240,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // );
                         // return res.status(200).json({ message: 'success' })
                     } else {
+                        moduleName = "Gold Scrap"
                         //update in customer kyc
                         await models.customerKyc.update(
                             { isScrapKycSubmitted: true },
@@ -265,11 +269,13 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                     /////////////////////
 
                     await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
-                    
+
                     await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
-                    
-                    let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+
+                    let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
                     await createKyc(customer)
+
+                    await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
                 }
 
@@ -672,7 +678,10 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             if (panAndAadhaarDOBMatch && panAndAadhaarNameMatch) {
                 console.log("success")
                 //////////////////////
+                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                let moduleName;
                 if (moduleId == 1) {
+                    moduleName = "Gold Loan"
                     //if loan => scrap and loan true
                     await models.customerKyc.update(
                         { isVerifiedByCce: true, isKycSubmitted: true, isScrapKycSubmitted: true },
@@ -696,7 +705,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                     // //add complete kyc point
                     // let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
                     //add complete kyc point
-                    let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+
                     // cust- check - scrap kyc complete
                     // customerKycClassification get data of cce
                     let customerKyc = await models.customerKyc.findOne({ where: { customerId }, transaction: t })
@@ -739,7 +748,6 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                         }
 
                     }
-
                     if (checkApplied) {
                         await models.digiKycApplied.update({ status: 'approved' }, { where: { id: checkApplied.id }, transaction: t })
                     } else {
@@ -766,6 +774,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                     // );
                     // return res.status(200).json({ message: 'success' })
                 } else {
+                    moduleName = "Gold Scrap"
                     //update in customer kyc
                     await models.customerKyc.update(
                         { isScrapKycSubmitted: true },
@@ -795,8 +804,10 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
-                let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                    await createKyc(customer)
+                let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                await createKyc(customer)
+
+                await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
             }
 
         }
@@ -1695,7 +1706,10 @@ let kycPersonalDetail = async (req) => {
             if (panAndAadhaarDOBMatch && panAndAadhaarNameMatch) {
                 console.log("success")
                 //////////////////////
+                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                let moduleName
                 if (moduleId == 1) {
+                    moduleName = "Gold Loan"
                     //if loan => scrap and loan true
                     await models.customerKyc.update(
                         { isVerifiedByCce: true, isKycSubmitted: true, isScrapKycSubmitted: true },
@@ -1788,6 +1802,7 @@ let kycPersonalDetail = async (req) => {
                     // );
                     // return res.status(200).json({ message: 'success' })
                 } else {
+                    moduleName = "Gold Scrap"
                     //update in customer kyc
                     await models.customerKyc.update(
                         { isScrapKycSubmitted: true },
@@ -1816,9 +1831,11 @@ let kycPersonalDetail = async (req) => {
                 /////////////////////
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
-                let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                    await createKyc(customer)
+                let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                await createKyc(customer)
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
+                await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
+
             }
 
         } else {
@@ -2017,7 +2034,7 @@ let applyDigiKyc = async (req) => {
 
     let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
 
-    let customer = await models.customer.findOne({ where: { id: customerId } })
+    // let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (checkDigiKycRejected !== null) {
         return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
@@ -2042,21 +2059,25 @@ let applyDigiKyc = async (req) => {
     let customerFullName = firstName + " " + lastName
 
     await sequelize.transaction(async (t) => {
+        let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+
         if (isPanVerified) {
             if (checkApplied) {
                 await models.digiKycApplied.update({ status: 'approved' }, { where: { id: id }, transaction: t })
             } else {
                 await models.digiKycApplied.create({ customerId: customerId, status: 'approved' }, { transaction: t })
             }
-            if(firstName || lastName){
-             await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
-            }else{
-             await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+            if (firstName || lastName) {
+                await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+            } else {
+                await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
             }
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
-            let customer  = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-            await createKyc(customer)
+            let data = await createKyc(customer)
+            if(!data.success){
+                t.rollBack()
+            }
 
         } else {
             if (checkApplied) {
@@ -2067,9 +2088,6 @@ let applyDigiKyc = async (req) => {
             await models.customer.update({ firstName, lastName, digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
         }
-
-
-
 
     })
     if (isPanVerified) {
