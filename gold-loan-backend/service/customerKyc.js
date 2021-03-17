@@ -195,7 +195,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                             }
 
                         } else {
-                            await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                            await models.customer.update({ customerUniqueId, digiKycStatus: 'approved', kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                             await models.customerKyc.update(
                                 { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
@@ -730,7 +730,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                         }
 
                     } else {
-                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved', digiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                         await models.customerKyc.update(
                             { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
@@ -1757,7 +1757,7 @@ let kycPersonalDetail = async (req) => {
                         }
 
                     } else {
-                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved', digiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                         await models.customerKyc.update(
                             { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
