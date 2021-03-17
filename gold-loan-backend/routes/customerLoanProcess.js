@@ -49,9 +49,9 @@ route.get('/customer-bank-details',checkAuth,wrapper(getCustomerBankDetailsByCus
 
 route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForLoan)); // ADD PACKAGE IMAGES
 
-route.post('/disbursement-of-loan', checkAuth, wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
+route.post('/disbursement-of-loan', checkRolePermission,checkAuth, wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
 
-route.get('/disbursement-loan-bank-detail', checkAuth, wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
+route.get('/disbursement-loan-bank-detail',checkRolePermission, checkAuth, wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
 
 route.get('/loan-details', checkAuth, checkRolePermission, wrapper(getLoanDetails)); // FETCH LOAN DETAILS
 
