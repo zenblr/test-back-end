@@ -51,7 +51,7 @@ route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForLoan)); /
 
 route.post('/disbursement-of-loan', checkRolePermission,checkAuth, wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
 
-route.get('/disbursement-loan-bank-detail',checkRolePermission, checkAuth, wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
+route.get('/disbursement-loan-bank-detail', checkAuth, wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
 
 route.get('/loan-details', checkAuth, checkRolePermission, wrapper(getLoanDetails)); // FETCH LOAN DETAILS
 
