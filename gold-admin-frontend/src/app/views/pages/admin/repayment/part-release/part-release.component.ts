@@ -150,7 +150,6 @@ export class PartReleaseComponent implements OnInit {
         paymentType: this.paymentValue.paymentType,
         paymentFor: 'jewelleryRelease'
       }
-
       this.sharedService.paymentGateWay(data).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
