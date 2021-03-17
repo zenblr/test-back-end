@@ -163,6 +163,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // }
                         //     reasonFromOperationalTeam = ""
 
+                        
                         //     //change check unique id
                         let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
                         let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
