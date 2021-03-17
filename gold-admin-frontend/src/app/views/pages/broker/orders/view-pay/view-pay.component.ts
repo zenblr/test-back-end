@@ -9,8 +9,6 @@ import { PaymentDialogComponent } from '../../payment-dialog/payment-dialog.comp
 import { MatCheckbox, MatDialog } from '@angular/material';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../../core/broker';
 
-
-
 @Component({
   selector: 'kt-view-pay',
   templateUrl: './view-pay.component.html',
@@ -110,7 +108,8 @@ export class ViewPayComponent implements OnInit {
               isEMI: true,
               orderId: this.orderId,
               paymentMode: this.paymentForm.controls.paymentMode.value,
-              createdAt: this.orderData.createdAt
+              createdAt: this.orderData.createdAt,
+              emiId: this.emi,
             },
             width: '70vw'
           });

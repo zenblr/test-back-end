@@ -40,7 +40,9 @@ export class PaymentDialogComponent implements OnInit {
     this.title = 'Payment Mode';
     if (this.data.paymentData) {
       this.paymentForm.patchValue(this.data.paymentData)
-
+      if (this.data.emiId) {
+        this.paymentForm.controls['emiId'].patchValue(this.data.emiId)
+      }
       if (this.data.paymentData.amount) {
         this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.amount)
       }
@@ -71,7 +73,8 @@ export class PaymentDialogComponent implements OnInit {
       blockId: [],
       orderId: [],
       totalInitialAmount: [],
-      transactionAmount: []
+      transactionAmount: [],
+      emiId: []
     })
     this.paymentForm.valueChanges.subscribe(val => console.log(val))
   }
