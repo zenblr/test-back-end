@@ -395,9 +395,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     if(this.data.customerKycReview.customerKyc.isCityEdit){
       this.reason = "City Details Fetch By karza was not matching the database"
-    }else if(!this.data.customerKycReview.customerEKycDetails.isPanVerified){
+    }else if(!(this.data.customerKycReview.customerEKycDetails && this.data.customerKycReview.customerEKycDetails.isPanVerified)){
       this.reason = "Pan was not verified By karza or confidence score must have not meet our standard's"
-    }else if(!this.data.customerKycReview.customerEKycDetails.isAahaarVerified){
+    }else if(!(this.data.customerKycReview.customerEKycDetails && this.data.customerKycReview.customerEKycDetails.isAahaarVerified)){
       this.reason = "Aadhar was not verified By karza or confidence score must have not meet our standard's"
     }
       if(this.data.customerKycReview.customerKycPersonal.identityProofNumber){
