@@ -130,7 +130,7 @@ let ocrService = async (fileUrl, idProofType, customerId, index, number) => {
             },
             body: JSON.stringify(data)
         }
-        // // static data
+        // static data
         // let result = await getOcrLocal(idProofType, index,number)
         // const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
         // return { data: ocrResp };

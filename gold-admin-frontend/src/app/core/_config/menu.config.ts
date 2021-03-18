@@ -463,7 +463,8 @@ export class MenuConfig {
 											title: "Notification Settings",
 											root: true,
 											bullet: 'dot',
-											permission: false,
+											permission: !(this.userType === 4),
+
 
 											submenu: [
 												{
@@ -565,6 +566,13 @@ export class MenuConfig {
 									permission: !(this.userType === 4)
 								},
 							]
+						},
+						{
+							title: "Otp",
+							root: true,
+							src: "assets/media/aside-icons/icons-29.svg",
+							page: "/otp",
+							permission: !(this.userType === 4),
 						},
 						{
 							title: "Log Out",

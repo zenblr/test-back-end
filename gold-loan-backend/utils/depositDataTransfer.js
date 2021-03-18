@@ -133,7 +133,7 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
 
   for (let ele of DepositNewData) {
 
-    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}')`
+    const addDepositData = `INSERT INTO [AGTPL$Online Deposite] ([Deposite ID],[User Account Id], [User Id], [User Type], [User Account State], [Deposit Mode of Payment],[Deposit Date], [Deposit TransactionId], [Mode Of Payment], [Deposit Amount], [Delivery charge], [Delivery Type], [Atom Txn Id], [processed], [Chq No_], [Purchase ID], [Approved Date], [Deposit Creation Date], [Manual], [Creation Date],[Partner]) VALUES('${ele.depositeId}','${ele.userAccountId}', '${ele.userId}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.depositModeofPayment}', '${ele.depositDate}', '${ele.depositTransactionId}', '${ele.modeOfPayment}', '${ele.depositAmount}', '${ele.deliveryCharge}', '${ele.deliveryType}', '${ele.atomTxnId}', '${ele.processed}', '${ele.chqNo}', '${ele.purchaseId}', '${ele.approvedDate}', '${ele.depositCreationDate}', '${ele.Manual}', '${ele.creationDate}','Nimap')`
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
@@ -443,10 +443,10 @@ exports.getDepositDataOfPrevious = async (req, res) => {
       // return;
       if (DepositNewData.length != 0) {
 
-        let singledata = []
-        singledata.push(DepositNewData[1])
-        console.log(singledata)
-        await dataTransfer(singledata, connectionString, startDateNew, endDateNew, whereClauseString);
+        // let singledata = []
+        // singledata.push(DepositNewData[1])
+        // console.log(singledata)
+        await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
       } else {
         console.log("no data found");
       }

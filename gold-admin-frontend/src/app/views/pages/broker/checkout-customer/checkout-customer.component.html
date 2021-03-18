@@ -448,7 +448,27 @@
                                     Card</label>
                             </div>
                             <div class="col-8">
-                                <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
+                                <div class="img-container">
+                                    <img *ngIf="!controls?.panImg?.value" class="" (click)="editPan.click()"
+                                        src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                    <img class="fetched-image"
+                                        *ngIf="controls.panImg.value && !isPdf(controls?.panImg.value)"
+                                        (click)="preview(controls?.panImg.value)" [src]="controls.panImg.value"
+                                        style="border-radius: 15px;" alt="" />
+                                    <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                        class="kt-pointer remove-icon" (click)="editPan.click()"
+                                        *ngIf="controls?.panImg?.value && existingCustomerData?.customerDetails?.digiKycApplied?.status != 'approved'">
+                                    <input type="file" class="d-none" accept="image/*,application/pdf" #editPan
+                                        (input)="validateImage($event)">
+                                    <!-- <div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
+                                        <iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
+                                            width="290" scrolling="no" *ngIf="isPdf(controls?.panImg.value)"></iframe>
+                                    </div> -->
+                                </div>
+                                <div class="kt-margin-t-20 text-color font-11">
+                                    (Click on image to view)
+                                </div>
+                                <!-- <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
                                         [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
                                         [reason]="'broker'" (upload)="uploadImage($event)"
@@ -473,7 +493,7 @@
                                             <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
                                         </span>
                                     </a>
-                                </ng-container>
+                                </ng-container> -->
                             </div>
                         </div>
                     </div>
@@ -488,8 +508,8 @@
                         <div class="col-8 font-weight-500">
                             <div class="row">
                                 <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                <div class="col-6"><span
-                                        class="currency">{{checkoutData?.invoiceAmount | indianCurrencyFormat}}</span>
+                                <div class="col-6"><span class="currency">{{checkoutData?.invoiceAmount |
+                                        indianCurrencyFormat}}</span>
                                 </div>
                                 <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
                                 <div class="col-6"><span class="currency">
@@ -561,7 +581,7 @@
                                 <select *ngIf="finalOrderData" formControlName="paymentMode" class="form-control"
                                     [class.isError]="otpForm.controls.paymentMode.touched && otpForm.controls.paymentMode.invalid">
                                     <option value="">Select Payment Type</option>
-                                    <option value="cash">CASH</option>
+                                    <!-- <option value="cash">CASH</option> -->
                                     <option value="imps">IMPS</option>
                                     <option value="neft">NEFT</option>
                                     <option value="rtgs">RTGS</option>
@@ -578,7 +598,7 @@
                             </div>
                         </div>
                         <div class="row py-3">
-                            <div class="col-12 text-center">
+                            <div class="col-8 offset-4">
                                 <kt-button [value]="'Place Order'" [type]="'submit'" (action)="verifyOTP()"
                                     [isDisabled]="!(finalOrderData && otpForm?.valid)"></kt-button>
                             </div>

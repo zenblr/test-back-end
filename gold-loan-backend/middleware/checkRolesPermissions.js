@@ -28,10 +28,10 @@ module.exports = async (req, res, next) => {
                         req.permissionArray = systemData.permissionArray
                         next();
                     } else {
-                        res.status(403).json({ message: 'Access denied' })
+                        return res.status(403).json({ message: 'Access denied' })
                     }
                 } else {
-                    res.status(403).json({ message: 'Access denied' })
+                    return res.status(403).json({ message: 'Access denied' })
                 }
             } else {
                 let getRole = await models.userRole.getAllRole(userId);
@@ -70,10 +70,10 @@ module.exports = async (req, res, next) => {
                         req.permissionArray = systemData.permissionArray
                         next();
                     } else {
-                        res.status(403).json({ message: 'Access denied' })
+                        return res.status(403).json({ message: 'Access denied' })
                     }
                 } else {
-                    res.status(403).json({ message: 'Access denied' })
+                    return res.status(403).json({ message: 'Access denied' })
                 }
             }
         })

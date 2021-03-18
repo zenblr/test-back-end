@@ -25,6 +25,10 @@ const routes: Routes = [
 				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
 			},
 			{
+				path: 'otp',
+				loadChildren: () => import('./views/pages/otp/otp.module').then(m => m.OtpModule)
+			},
+			{
 				path: 'broker',
 				loadChildren: () => import('./views/pages/broker/broker.module').then(m => m.MerchantModule),
 				// canActivate: [RoleGuard],

@@ -134,7 +134,14 @@ export class QuickPayComponent implements OnInit {
     }
 
     if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
-      this.sharedService.paymentGateWay(this.payableAmt.value, this.masterLoanId).subscribe(
+      let data ={
+        masterLoanId: this.masterLoanId,
+      amount: this.payableAmt.value,
+      paymentDetails: this.paymentValue,
+      paymentType: this.paymentValue.paymentType,
+      paymentFor: 'quickPay'
+      }
+      this.sharedService.paymentGateWay(data).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;

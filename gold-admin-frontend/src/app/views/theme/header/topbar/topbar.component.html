@@ -14,10 +14,12 @@
         </div>
         <kt-user-profile></kt-user-profile>
     </div>
-    <div class="row justify-content-center"
-        [ngClass]="{'heightLowerTopbar': showSubHeader}">
+    <div class="row justify-content-center" [ngClass]="{'heightLowerTopbar': showSubHeader}">
         <div class="col-6 offset-4 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
+            <input type="text" #searchInput class="form-control form-control-search" placeholder="enter mobile number"
+                *ngIf="showSecondInput" (input)="searchByMobile(searchInput.value)" numbersOnly>
+
             <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
                 [title]="dropdownTitle" (dropdownResult)="selectedValue($event)">
             </kt-dropdown>
@@ -46,7 +48,7 @@
         </div>
         <div class="col-2 justify-content-end d-inline-flex align-self-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
-            <kt-button  [value]="'../../../../../assets/media/icons/globe.svg'" [type]='"image"' (click)="navigate()"
+            <kt-button [value]="'../../../../../assets/media/icons/globe.svg'" [type]='"image"' (click)="navigate()"
                 class="kt-margin-r-10 kt-margin-l-10" *ngIf="globalMap">
             </kt-button>
             <kt-filter *ngIf="showfilter" (filterApplyEvent)="applyFilter($event)" [filterName]="filterName"
@@ -68,8 +70,9 @@
     <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
 </ng-template> -->
 <ng-template #thenBlock>
-    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' [isDisabled]="isDisabled" [notTitleCase]="notTitleCase" (click)="action($event)"
-        (action)="buttonValue($event)" class="kt-padding-r-5"></kt-button>
+    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' [isDisabled]="isDisabled"
+        [notTitleCase]="notTitleCase" (click)="action($event)" (action)="buttonValue($event)" class="kt-padding-r-5">
+    </kt-button>
 </ng-template>
 <ng-template #elseBlock>
     <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)" (action)="buttonValue($event)"
@@ -78,5 +81,5 @@
     <kt-button *ngIf="value5" [value]='value5' [type]='type5' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
-    <mat-checkbox *ngIf="value6" (change)="topBarCheck($event)">{{value6}}</mat-checkbox> 
+    <mat-checkbox *ngIf="value6" (change)="topBarCheck($event)">{{value6}}</mat-checkbox>
 </ng-template>

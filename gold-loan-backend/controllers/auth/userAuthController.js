@@ -40,6 +40,22 @@ exports.userLogin = async (req, res, next) => {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
 
+    if(checkUser.userTypeId){
+        if(checkUser.userTypeId == 2 || checkUser.userTypeId == 3 ){
+            if (checkUser.userTypeId == 3) {
+                let brokerData = await models.broker.findOne({ where: { userId: checkUser.id, isActive: true } });
+                if (brokerData.approvalStatusId != 2 || brokerData.status == false) {
+                    return res.status(401).send({ message: 'You are unauthorized user please contact admin' });
+                } 
+            } else {
+                let merchantData = await models.merchant.findOne({ where: { userId: checkUser.id, isActive: true } });
+                if (merchantData.status == false) {
+                    return res.status(401).send({ message: 'You are unauthorized user please contact admin' });
+                }
+            }
+        }
+    }
+
     let code;
 
 
@@ -201,7 +217,21 @@ exports.verifyLoginOtp = async (req, res, next) => {
             }],
             transaction: t
         });
-
+        if(checkUser.userTypeId){
+            if(checkUser.userTypeId == 2 || checkUser.userTypeId == 3 ){
+                if (checkUser.userTypeId == 3) {
+                    let brokerData = await models.broker.findOne({ where: { userId: user.id, isActive: true } });
+                    if (brokerData.approvalStatusId != 2 || brokerData.status == false) {
+                        return res.status(401).send({ message: 'You are unauthorized user please contact admin' });
+                    } 
+                } else {
+                    let merchantData = await models.merchant.findOne({ where: { userId: user.id, isActive: true } });
+                    if (merchantData.status == false) {
+                        return res.status(401).send({ message: 'You are unauthorized user please contact admin' });
+                    }
+                }
+            }
+        }
         let code;
         if (req.useragent.isMobile) {
             let authenticationKey = await req.headers.key;
