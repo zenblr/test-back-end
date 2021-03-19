@@ -3,6 +3,9 @@ import { ShopService } from '../../../../../core/broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
+import { SharedService } from '../../../../../core/shared/services/shared.service'
+import { F, T } from '@angular/cdk/keycodes';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'kt-cancel-order',
@@ -15,15 +18,20 @@ export class CancelOrderComponent implements OnInit {
   orderId: any;
   orderData: any;
   value: string = "Cancel Order";
-  confirmFlag: boolean = true;
+  bankFlag: boolean = false;
+  walletFlag: boolean = false;
+  confirmFlag: boolean;
   cancelForm: FormGroup;
   isMandatory: boolean = true;
   referenceCode: any;
+  selectedPayment: any;
+
   constructor(
     private shopService: ShopService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    public sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -36,13 +44,21 @@ export class CancelOrderComponent implements OnInit {
 
   formInitialize() {
     this.cancelForm = this.fb.group({
-      customerBankName: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')])],
-      customerAccountNo: ['', Validators.compose([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')])],
-      ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
+      customerBankName: [''],
+      customerAccountNo: [''],
+      ifscCode: [''],
       passbookId: [null],
       checkCopyId: [null],
       otp: [null],
     });
+  }
+  formValidation() {
+    this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
+      this.controls.customerBankName.updateValueAndValidity()
+    this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
+      this.controls.customerAccountNo.updateValueAndValidity()
+    this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')]),
+      this.controls.ifscCode.updateValueAndValidity()
   }
 
   get controls() {
@@ -70,6 +86,9 @@ export class CancelOrderComponent implements OnInit {
   }
 
   getOtp() {
+    if (this.selectedPayment.value == 'bankAccount') {
+      this.formValidation();
+    }
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
@@ -81,6 +100,13 @@ export class CancelOrderComponent implements OnInit {
 
     this.shopService.getOtp(params).subscribe(res => {
       this.confirmFlag = false;
+      if (this.selectedPayment.value == 'bankAccount'){
+        this.walletFlag = false;
+        this.bankFlag = true;
+      } else {  
+      this.walletFlag = true;
+      this.bankFlag = false;
+      }
       this.value = "Confirm OTP";
       this.referenceCode = res.referenceCode;
     })
@@ -112,5 +138,32 @@ export class CancelOrderComponent implements OnInit {
       error => {
         this.toastr.errorToastr(error.error);
       })
+  }
+
+  selectPaymentOption(item) {
+    this.confirmFlag = true;
+    this.value = "Cancel Order"; 
+    this.selectedPayment = item;
+  }
+  isActive(item) {
+    return this.selectedPayment === item;
+  }
+  proceed() {
+    if (!this.selectedPayment) {
+      this.toastr.errorToastr('Please Select Payment Option');
+      // setInterval(() => {
+      // this.sharedService.openErrorDialog('Please Select Payment Option','');
+
+      // const msg = 'Please Select Payment Option'
+      // this.serverError = msg;
+      // setTimeout(() => {
+      //   if (this.serverError) {
+      //     this.serverError = ''
+      //   }
+      // }, this.sharedService.toastrTimeOut)
+      // return;
+
+      // }, 1500)
+    }
   }
 }

@@ -81,6 +81,11 @@ export class SharedService {
 
 	]
 
+	public sellPaymentOptionList =
+	[{ value: 'bankAccount', Name: 'Bank Account', image: 'assets/media/bank-account.svg' },
+	{ value: 'augmontWallet', Name: 'Augmont Wallet', image: 'assets/media/augmont-wallet.svg' }];
+
+
 	userManagementPermission = [
 		'partnerView',
 		'partnerBranchView',

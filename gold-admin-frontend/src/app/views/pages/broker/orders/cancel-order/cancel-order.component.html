@@ -109,7 +109,38 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- // -->
+                <div class="row mb-5 mt-4 text-center">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 py-3">
+                                <h5 class="m-0 dg-black dg-bold">Transfer this amount to</h5>
+                            </div>
+                        </div>
+                        <div class="row d-flex flex-wrap justify-content-center align-items-center">
+                            <div class="m-4 text-center pointer"
+                                *ngFor="let payment of sharedService?.sellPaymentOptionList"
+                                (click)="selectPaymentOption(payment)">
+                                <img class="images" [src]="payment?.image"
+                                    [ngClass]="{'selectedOption': isActive(payment)}" />
+                                <div class="dg-black dg-minibold pt-3">{{payment?.Name}}</div>
+                            </div>
+                        </div>
+                        <!-- <div class="col 12 error">
+                            <app-error-success-dialog [serverError]="serverError"></app-error-success-dialog>
+                        </div> -->
+                        <div *ngIf="!selectedPayment" class="row py-3">
+                            <div class="col-12">
+                                <!-- <app-button (action)="proceed()" [type]="'button'" [value]="'Proceed'"></app-button> -->
+                                <kt-button [value]="'Proceed'" [type]="'button'" (click)="proceed()">
+                                </kt-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- // -->
                 <form [formGroup]="cancelForm">
+                    <div *ngIf="selectedPayment?.value == 'bankAccount'">
                     <div class="row kt-padding-t-15">
                         <div class="col-2 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank Name</label>
@@ -201,17 +232,18 @@
                                     Cheque Copy is required</mat-error>
                             </div>
                         </div>
-                        <div class="mx-auto">
-                            <kt-button *ngIf="confirmFlag" [value]="value" [type]="'button'" (click)="getOtp()">
-                            </kt-button>
-                            <div *ngIf="!confirmFlag" class="d-inline-flex">
-                                <input type="text" class="form-control" style="width: 50%;" formControlName="otp"
-                                    numbersOnly>&nbsp;&nbsp;
-                                <kt-button [value]="value" [type]="'button'" (click)="confirmOtp()"></kt-button>
-                            </div>
-                            <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.required">
-                                OTP is required</mat-error>
+                    </div>
+                    </div>
+                    <div class="mx-auto text-center">
+                        <kt-button *ngIf="confirmFlag" [value]="value" [type]="'button'" (click)="getOtp()">
+                        </kt-button>
+                        <div *ngIf="(bankFlag && selectedPayment?.value == 'bankAccount') || (walletFlag && selectedPayment?.value == 'augmontWallet')" class="d-inline-flex">
+                            <input type="text" class="form-control" style="width: 50%;" formControlName="otp"
+                                numbersOnly>&nbsp;&nbsp;
+                            <kt-button [value]="value" [type]="'button'" (click)="confirmOtp()"></kt-button>
                         </div>
+                        <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.required">
+                            OTP is required</mat-error>
                     </div>
                 </form>
             </div>
