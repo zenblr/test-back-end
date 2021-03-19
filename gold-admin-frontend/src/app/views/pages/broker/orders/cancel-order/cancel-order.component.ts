@@ -60,6 +60,14 @@ export class CancelOrderComponent implements OnInit {
     this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')]),
       this.controls.ifscCode.updateValueAndValidity()
   }
+  removeValidation() {
+    this.controls.customerBankName.setValidators([])
+    this.controls.customerBankName.updateValueAndValidity()
+  this.controls.customerAccountNo.setValidators([]),
+    this.controls.customerAccountNo.updateValueAndValidity()
+  this.controls.ifscCode.setValidators([]),
+    this.controls.ifscCode.updateValueAndValidity()
+  }
 
   get controls() {
     return this.cancelForm.controls;
@@ -88,6 +96,8 @@ export class CancelOrderComponent implements OnInit {
   getOtp() {
     if (this.selectedPayment.value == 'bankAccount') {
       this.formValidation();
+    } else {
+      this.removeValidation();
     }
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
@@ -115,22 +125,44 @@ export class CancelOrderComponent implements OnInit {
   confirmOtp() {
     this.controls.otp.setValidators([Validators.required]);
     this.controls.otp.updateValueAndValidity();
+    // if (this.cancelForm.invalid) {
+    //   this.cancelForm.markAllAsTouched();
+    //   return;
+    // }
+    // if (this.selectedPayment.value == 'bankAccount')
+    // {
+    //   this.amountTransferTo = 'customerBank';
+    // } else {
+    //   this.amountTransferTo = 'augmontWallet';
+    // }
+    // let params = {
+    //   customerBankName: this.controls.customerBankName.value,
+    //   customerAccountNo: this.controls.customerAccountNo.value,
+    //   ifscCode: this.controls.ifscCode.value,
+    //   passbookId: this.controls.passbookId.value,
+    //   checkCopyId: this.controls.checkCopyId.value,
+    //   otp: this.controls.otp.value,
+    //   referenceCode: this.referenceCode,
+    //   amountTransferTo: this.amountTransferTo,
+    // }
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
     }
-
-    let params = {
-      customerBankName: this.controls.customerBankName.value,
-      customerAccountNo: this.controls.customerAccountNo.value,
-      ifscCode: this.controls.ifscCode.value,
-      passbookId: this.controls.passbookId.value,
-      checkCopyId: this.controls.checkCopyId.value,
-      otp: this.controls.otp.value,
-      referenceCode: this.referenceCode,
+    let data;
+    if (this.selectedPayment.value == 'bankAccount') {
+        data = {
+        ...this.cancelForm.value,
+        amountTransferTo: 'customerBank',
+      }
+    } else {
+      data = {
+        ...this.cancelForm.value,
+        amountTransferTo: 'augmontWallet',
+      }
     }
 
-    this.shopService.updateCancelOrder(this.orderId, params).subscribe(
+    this.shopService.updateCancelOrder(this.orderId, data).subscribe(
       res => {
         this.toastr.successToastr("Order Cancelled Successfully");
         this.router.navigate(["/broker/orders"]);
@@ -144,6 +176,7 @@ export class CancelOrderComponent implements OnInit {
     this.confirmFlag = true;
     this.value = "Cancel Order"; 
     this.selectedPayment = item;
+    this.cancelForm.reset();
   }
   isActive(item) {
     return this.selectedPayment === item;
