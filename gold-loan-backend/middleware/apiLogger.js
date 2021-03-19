@@ -102,6 +102,7 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/payment",
             "/api/digital-gold/withdraw/"+getParams1,
             "/api/digital-gold/contact-us",
+            "/api/digital-gold/partner-us",
             "/api/digital-gold/customer/create-existent-customer",
             "/api/web-hook/generate-api-key",
             "/api/web-hook/change-order-status",
@@ -113,6 +114,8 @@ module.exports = async (req, res, next) => {
             "/api/customer/app/jewellery-release/full-release",
             "/api/customer/app/jewellery-release/part-release",
             "/api/customer/app/contact-us",
+            "/api/customer/app/partner-us",
+            // http://localhost:4200/api/customer/app/partner
         ];
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {

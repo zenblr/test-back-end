@@ -11,6 +11,7 @@ const quickPay = require('./quickPayCustomerApp');  //upload Packets List
 const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const karzaMbileApp = require('./karzaMbileApp')
 const contactUsEmail = require('./contactUs')
+const partnerUsEmail = require('./partnerWithUs')
 const walletCustomer = require('./walletCustomer');
 const augmontBankDetails = require('./digitalGold/augmontBankDetail')
 const { newCity } = require('../controllers/city/city')
@@ -91,5 +92,7 @@ router.use('/kyc', customerWebsiteKyc)
 router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
 router.use('/e-kyc', karzaMbileApp);
+// 
+router.use('/partner-us', partnerUsEmail)
 
 module.exports = router;
