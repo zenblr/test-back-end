@@ -144,16 +144,12 @@ exports.getAllNewRequest = async (req, res, next) => {
     };
     let customerSearch = { isActive: true }
 
-    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
-    }
 
     let associateModel = [
         {
             model: models.customer,
             // required: false,
             as: 'customer',
-            where: customerSearch,
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId', 'scrapKycStatus'],
             include: [
                 {
@@ -184,6 +180,11 @@ exports.getAllNewRequest = async (req, res, next) => {
     console.log(req.userData)
     if (req.userData.userTypeId == 7) {
         searchQuery.appraiserId = req.userData.id
+    } else if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        // customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
+        searchQuery.isActive = true
+        searchQuery.internalBranchId = req.userData.internalBranchId
+
     }
     // console.log(searchQuery)
     let allRequest = await models.appraiserRequest.findAll({

@@ -1139,10 +1139,10 @@ exports.loanAppraiserRating = async (req, res, next) => {
                         // unsecured loan Id
                         let checkUnsecuredUnique = false
                         var unsecuredLoanUniqueId = null;
+                        let loanSendId;
                         do {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
-                            loanSendId = loanDetail.loanUniqueId
                             loanSendId = `${loanDetail.loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
@@ -1152,6 +1152,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                         while (!checkUnsecuredUnique);
 
                         await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                        await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
                     }
                 }
             }
@@ -1931,8 +1932,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     for (let i = 0; i < interestTable.length; i++) {
-         let date;
-         let newFrequency;
+        let date;
+        let newFrequency;
         if (i == 0) {
             date = new Date()
             newFrequency = Loan.paymentFrequency - 1;
@@ -1956,7 +1957,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
         if (i == interestTable.length - 1) {
             let newDate = new Date()
-            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)-1))
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure) - 1))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }

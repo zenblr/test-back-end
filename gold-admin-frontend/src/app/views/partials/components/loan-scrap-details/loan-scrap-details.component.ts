@@ -30,7 +30,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
   scrapIds: { scrapId: any; };
   destroy$ = new Subject();
-  packetImages = { loan: { documents: [] = [], packet: [] = [], transfer: [] = [] }, scrap: [], transfer: [], termsAndConditions: [] };
+  packetImages = { loan: { documents: [] , packet: [] , transfer: []  }, scrap: [], transfer: [], termsAndConditions: [] };
   @ViewChildren('termsConditions') termsConditions: QueryList<ElementRef>;
   edit: boolean;
   permission: any;

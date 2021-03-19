@@ -650,7 +650,7 @@ exports.getAllCampaignList = async (req, res) => {
     }],
     isActive: true,
     merchantId: 1,
-    isCampaign = true
+    isCampaign : true
   };
 
   // if (isCampaign) {
@@ -722,7 +722,7 @@ exports.getAllCampaignList = async (req, res) => {
     return res.status(200).json({ data: [] });
   }
   return res.status(200).json({ count: count.length, data: allCustomers });
-  
+
 
 }
 
@@ -1020,7 +1020,7 @@ exports.signUpCustomer = async (req, res) => {
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
         await models.customer.update({ lastLogin: createdTime }, {
-          where: { id: decoded.id }, transaction: t
+          where: { id: decoded.id, updatedAt: moment() }, transaction: t
         });
 
         let x = await models.customerLogger.create({

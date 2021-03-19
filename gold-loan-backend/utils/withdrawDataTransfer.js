@@ -122,7 +122,7 @@ async function dataTransfer(DepositNewData, connectionString, startDateTime, end
   console.log(DepositNewData);
 
   for (let ele of DepositNewData) {
-    const addDepositData = `INSERT INTO [AGTPL$Online Withdraw] ([Withdraw ID],[User Account Id], [Withdraw Date], [User Type], [User Account State], [Withdraw Amount],[Withdraw Bank], [Withdraw Branch], [Withdraw IFSC], [Withdraw Account], [Atom Txn Id], [Mode of Payment], [Withdraw TransactionId], [processed], [Chq No_], [User Id], [Sell ID], [Manual], [Creation Date]) VALUES('${ele.withdrawId}','${ele.userAccountId}', '${ele.withdrawDate}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.withdrawAmount}', '${ele.withdrawBank}', '${ele.withdrawBranch}', '${ele.withdrawIfsc}', '${ele.withdrawAccount}', '${ele.atomTxnId}', '${ele.modeOfPayment}', '${ele.withdrawTransactionId}', '${ele.processed}', '${ele.chqNo}', '${ele.userId}','${ele.sellId}', '${ele.Manual}', '${ele.creationDate}')`;
+    const addDepositData = `INSERT INTO [AGTPL$Online Withdraw] ([Withdraw ID],[User Account Id], [Withdraw Date], [User Type], [User Account State], [Withdraw Amount],[Withdraw Bank], [Withdraw Branch], [Withdraw IFSC], [Withdraw Account], [Atom Txn Id], [Mode of Payment], [Withdraw TransactionId], [processed], [Chq No_], [User Id], [Sell ID], [Manual], [Creation Date], [Partner]) VALUES('${ele.withdrawId}','${ele.userAccountId}', '${ele.withdrawDate}' ,'${ele.userType}', '${ele.userAccountState}', '${ele.withdrawAmount}', '${ele.withdrawBank}', '${ele.withdrawBranch}', '${ele.withdrawIfsc}', '${ele.withdrawAccount}', '${ele.atomTxnId}', '${ele.modeOfPayment}', '${ele.withdrawTransactionId}', '${ele.processed}', '${ele.chqNo}', '${ele.userId}','${ele.sellId}', '${ele.Manual}', '${ele.creationDate}','Nimap')`;
 
     connectionString.query(addDepositData, async function (err, result, fields) {
       if (err) {
@@ -335,6 +335,7 @@ exports.getWithdrawPreviousData = async (req, res) => {
         database: getCredential.serverDbName
       };
      
+      console.log(config)
       let connectionString = await sql.connect(config);
       console.log("connectionString",connectionString)
       let withdrawNewData = [];
@@ -417,6 +418,10 @@ exports.getWithdrawPreviousData = async (req, res) => {
         console.log("withdrawNewDatawithdrawNewData",withdrawNewData.length)
         // return
         if (withdrawNewData.length != 0) {
+
+        //   let singledata = []
+        // singledata.push(withdrawNewData[1])
+        // console.log(singledata)
 
           await dataTransfer(withdrawNewData, connectionString, startDateNew, endDateNew, whereClauseString);
         } else {
