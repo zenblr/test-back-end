@@ -425,7 +425,7 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
       model: models.orderEmiDetails,
       as: "orderEmiDetail",
       // raw: true,
-      attributes: ['orderId', 'emiAmount', 'emiBalancePayment', 'emiPaidAmount', 'paymentDescription', 'walletId'],
+      attributes: ['orderId', 'emiAmount', 'emiBalancePayment', 'emiPaidAmount', 'paymentDescription', 'walletId', 'currentWalletBalance'],
       include:{
         model: models.paymentTransaction,
         as: "paymentTransaction",
