@@ -550,7 +550,7 @@ export class AddLeadComponent implements OnInit {
       this.leadService.addLead(leadData).subscribe(res => {
 
         if (res) {
-          const msg = 'Lead Added Successfully';
+          const msg = 'Customer Added Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }

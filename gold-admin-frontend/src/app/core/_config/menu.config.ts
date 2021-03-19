@@ -568,6 +568,13 @@ export class MenuConfig {
 							]
 						},
 						{
+							title: "Otp",
+							root: true,
+							src: "assets/media/aside-icons/icons-29.svg",
+							page: "/otp",
+							permission: !(this.userType === 4),
+						},
+						{
 							title: "Log Out",
 							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,

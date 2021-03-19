@@ -127,8 +127,8 @@ export class PartPaymentComponent implements OnInit {
     })
   }
 
-  
-  paymentData(event){
+
+  paymentData(event) {
     this.paymentValue = event
   }
 
@@ -138,7 +138,14 @@ export class PartPaymentComponent implements OnInit {
     }
 
     if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
-      this.sharedService.paymentGateWay(this.partAmount.value,this.masterLoanId).subscribe(
+      let data = {
+        masterLoanId: this.masterLoanId,
+        amount: this.partAmount.value,
+        paymentDetails: this.paymentValue,
+        paymentType: this.paymentValue.paymentType,
+        paymentFor: 'partPayment'
+      }
+      this.sharedService.paymentGateWay(data).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;

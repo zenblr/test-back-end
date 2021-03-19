@@ -12,8 +12,8 @@ import { takeUntil, tap } from 'rxjs/operators';
   styleUrls: ['./campaign-list.component.scss']
 })
 export class CampaignListComponent implements OnInit {
-  dataSource: CampaignDatasource  ;
-  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date'];
+  dataSource: CampaignDatasource;
+  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'mobileNumber', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date'];
   results = []
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

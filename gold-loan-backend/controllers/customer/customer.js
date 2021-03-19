@@ -17,7 +17,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
+const { JWT__CUSTOMER_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
 const { createCustomer } = require('../../service/digiGold')
@@ -595,6 +595,140 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 };
 
 
+exports.getAllCampaignList = async (req, res) => {
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule, isCampaign } = req.query;
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+
+  // let stage = await models.stage.findOne({ where: { stageName } });
+
+  let query = {};
+  if (cityId) {
+    cityId = req.query.cityId.split(",");
+    query.cityId = cityId;
+  }
+  if (statusId) {
+    statusId = req.query.statusId.split(",");
+    query.statusId = statusId;
+  }
+  if (stateId) {
+    stateId = req.query.stateId.split(",");
+    query.stateId = stateId;
+  }
+
+  const searchQuery = {
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
+        pinCode: sequelize.where(
+          sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          },
+        ),
+        "$internalBranch.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$status.status_name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$module.module_name$": {
+          [Op.iLike]: search + "%",
+        },
+      },
+    }],
+    isActive: true,
+    merchantId: 1,
+    isCampaign : true
+  };
+
+  // if (isCampaign) {
+  //   // let source = await models.source.findOne({ where: { sourceName: 'CAMPAIGN' } })
+  //   searchQuery.isCampaign = true
+  //   // query.source = Sequelize.or(
+  //   //   Sequelize.where(Sequelize.literal(`source & ${source.sourcePoint}`), '!=', 0)
+  //   // )
+  // }
+
+  let includeArray = [{
+    model: models.customerKyc,
+    as: "customerKyc",
+    attributes: ['isKycSubmitted', 'isScrapKycSubmitted']
+  }, {
+    model: models.state,
+    as: "state",
+  },
+  {
+    model: models.city,
+    as: "city",
+  },
+  // {
+  //   model: models.stage,
+  //   as: "stage",
+  //   where: { id: stage.id },
+  // },
+  {
+    model: models.status,
+    as: "status",
+  },
+  {
+    model: models.internalBranch,
+    as: "internalBranch"
+  },
+  {
+    model: models.lead,
+    as: "lead",
+    attributes: ['id', 'leadName'],
+  },
+  {
+    model: models.module,
+    as: 'module',
+    attributes: ['id', 'moduleName']
+  }
+
+  ]
+  // let internalBranchId = req.userData.internalBranchId
+  // if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+  //   searchQuery.internalBranchId = internalBranchId
+  // }
+
+  // if (req.userData.userTypeId != 4) {
+  // }
+
+  let allCustomers = await models.customer.findAll({
+    where: searchQuery,
+    attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
+    order: [["updatedAt", "desc"]],
+    offset: offset,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let count = await models.customer.findAll({
+    where: searchQuery,
+    include: includeArray,
+  });
+  if (allCustomers.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
+  return res.status(200).json({ count: count.length, data: allCustomers });
+
+
+}
+
+
 exports.getSingleCustomer = async (req, res, next) => {
   const { customerId } = req.params;
   let singleCustomer = await models.customer.findOne({
@@ -879,16 +1013,16 @@ exports.signUpCustomer = async (req, res) => {
           lastName: customerExist.dataValues.lastName,
           userBelongsTo: "customer"
         },
-          JWT_SECRETKEY, {
+          JWT__CUSTOMER_SECRETKEY, {
           expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
 
-        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
         await models.customer.update({ lastLogin: createdTime }, {
-          where: { id: decoded.id }, transaction: t
+          where: { id: decoded.id, updatedAt: moment() }, transaction: t
         });
 
         let x = await models.customerLogger.create({
@@ -978,11 +1112,11 @@ exports.signUpCustomer = async (req, res) => {
       lastName: customer.dataValues.lastName,
       userBelongsTo: "customer"
     },
-      JWT_SECRETKEY, {
+      JWT__CUSTOMER_SECRETKEY, {
       expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
     });
 
-    const decoded = jwt.verify(Token, JWT_SECRETKEY);
+    const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
     const createdTime = new Date(decoded.iat * 1000).toGMTString();
     const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 

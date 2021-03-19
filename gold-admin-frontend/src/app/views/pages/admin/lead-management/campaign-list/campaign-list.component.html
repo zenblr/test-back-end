@@ -22,6 +22,12 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.mobileNumber ? lead?.mobileNumber : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead?.internalBranch?.name | titlecase}}</mat-cell>

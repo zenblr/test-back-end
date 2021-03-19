@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation, registerCustomerValidation } = require('../validations/customer');
 
-const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, addBranch, getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp, getProductRequest } = require('../controllers/customer/customer')
+const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, addBranch, getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp, getProductRequest, getAllCampaignList } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -49,6 +49,8 @@ router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateCustomer));
 router.get('/registered-customer', checkAuth, wrapper(getAllRegisteredCustomer));//To get customers registered by their own
 
 router.get('/', checkAuth, checkRolePermission, wrapper(getAllCustomersForLead));
+
+router.get('/campaign-list', checkAuth, wrapper(getAllCampaignList))
 
 router.get('/customer-management', checkAuth, checkRolePermission, wrapper(getAllCustomerForCustomerManagement));
 

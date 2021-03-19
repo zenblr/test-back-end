@@ -330,8 +330,8 @@ export class DisburseComponent implements OnInit {
           this.router.navigate(['/admin/loan-management/applied-loan'])
         }),
         catchError(err => {
-          if (err.error.message)
-            this.toast.error(err.error.message);
+          // if (err.error.message)
+            // this.toast.error(err.error.message);
           throw err
         }), finalize(() => {
           this.formDisable()
