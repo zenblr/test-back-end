@@ -415,6 +415,29 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
       model: models.customer,
       as: "customer",
       attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
+    },
+    {
+      model: models.orders,
+      as: "goldEmiOrderDetail",
+      attributes: ['blockId', 'orderUniqueId', 'proformaInvoiceNo', 'invoiceNumber','invoiceDate', 'orderReferenceNumber', 'customerId', 'productId', 'weight', 'quantity', 'currentWalletBalance']
+    },
+    {
+      model: models.orderEmiDetails,
+      as: "orderEmiDetail",
+      // raw: true,
+      attributes: ['orderId', 'emiAmount', 'emiBalancePayment', 'emiPaidAmount', 'paymentDescription', 'walletId'],
+      include:{
+        model: models.paymentTransaction,
+        as: "paymentTransaction",
+        attributes: ['id', 'orderEmiId', 'ordertransactionId'],
+        // raw: true,
+        include: {
+          model: models.orderTransaction,
+          as: "orderTransactionDetails",
+          // raw: true,
+          attributes: ['id'],
+        }
+      }
     }
   ]
 
@@ -426,6 +449,20 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
     limit: pageSize,
     subQuery: false,
   });
+
+
+  for(let transaction of transactionDetails){
+    if(transaction && transaction.orderEmiDetail && transaction.orderEmiDetail.paymentTransaction && transaction.orderEmiDetail.paymentTransaction.orderTransactionDetails){
+      let id = transaction.orderEmiDetail.paymentTransaction.orderTransactionDetails.id;
+  
+      let transactionData = await models.orderTransaction.findOne({where: { id: id}});
+      
+      transaction.orderEmiDetail.paymentTransaction.orderTransactionDetails.transactionId = transactionData.transactionId;
+      transaction.orderEmiDetail.paymentTransaction.orderTransactionDetails.transactionUniqueId = transactionData.transactionUniqueId;
+
+    }
+  }
+  
 
   let count = await models.walletDetails.findAll({
     where: searchQuery,
