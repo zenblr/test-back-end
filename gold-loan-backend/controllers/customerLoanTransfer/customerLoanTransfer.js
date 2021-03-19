@@ -266,7 +266,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                await sendDisbursalMessageLoanTransfer(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendDisbursalMessageLoanTransfer(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, 'NA')
 
                 return res.status(200).json({ message: 'Success', masterLoanId, loanId })
             } else {
