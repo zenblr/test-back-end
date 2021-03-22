@@ -97,7 +97,6 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
-      panImg: [],
       kycRequired: [false],
       customerId: [],
       isPanVerified: [false],

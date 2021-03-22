@@ -50,13 +50,15 @@ export class ShoppingCartComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       console.log(res);
-      this.shoppingCartService.deleteCartItem(cartId).subscribe(successDelete => {
-        this.toastr.successToastr(_deleteMessage);
-        this.getCart();
-      },
-        errorDelete => {
-          this.toastr.errorToastr(errorDelete.error.message);
-        });
+      if (res) {
+        this.shoppingCartService.deleteCartItem(cartId).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.getCart();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
+      }
     });
   }
 

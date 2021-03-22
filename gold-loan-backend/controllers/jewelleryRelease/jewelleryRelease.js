@@ -362,12 +362,10 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         isAdmin = true
                     }
 
-                    if (!isAdmin && isRazorPay) {
+                    if (isRazorPay) {
                         await models.customerLoanTransaction.update({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { razorPayTransactionId }, transaction: t })
                         loanTransaction = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId }, transaction: t })
 
-                    } else if (isRazorPay) {
-                        loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
                     } else {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                     }
@@ -1855,12 +1853,10 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         isAdmin = true
                     }
 
-                    if (!isAdmin && isRazorPay) {
+                    if (isRazorPay) {
                         await models.customerLoanTransaction.update({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { razorPayTransactionId }, transaction: t })
                         loanTransaction = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId }, transaction: t })
 
-                    } else if (isRazorPay) {
-                        loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
                     } else {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                     }

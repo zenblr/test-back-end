@@ -17,7 +17,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
+const { JWT__CUSTOMER_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
 const { createCustomer } = require('../../service/digiGold')
@@ -1013,11 +1013,11 @@ exports.signUpCustomer = async (req, res) => {
           lastName: customerExist.dataValues.lastName,
           userBelongsTo: "customer"
         },
-          JWT_SECRETKEY, {
+          JWT__CUSTOMER_SECRETKEY, {
           expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
 
-        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
@@ -1112,11 +1112,11 @@ exports.signUpCustomer = async (req, res) => {
       lastName: customer.dataValues.lastName,
       userBelongsTo: "customer"
     },
-      JWT_SECRETKEY, {
+      JWT__CUSTOMER_SECRETKEY, {
       expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
     });
 
-    const decoded = jwt.verify(Token, JWT_SECRETKEY);
+    const decoded = jwt.verify(Token, JWT__CUSTOMER_SECRETKEY);
     const createdTime = new Date(decoded.iat * 1000).toGMTString();
     const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 

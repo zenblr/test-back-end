@@ -10,7 +10,7 @@ const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 module.exports = async (req, res, next) => {
     const token = await req.headers.authorization.split(" ")[1];
     try {
-        const decoded = await jwt.verify(token, CONSTANT.JWT_SECRETKEY);
+        const decoded = await jwt.verify(token, CONSTANT.JWT__CUSTOMER_SECRETKEY);
         req.userData = decoded;
         next();
     } catch (error) {

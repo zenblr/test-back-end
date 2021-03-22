@@ -8,7 +8,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 var randomize = require('randomatic');
-const { sendDisbursalMessage, sendTransferLoanRequestMessage } = require('../../utils/SMS')
+const { sendDisbursalMessageLoanTransfer, sendTransferLoanRequestMessage } = require('../../utils/SMS')
 const { customerNameNumberLoanId } = require('../../utils/loanFunction');
 const moment = require('moment');
 
@@ -266,7 +266,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendDisbursalMessageLoanTransfer(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, 'NA')
 
                 return res.status(200).json({ message: 'Success', masterLoanId, loanId })
             } else {
