@@ -60,8 +60,8 @@ module.exports = (sequelize, DataTypes) => {
         WalletDetail.hasOne(models.digiGoldOrderDetail, { foreignKey: 'walletId', as: 'digiGoldOrderDetail' });
         WalletDetail.belongsTo(models.digiGoldOrderType, { foreignKey: 'orderTypeId', as: 'digiGoldOrderType' });
         WalletDetail.belongsTo(models.digiGoldOrderType, { foreignKey: 'paymentOrderTypeId', as: 'paymentOrderType' });
-
-
+        WalletDetail.hasOne(models.orders, { foreignKey: 'walletId', as: 'goldEmiOrderDetail' });
+        WalletDetail.hasOne(models.orderEmiDetails, { foreignKey: 'walletId', as: 'orderEmiDetail' });
     }
 
 

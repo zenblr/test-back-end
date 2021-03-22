@@ -288,7 +288,7 @@ exports.quickPayment = async (req, res, next) => {
 
         await sequelize.transaction(async t => {
             let customerLoanTransaction
-            if (!isAdmin) {
+            if (isRazorPay) {
                 await models.customerLoanTransaction.update(paymentDetails, { where: { razorPayTransactionId }, transaction: t });
                 customerLoanTransaction = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId }, transaction: t })
             } else {
