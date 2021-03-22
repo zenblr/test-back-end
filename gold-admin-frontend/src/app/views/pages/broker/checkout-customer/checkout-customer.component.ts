@@ -49,6 +49,11 @@ export class CheckoutCustomerComponent implements OnInit {
   internalBranchId: any;
   isPanEditAble: boolean = false;
   formData: any;
+  depositAmount: any;
+  paidFromWallet: any;
+  walletMode = false;
+  onlineOfflineMode = false;
+  onlineMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -101,7 +106,8 @@ export class CheckoutCustomerComponent implements OnInit {
       customerId: [],
       isPanVerified: [false],
       isAppliedForKyc: [false],
-      dateOfBirth: []
+      dateOfBirth: [],
+      panImg: ['']
     });
     this.setPanDetailsValidators();
 
@@ -157,7 +163,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
         this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
         this.customerKyc = this.checkoutData.kycRequired;
-        if(this.checkoutData.kycRequired){
+        if (this.checkoutData.kycRequired) {
           this.isPanEditAble = true
         }
       }
@@ -265,6 +271,26 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls['shippingCityName'].enable();
         this.controls['shippingPostalCode'].enable();
         this.getShippingCities();
+
+        if (res.customerDetails.currentWalletBalance) {
+          if (Number(res.customerDetails.currentWalletBalance) < Number(this.checkoutData.nowPayableAmount)) {
+            this.depositAmount = (Number(this.checkoutData.nowPayableAmount) - Number(res.customerDetails.currentWalletBalance)).toFixed(2);
+            this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+            this.walletMode = false;
+            this.onlineMode = true;
+          } else {
+            this.depositAmount = (Number(0));
+            this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+            this.onlineMode = false;
+            this.walletMode = true;
+            this.otpForm.controls.paymentMode.setValidators([]),
+              this.otpForm.controls.paymentMode.updateValueAndValidity()
+          }
+        } else {
+          this.depositAmount = this.checkoutData.nowPayableAmount;
+          this.onlineOfflineMode = true;
+        }
+
         // if (res.customerDetails.kycDetails) {
         //   this.checkoutCustomerForm.patchValue({
         //     panCardNumber: res.customerDetails.kycDetails.panCardNumber,
@@ -468,7 +494,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panImg: this.controls.panImg.value,
       dateOfBirth: this.controls.dateOfBirth.value,
       customerId: this.controls.customerId.value,
-      isPanVerified:this.controls.isPanVerified.value
+      isPanVerified: this.controls.isPanVerified.value
     }
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
@@ -542,34 +568,53 @@ export class CheckoutCustomerComponent implements OnInit {
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
       totalInitialAmount: this.checkoutData.nowPayableAmount,
-      paymentMode: this.otpForm.controls.paymentMode.value
+      paymentMode: this.otpForm.controls.paymentMode.value,
+      amountToBeAdded: ''
     }
+
+    if (this.walletMode) {
+      verifyOTPData.paymentMode = 'augmontWallet';
+    } else {
+      verifyOTPData.amountToBeAdded = this.depositAmount;
+    }
+
     this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       console.log(res);
-      if (res.paymentMode == 'paymentGateway') {
-        this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
-        this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
-        this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
-        this.razorpayPaymentService.razorpayOptions.description = "EMI order payment";
-        this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
-        this.razorpayPaymentService.razorpayOptions.prefill.contact = this.controls.mobileNumber.value;
-        this.razorpayPaymentService.razorpayOptions.prefill.email = this.controls.email.value || 'info@augmont.in';
-        this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
-        this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+      if (this.walletMode) {
+        const placeOrderData = {
+          customerId: this.finalOrderData.customerId,
+          blockId: this.finalOrderData.blockId,
+          totalInitialAmount: this.checkoutData.nowPayableAmount,
+          paymentMode: verifyOTPData.paymentMode,
+          transactionId: res.transactionUniqueId
+        }
+        this.placeOrder(placeOrderData);
       } else {
-        const dialogRef = this.dialog.open(PaymentDialogComponent, {
-          data: { paymentData: res },
-          width: '70vw'
-        });
-        dialogRef.afterClosed().subscribe(res => {
-          if (res) {
-            console.log(res)
-            const msg = 'Order has been placed successfully.';
-            this.toastr.successToastr(msg);
-            this.shoppingCartService.cartCount.next(0);
-            this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
-          }
-        });
+        if (res.paymentMode == 'paymentGateway') {
+          this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+          this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
+          this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+          this.razorpayPaymentService.razorpayOptions.description = "EMI order payment";
+          this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = this.controls.mobileNumber.value;
+          this.razorpayPaymentService.razorpayOptions.prefill.email = this.controls.email.value || 'info@augmont.in';
+          this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        } else {
+          const dialogRef = this.dialog.open(PaymentDialogComponent, {
+            data: { paymentData: res },
+            width: '70vw'
+          });
+          dialogRef.afterClosed().subscribe(res => {
+            if (res) {
+              console.log(res)
+              const msg = 'Order has been placed successfully.';
+              this.toastr.successToastr(msg);
+              this.shoppingCartService.cartCount.next(0);
+              this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
+            }
+          });
+        }
       }
     },
       error => {
@@ -585,7 +630,6 @@ export class CheckoutCustomerComponent implements OnInit {
     data['panAttachment'] = this.controls.panImg.value
     this.appliedKycService.editDigiGoldKyc(data).pipe(map(res => res)).subscribe()
   }
-
 
   validateImage(event) {
     // if (this.validate) {
@@ -721,21 +765,26 @@ export class CheckoutCustomerComponent implements OnInit {
         blockId: this.finalOrderData.blockId,
         transactionDetails: response,
         totalInitialAmount: this.checkoutData.nowPayableAmount,
-        paymentMode: this.razorpayPaymentService.razorpayOptions.paymentMode
+        paymentMode: this.razorpayPaymentService.razorpayOptions.paymentMode,
+        amountToBeAdded: this.depositAmount
       }
-      this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
-        console.log(res);
-        const msg = 'Order has been placed successfully.';
-        this.toastr.successToastr(msg);
-        this.shoppingCartService.cartCount.next(0);
-        this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
-      },
-        error => {
-          console.log(error.error.message);
-          const msg = error.error.message;
-          this.toastr.errorToastr(msg);
-        });
+      this.placeOrder(placeOrderData);
     });
+  }
+
+  placeOrder(data) {
+    this.checkoutCustomerService.placeOrder(data).subscribe(res => {
+      console.log(res);
+      const msg = 'Order has been placed successfully.';
+      this.toastr.successToastr(msg);
+      this.shoppingCartService.cartCount.next(0);
+      this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   checkCityStateIfSame() {

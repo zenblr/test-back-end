@@ -76,7 +76,7 @@ export class ShopComponent implements OnInit {
 
   getSubCategory() {
     this.shopService.getSubCategory().subscribe(res => {
-      this.subCategory = res;
+      this.subCategory = res.data;
       this.totalCount()
     })
   }
