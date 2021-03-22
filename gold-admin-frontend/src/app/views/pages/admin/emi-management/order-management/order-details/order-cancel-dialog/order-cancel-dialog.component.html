@@ -109,99 +109,127 @@
                     </div>
                     <div class="row kt-padding-t-15">
                         <div class="col-5 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank Name</label>
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Transfer
+                                Option</label>
                         </div>
                         <div class="col-7">
-                            <input class="form-control" formControlName="customerBankName" type="text"
-                                [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
-                            <mat-error
-                                *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
-                                Alphabets Only
-                            </mat-error>
-                        </div>
-                    </div>
-                    <div class="row kt-padding-t-15">
-                        <div class="col-5 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Account
-                                Number</label>
-                        </div>
-                        <div class="col-7">
-                            <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
-                                maxlength="20" minlength="3"
-                                [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
-                                Minimum 3 digits Only
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
-                                Maximum 20 digits Only
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.pattern && controls.customerAccountNo.touched">
-                                Invalid A/c Number
-                            </mat-error>
-                        </div>
-                    </div>
-                    <div class="row kt-padding-t-15">
-                        <div class="col-5 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input class="form-control" formControlName="ifscCode" type="text" maxlength="11"
-                                [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
-                            <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
-                                Please Input Valid Code
-                            </mat-error>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15">
-                        <div class="col-5 align-self-center">
-                            <label class="font-weight-500 text-color">Passbook Copy</label>
-                        </div>
-                        <div class="col-7">
-                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
-                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                [reason]="'cancelOrder'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
-                            </kt-uplod-preview-image>
-                            <input type="text" formControlName="passbookId" class="form-control"
-                                [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
-                            <div *ngIf="controls.passbookId.touched && controls.passbookId.invalid">
-                                <mat-error *ngIf="controls.passbookId.touched && controls.passbookId.errors?.required">
-                                    Passbook Copy is required</mat-error>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15">
-                        <div class="col-5 align-self-center">
-                            <label class="font-weight-500 text-color">Cheque Copy</label>
-                        </div>
-                        <div class="col-7">
-                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
-                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
-                                [reason]="'cancelOrder'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
-                            </kt-uplod-preview-image>
-                            <input type="text" formControlName="checkCopyId" class="form-control"
-                                [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid" hidden>
-                            <div *ngIf="controls.checkCopyId.touched && controls.checkCopyId.invalid">
+                            <select (change)="tranferValue($event.target.value)" class="form-control"
+                                formControlName="tranferOption"
+                                [class.isError]="controls.tranferOption.touched && controls.tranferOption.invalid">
+                                <option value="" [disabled]="true">Select Option</option>
+                                <option *ngFor="let item of transfer" [value]="item.value">
+                                    {{item.name}} </option>
+                            </select>
+                            <div *ngIf="controls.tranferOption.touched && controls.tranferOption.invalid">
                                 <mat-error
-                                    *ngIf="controls.checkCopyId.touched && controls.checkCopyId.errors?.required">
-                                    Cheque Copy is required</mat-error>
+                                    *ngIf="controls.tranferOption.touched && controls.tranferOption.errors?.required">
+                                    Field is required</mat-error>
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus">
+                    <div *ngIf="bankFlag">
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank
+                                    Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="customerBankName" type="text"
+                                    [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
+                                <mat-error
+                                    *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
+                                    Alphabets Only
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Account
+                                    Number</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
+                                    maxlength="20" minlength="3"
+                                    [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
+                                    Minimum 3 digits Only
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
+                                    Maximum 20 digits Only
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.pattern && controls.customerAccountNo.touched">
+                                    Invalid A/c Number
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC
+                                    Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="ifscCode" type="text" maxlength="11"
+                                    [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
+                                <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
+                                    Please Input Valid Code
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-15">
+                            <div class="col-5 align-self-center">
+                                <label class="font-weight-500 text-color">Passbook Copy</label>
+                            </div>
+                            <div class="col-7">
+                                <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
+                                    [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                    [reason]="'cancelOrder'" (upload)="uploadImage($event)"
+                                    (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                                <input type="text" formControlName="passbookId" class="form-control"
+                                    [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
+                                <div *ngIf="controls.passbookId.touched && controls.passbookId.invalid">
+                                    <mat-error
+                                        *ngIf="controls.passbookId.touched && controls.passbookId.errors?.required">
+                                        Passbook Copy is required</mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-15">
+                            <div class="col-5 align-self-center">
+                                <label class="font-weight-500 text-color">Cheque Copy</label>
+                            </div>
+                            <div class="col-7">
+                                <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
+                                    [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
+                                    [reason]="'cancelOrder'" (upload)="uploadImage($event)"
+                                    (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                                <input type="text" formControlName="checkCopyId" class="form-control"
+                                    [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid"
+                                    hidden>
+                                <div *ngIf="controls.checkCopyId.touched && controls.checkCopyId.invalid">
+                                    <mat-error
+                                        *ngIf="controls.checkCopyId.touched && controls.checkCopyId.errors?.required">
+                                        Cheque Copy is required</mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus || bankFlag || walletFlag">
                         <div class="col-5 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Status</label>
                         </div>

@@ -3,6 +3,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../../../partials/components/toastr/toastr.component';
 import { ActivatedRoute, Router } from "@angular/router";
 import { OrderDetailsService } from '../../../../../../../core/emi-management/order-management';
+import { F } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'kt-order-cancel-dialog',
@@ -16,6 +17,13 @@ export class OrderCancelDialogComponent implements OnInit {
   orderId: number;
   cancelData: any;
   isMandatory = true;
+  transfer = [
+    {value: 'customerBank', name: 'Customer Bank'},
+    {value: 'augmontWallet', name: 'Augmont Wallet'}
+  ];
+  bankFlag = false;
+  walletFlag = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -51,7 +59,8 @@ export class OrderCancelDialogComponent implements OnInit {
       cancellationCharges: ['', Validators.required],
       passbookId: [null],
       checkCopyId: [null],
-      status: ['']
+      status: [''],
+      tranferOption: ['', Validators.required],
     });
   }
 
@@ -100,6 +109,17 @@ export class OrderCancelDialogComponent implements OnInit {
       this.cancelForm.controls["passbookId"].patchValue("");
     } else if (data.fieldName == "checkCopy") {
       this.cancelForm.controls["checkCopyId"].patchValue("");
+    }
+  }
+
+  tranferValue(value) {
+    if (value == 'customerBank') {
+      this.bankFlag = true;
+      this.walletFlag = false;
+    }
+    else {
+      this.walletFlag = true;
+      this.bankFlag = false;
     }
   }
 
