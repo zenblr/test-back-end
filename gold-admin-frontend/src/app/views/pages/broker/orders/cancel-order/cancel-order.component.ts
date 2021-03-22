@@ -125,41 +125,18 @@ export class CancelOrderComponent implements OnInit {
   confirmOtp() {
     this.controls.otp.setValidators([Validators.required]);
     this.controls.otp.updateValueAndValidity();
-    // if (this.cancelForm.invalid) {
-    //   this.cancelForm.markAllAsTouched();
-    //   return;
-    // }
-    // if (this.selectedPayment.value == 'bankAccount')
-    // {
-    //   this.amountTransferTo = 'customerBank';
-    // } else {
-    //   this.amountTransferTo = 'augmontWallet';
-    // }
-    // let params = {
-    //   customerBankName: this.controls.customerBankName.value,
-    //   customerAccountNo: this.controls.customerAccountNo.value,
-    //   ifscCode: this.controls.ifscCode.value,
-    //   passbookId: this.controls.passbookId.value,
-    //   checkCopyId: this.controls.checkCopyId.value,
-    //   otp: this.controls.otp.value,
-    //   referenceCode: this.referenceCode,
-    //   amountTransferTo: this.amountTransferTo,
-    // }
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
     }
-    let data;
+    let data = {
+      ...this.cancelForm.value,
+      amountTransferTo: '',
+    }
     if (this.selectedPayment.value == 'bankAccount') {
-        data = {
-        ...this.cancelForm.value,
-        amountTransferTo: 'customerBank',
-      }
+        data.amountTransferTo = 'customerBank';
     } else {
-      data = {
-        ...this.cancelForm.value,
-        amountTransferTo: 'augmontWallet',
-      }
+      data.amountTransferTo = 'augmontWallet';
     }
 
     this.shopService.updateCancelOrder(this.orderId, data).subscribe(
@@ -184,19 +161,7 @@ export class CancelOrderComponent implements OnInit {
   proceed() {
     if (!this.selectedPayment) {
       this.toastr.errorToastr('Please Select Payment Option');
-      // setInterval(() => {
-      // this.sharedService.openErrorDialog('Please Select Payment Option','');
-
-      // const msg = 'Please Select Payment Option'
-      // this.serverError = msg;
-      // setTimeout(() => {
-      //   if (this.serverError) {
-      //     this.serverError = ''
-      //   }
-      // }, this.sharedService.toastrTimeOut)
-      // return;
-
-      // }, 1500)
+      return;
     }
   }
 }
