@@ -17,12 +17,13 @@ export class OrderCancelDialogComponent implements OnInit {
   orderId: number;
   cancelData: any;
   isMandatory = true;
-  transfer = [
+  transferOptionList = [
     {value: 'customerBank', name: 'Customer Bank'},
     {value: 'augmontWallet', name: 'Augmont Wallet'}
   ];
-  bankFlag = false;
-  walletFlag = false;
+  bankFieldEnabled = false;
+  walletFieldEnabled = false;
+  selectedValue: any;
 
 
   constructor(
@@ -53,19 +54,29 @@ export class OrderCancelDialogComponent implements OnInit {
       differenceAmt: [''],
       totalCancellationCharges: [''],
       amtPayable: [''],
-      customerBankName: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')])],
-      customerAccountNo: ['', Validators.compose([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')])],
-      ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
+      customerBankName: [''],
+      customerAccountNo: [''],
+      ifscCode: [''],
       cancellationCharges: ['', Validators.required],
       passbookId: [null],
       checkCopyId: [null],
-      status: [''],
-      tranferOption: ['', Validators.required],
+      nextStatus: ['', Validators.required],
+      amountTransferTo: ['', Validators.required],
     });
   }
 
   get controls() {
     return this.cancelForm.controls;
+  }
+  formValidation() {
+    this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
+    this.controls.customerBankName.updateValueAndValidity()
+    this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
+    this.controls.customerAccountNo.updateValueAndValidity()
+    this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')]),
+    this.controls.ifscCode.updateValueAndValidity()
+    this.controls.cancellationCharges.setValidators([Validators.required]),
+    this.controls.cancellationCharges.updateValueAndValidity()
   }
 
   bindValue(value) {
@@ -113,13 +124,21 @@ export class OrderCancelDialogComponent implements OnInit {
   }
 
   tranferValue(value) {
+    this.selectedValue = value;
+    this.controls.customerBankName.reset();
+    this.controls.ifscCode.reset();
+    this.controls.customerAccountNo.reset();
+    this.controls.nextStatus.reset();
+    this.controls.passbookId.reset();
+    this.controls.checkCopyId.reset();
     if (value == 'customerBank') {
-      this.bankFlag = true;
-      this.walletFlag = false;
+      this.bankFieldEnabled = true;
+      this.walletFieldEnabled = false;
+      this.formValidation()
     }
     else {
-      this.walletFlag = true;
-      this.bankFlag = false;
+      this.walletFieldEnabled = true;
+      this.bankFieldEnabled = false;
     }
   }
 
@@ -128,17 +147,10 @@ export class OrderCancelDialogComponent implements OnInit {
       this.cancelForm.markAllAsTouched();
       return;
     }
-    // console.log(this.cancelForm.value);
-    let params = {
-      cancellationCharges: Number(this.controls.cancellationCharges.value),
-      customerBankName: this.controls.customerBankName.value,
-      customerAccountNo: this.controls.customerAccountNo.value,
-      ifscCode: this.controls.ifscCode.value,
-      passbookId: this.controls.passbookId.value,
-      checkCopyId: this.controls.checkCopyId.value,
-      nextStatus: this.controls.status.value
+    let data = {
+      ...this.cancelForm.value,
     }
-    this.orderService.updateCancelOrder(this.orderId, params).subscribe(
+    this.orderService.updateCancelOrder(this.orderId, data).subscribe(
       res => {
         this.toastr.successToastr("Order Cancelled Successfully");
         this.router.navigate(["/admin/emi-management/order-details"]);
