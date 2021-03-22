@@ -76,7 +76,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   formInitialize() {
     this.numberSearchForm = this.fb.group({
-      mobileNo: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNo: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
     });
 
     this.checkoutCustomerForm = this.fb.group({
