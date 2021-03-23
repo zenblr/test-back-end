@@ -116,7 +116,7 @@
                             <select (change)="tranferValue($event.target.value)" class="form-control"
                                 formControlName="amountTransferTo"
                                 [class.isError]="controls.amountTransferTo.touched && controls.amountTransferTo.invalid">
-                                <option value="" [disabled]="true">Select Option</option>
+                                <option value="" [disabled]="true">Select Transfer Option</option>
                                 <option *ngFor="let item of transferOptionList" [value]="item.value">
                                     {{item.name}} </option>
                             </select>
@@ -127,14 +127,15 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="bankFieldEnabled">
+                    <div *ngIf="bankFields">
                         <div class="row kt-padding-t-15">
                             <div class="col-5 align-self-center">
                                 <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank
                                     Name</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" placeholder="Enter bank name" formControlName="customerBankName" type="text"
+                                <input class="form-control" placeholder="Enter Bank Name"
+                                    formControlName="customerBankName" type="text"
                                     [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
                                 <mat-error
                                     *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
@@ -152,8 +153,9 @@
                                     Number</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" placeholder="Enter account number" formControlName="customerAccountNo" type="text" numbersOnly
-                                    maxlength="20" minlength="3"
+                                <input class="form-control" placeholder="Enter Account Number"
+                                    formControlName="customerAccountNo" type="text" numbersOnly maxlength="20"
+                                    minlength="3"
                                     [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
                                 <mat-error
                                     *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
@@ -179,7 +181,8 @@
                                     Code</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" placeholder="Enter ifsc code" formControlName="ifscCode" type="text" maxlength="11"
+                                <input class="form-control" placeholder="Enter IFSC Code" formControlName="ifscCode"
+                                    type="text" maxlength="11"
                                     [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
                                 <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
                                     Required field
@@ -229,7 +232,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus || bankFieldEnabled || walletFieldEnabled">
+                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus">
                         <div class="col-5 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Status</label>
                         </div>

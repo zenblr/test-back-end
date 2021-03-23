@@ -131,7 +131,7 @@ export class ViewPayComponent implements OnInit {
         if (this.walletMode) {
           const payEMIData = {
             transactionAmount: Number(this.emiAmount),
-            emiID: this.emi,
+            emiId: this.emi,
             orderId: this.orderId,
             paymentMode: params.paymentMode,
             transactionId: res.transactionUniqueId
@@ -183,7 +183,7 @@ export class ViewPayComponent implements OnInit {
       const payEMIData = {
         transactionDetails: response,
         transactionAmount: Number(this.emiAmount),
-        emiID: this.emi,
+        emiId: this.emi,
         orderId: this.orderId,
         paymentMode: this.paymentForm.controls.paymentMode.value
       }

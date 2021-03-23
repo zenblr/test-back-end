@@ -43,7 +43,7 @@ export class DepositDetailsEditComponent implements OnInit {
 		this.title = 'Update Deposit Status';
 		if (this.data.depositDetailsData) {
 			this.depositInfo = this.data.depositDetailsData;
-			this.minDate = this.depositInfo.order.createdAt
+			this.minDate = this.depositInfo.order.paymentRecievedDate;
 			this.editDeposit();
 			this.getTransactionStatus();
 		}

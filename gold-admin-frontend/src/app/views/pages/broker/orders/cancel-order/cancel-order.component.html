@@ -1,5 +1,4 @@
 <kt-toastr #toastr></kt-toastr>
-
 <kt-portlet *ngIf="orderData">
     <kt-portlet-body [class]="'kt-portlet__body--fit'">
         <div class="row justify-content-center kt-padding-t-10 kt-padding-b-10">
@@ -29,221 +28,222 @@
                     </tbody>
                 </table>
                 <hr>
-                <div>
-                    <div class="row">
-                        <div class="col-md-3 d-block">
-                            <div>Invoice Price</div>
-                            <div>
-                                <h4>{{orderData.orderDetails.orderdetails[0].finalOrderPrice}}</h4>
-                            </div>
-                        </div>
-                        <div class="col-md-3 d-block">
-                            <div>EMI Scheme</div>
-                            <div>
-                                <h4>{{orderData.orderDetails.paymentType.paymentType}} Months</h4>
-                            </div>
-                        </div>
-                        <div class="col-md-3 d-block">
-                            <div>Initial Payment</div>
-                            <div>
-                                <h4>{{orderData.orderDetails.orderdetails[0].initialPayment}}</h4>
-                            </div>
-                        </div>
-                        <div class="col-md-3 d-block">
-                            <div>EMI Amount</div>
-                            <div>
-                                <h4>{{orderData.orderDetails.orderdetails[0].emiAmount}}</h4>
-                            </div>
+                <div class="row">
+                    <div class="col-md-3 d-block">
+                        <div>Invoice Price</div>
+                        <div>
+                            <h4>{{orderData.orderDetails.orderdetails[0].finalOrderPrice}}</h4>
                         </div>
                     </div>
-                    <hr>
-                    <table class="table table-borderless" *ngIf="orderData">
-                        <thead>
-                            <tr class="text-color border-bottom">
-                                <th scope="col">Particular</th>
-                                <th></th>
-                                <th scope="col">Amount (Rs)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Booking Price (as on Booking date)</td>
-                                <td></td>
-                                <td>{{orderData.orderDetails.orderdetails[0].finalOrderPrice}}</td>
-                            </tr>
-                            <tr>
-                                <td>Cancellation Price (as on cancellation date)</td>
-                                <td></td>
-                                <td>{{orderData.cancelationPriceOfOrder}}</td>
-                            </tr>
-                            <tr class="font-weight-500">
-                                <td>Difference Receivable</td>
-                                <td>(A)</td>
-                                <td>{{orderData.diffrenceAmount}}</td>
-                            </tr>
-                            <tr class="font-weight-500">
-                                <td>Cancellation Charges ({{orderData.cancelationFees}}% of Booking Price)</td>
-                                <td>(B)</td>
-                                <td>{{orderData.cancellationCharges}}</td>
-                            </tr>
-                            <tr>
-                                <td>Inital Amount Paid</td>
-                                <td></td>
-                                <td>{{orderData.orderDetails.orderdetails[0].initialPayment}}</td>
-                            </tr>
-                            <tr>
-                                <td>EMI Paid</td>
-                                <td></td>
-                                <td>{{orderData.emiPaid}}</td>
-                            </tr>
-                            <tr class="font-weight-500 border-bottom">
-                                <td>Total Amount Paid</td>
-                                <td>(C)</td>
-                                <td>{{orderData.totalAmountPaid}}</td>
-                            </tr>
-                            <tr class="font-weight-500 border-bottom">
-                                <td class="py-3">Payable</td>
-                                <td class="py-3">(C-A-B)</td>
-                                <td class="py-3">{{orderData.payableToCustomer}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="col-md-3 d-block">
+                        <div>EMI Scheme</div>
+                        <div>
+                            <h4>{{orderData.orderDetails.paymentType.paymentType}} Months</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-block">
+                        <div>Initial Payment</div>
+                        <div>
+                            <h4>{{orderData.orderDetails.orderdetails[0].initialPayment}}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-block">
+                        <div>EMI Amount</div>
+                        <div>
+                            <h4>{{orderData.orderDetails.orderdetails[0].emiAmount}}</h4>
+                        </div>
+                    </div>
                 </div>
-                <!-- // -->
-                <div class="row mb-5 mt-4 text-center">
+                <hr>
+                <table class="table table-borderless" *ngIf="orderData">
+                    <thead>
+                        <tr class="text-color border-bottom">
+                            <th scope="col">Particular</th>
+                            <th></th>
+                            <th scope="col">Amount (Rs)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Booking Price (as on Booking date)</td>
+                            <td></td>
+                            <td>{{orderData.orderDetails.orderdetails[0].finalOrderPrice}}</td>
+                        </tr>
+                        <tr>
+                            <td>Cancellation Price (as on cancellation date)</td>
+                            <td></td>
+                            <td>{{orderData.cancelationPriceOfOrder}}</td>
+                        </tr>
+                        <tr class="font-weight-500">
+                            <td>Difference Receivable</td>
+                            <td>(A)</td>
+                            <td>{{orderData.diffrenceAmount}}</td>
+                        </tr>
+                        <tr class="font-weight-500">
+                            <td>Cancellation Charges ({{orderData.cancelationFees}}% of Booking Price)</td>
+                            <td>(B)</td>
+                            <td>{{orderData.cancellationCharges}}</td>
+                        </tr>
+                        <tr>
+                            <td>Inital Amount Paid</td>
+                            <td></td>
+                            <td>{{orderData.orderDetails.orderdetails[0].initialPayment}}</td>
+                        </tr>
+                        <tr>
+                            <td>EMI Paid</td>
+                            <td></td>
+                            <td>{{orderData.emiPaid}}</td>
+                        </tr>
+                        <tr class="font-weight-500 border-bottom">
+                            <td>Total Amount Paid</td>
+                            <td>(C)</td>
+                            <td>{{orderData.totalAmountPaid}}</td>
+                        </tr>
+                        <tr class="font-weight-500 border-bottom">
+                            <td class="py-3">Payable</td>
+                            <td class="py-3">(C-A-B)</td>
+                            <td class="py-3">{{orderData.payableToCustomer}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row mt-4 text-center">
                     <div class="col-12">
                         <div class="row">
                             <div class="col-12 py-3">
-                                <h5 class="m-0 dg-black dg-bold">Transfer this amount to</h5>
+                                <h5 class="m-0">Transfer this amount to</h5>
                             </div>
                         </div>
                         <div class="row d-flex flex-wrap justify-content-center align-items-center">
-                            <div class="m-4 text-center pointer"
+                            <div class="m-4 text-center kt-pointer"
                                 *ngFor="let payment of sharedService?.sellPaymentOptionList"
                                 (click)="selectPaymentOption(payment)">
                                 <img class="images" [src]="payment?.image"
                                     [ngClass]="{'selectedOption': isActive(payment)}" />
-                                <div class="dg-black dg-minibold pt-3">{{payment?.Name}}</div>
+                                <div class="pt-3">{{payment?.Name}}</div>
                             </div>
                         </div>
-                        <!-- <div class="col 12 error">
-                            <app-error-success-dialog [serverError]="serverError"></app-error-success-dialog>
-                        </div> -->
-                        <div *ngIf="!selectedPayment" class="row py-3">
+                        <div *ngIf="!selectedPayment" class="row">
                             <div class="col-12">
                                 <!-- <app-button (action)="proceed()" [type]="'button'" [value]="'Proceed'"></app-button> -->
-                                <kt-button [value]="'Proceed'" [type]="'button'" (click)="proceed()">
+                                <kt-button [value]="'Proceed'" [type]="'button'" (action)="proceed()">
                                 </kt-button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- // -->
                 <form [formGroup]="cancelForm">
-                    <div *ngIf="selectedPayment?.value == 'bankAccount'">
-                    <div class="row kt-padding-t-15">
-                        <div class="col-2 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank Name</label>
-                        </div>
-                        <div class="col-4">
-                            <input class="form-control" formControlName="customerBankName" type="text"
-                                [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
-                            <mat-error
-                                *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
-                                Alphabets Only
-                            </mat-error>
-                        </div>
-
-                        <div class="col-2 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Account
-                                Number</label>
-                        </div>
-                        <div class="col-4">
-                            <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
-                                maxlength="20" minlength="3"
-                                [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
-                                Minimum 3 digits Only
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
-                                Maximum 20 digits Only
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.customerAccountNo.errors?.pattern && controls.customerAccountNo.touched">
-                                Invalid A/c Number
-                            </mat-error>
-                        </div>
-                    </div>
-                    <div class="row kt-padding-t-15">
-                        <div class="col-2 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC Code</label>
-                        </div>
-                        <div class="col-4">
-                            <input class="form-control" formControlName="ifscCode" type="text" maxlength="11"
-                                [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
-                            <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
-                                Please Input Valid Code
-                            </mat-error>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15">
-                        <div class="col-2 align-self-center">
-                            <label class="font-weight-500 text-color">Passbook Copy</label>
-                        </div>
-                        <div class="col-4">
-                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
-                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                [reason]="'customer'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
-                            </kt-uplod-preview-image>
-                            <input type="text" formControlName="passbookId" class="form-control"
-                                [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
-                            <div *ngIf="controls.passbookId.touched && controls.passbookId.invalid">
-                                <mat-error *ngIf="controls.passbookId.touched && controls.passbookId.errors?.required">
-                                    Passbook Copy is required</mat-error>
+                    <div *ngIf="selectedPayment?.value == 'customerBank'">
+                        <div class="row kt-padding-t-15">
+                            <div class="col-2 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank
+                                    Name</label>
                             </div>
-                        </div>
-
-                        <div class="col-2 align-self-center">
-                            <label class="font-weight-500 text-color">Cheque Copy</label>
-                        </div>
-                        <div class="col-4">
-                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
-                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
-                                [reason]="'customer'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
-                            </kt-uplod-preview-image>
-                            <input type="text" formControlName="checkCopyId" class="form-control"
-                                [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid" hidden>
-                            <div *ngIf="controls.checkCopyId.touched && controls.checkCopyId.invalid">
+                            <div class="col-4">
+                                <input class="form-control" formControlName="customerBankName" type="text"
+                                    placeholder="Enter Bank Name"
+                                    [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
                                 <mat-error
-                                    *ngIf="controls.checkCopyId.touched && controls.checkCopyId.errors?.required">
-                                    Cheque Copy is required</mat-error>
+                                    *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
+                                    Alphabets Only
+                                </mat-error>
+                            </div>
+
+                            <div class="col-2 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Account
+                                    Number</label>
+                            </div>
+                            <div class="col-4">
+                                <input class="form-control" formControlName="customerAccountNo" type="text"
+                                    placeholder="Enter Account Number" numbersOnly maxlength="20" minlength="3"
+                                    [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
+                                    Minimum 3 digits Only
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
+                                    Maximum 20 digits Only
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.customerAccountNo.errors?.pattern && controls.customerAccountNo.touched">
+                                    Invalid A/c Number
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-2 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC
+                                    Code</label>
+                            </div>
+                            <div class="col-4">
+                                <input class="form-control" formControlName="ifscCode" type="text"
+                                    placeholder="Enter IFSC Code" maxlength="11"
+                                    [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
+                                <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
+                                    Please Input Valid Code
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-15">
+                            <div class="col-2 align-self-center">
+                                <label class="font-weight-500 text-color">Passbook Copy</label>
+                            </div>
+                            <div class="col-4">
+                                <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
+                                    [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                    [reason]="'customer'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                                <input type="text" formControlName="passbookId" class="form-control"
+                                    [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
+                                <div *ngIf="controls.passbookId.touched && controls.passbookId.invalid">
+                                    <mat-error
+                                        *ngIf="controls.passbookId.touched && controls.passbookId.errors?.required">
+                                        Passbook Copy is required</mat-error>
+                                </div>
+                            </div>
+
+                            <div class="col-2 align-self-center">
+                                <label class="font-weight-500 text-color">Cheque Copy</label>
+                            </div>
+                            <div class="col-4">
+                                <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
+                                    [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
+                                    [reason]="'customer'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                                <input type="text" formControlName="checkCopyId" class="form-control"
+                                    [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid"
+                                    hidden>
+                                <div *ngIf="controls.checkCopyId.touched && controls.checkCopyId.invalid">
+                                    <mat-error
+                                        *ngIf="controls.checkCopyId.touched && controls.checkCopyId.errors?.required">
+                                        Cheque Copy is required</mat-error>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    </div>
-                    <div class="mx-auto text-center">
-                        <kt-button *ngIf="confirmFlag" [value]="value" [type]="'button'" (click)="getOtp()">
-                        </kt-button>
-                        <div *ngIf="(bankFlag && selectedPayment?.value == 'bankAccount') || (walletFlag && selectedPayment?.value == 'augmontWallet')" class="d-inline-flex">
-                            <input type="text" class="form-control" style="width: 50%;" formControlName="otp"
-                                numbersOnly>&nbsp;&nbsp;
-                            <kt-button [value]="value" [type]="'button'" (click)="confirmOtp()"></kt-button>
+                    <div class="row">
+                        <div class="mx-auto">
+                            <kt-button *ngIf="otpFlag" [value]="value" [type]="'button'" (click)="getOtp()">
+                            </kt-button>
+                            <div *ngIf="confirmFlag" class="d-inline-flex">
+                                <input type="text" class="form-control" style="width: 50%;" formControlName="otp"
+                                    placeholder="Enter OTP" maxlength="4" numbersOnly>&nbsp;&nbsp;
+                                <kt-button [value]="value" [type]="'button'" (click)="confirmOtp()"></kt-button>
+                            </div>
+                            <mat-error class="d-block" *ngIf="controls.otp.touched && controls.otp.errors?.required">
+                                OTP is required</mat-error>
                         </div>
-                        <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.required">
-                            OTP is required</mat-error>
                     </div>
                 </form>
             </div>

@@ -3,9 +3,7 @@ import { ShopService } from '../../../../../core/broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
-import { SharedService } from '../../../../../core/shared/services/shared.service'
-import { F, T } from '@angular/cdk/keycodes';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-cancel-order',
@@ -14,13 +12,11 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 })
 export class CancelOrderComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-
   orderId: any;
   orderData: any;
   value: string = "Cancel Order";
-  bankFlag: boolean = false;
-  walletFlag: boolean = false;
-  confirmFlag: boolean;
+  otpFlag: boolean = false;
+  confirmFlag: boolean = false;
   cancelForm: FormGroup;
   isMandatory: boolean = true;
   referenceCode: any;
@@ -38,7 +34,7 @@ export class CancelOrderComponent implements OnInit {
     this.orderId = this.route.snapshot.params.id;
     this.shopService.getCancelDetails(this.orderId).subscribe(res => {
       this.orderData = res;
-      this.formInitialize()
+      this.formInitialize();
     })
   }
 
@@ -50,27 +46,53 @@ export class CancelOrderComponent implements OnInit {
       passbookId: [null],
       checkCopyId: [null],
       otp: [null],
+      referenceCode: ['']
     });
-  }
-  formValidation() {
-    this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
-      this.controls.customerBankName.updateValueAndValidity()
-    this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
-      this.controls.customerAccountNo.updateValueAndValidity()
-    this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')]),
-      this.controls.ifscCode.updateValueAndValidity()
-  }
-  removeValidation() {
-    this.controls.customerBankName.setValidators([])
-    this.controls.customerBankName.updateValueAndValidity()
-  this.controls.customerAccountNo.setValidators([]),
-    this.controls.customerAccountNo.updateValueAndValidity()
-  this.controls.ifscCode.setValidators([]),
-    this.controls.ifscCode.updateValueAndValidity()
   }
 
   get controls() {
-    return this.cancelForm.controls;
+    if (this.cancelForm) {
+      return this.cancelForm.controls;
+    }
+  }
+
+  selectPaymentOption(item) {
+    this.otpFlag = true;
+    this.confirmFlag = false;
+    this.value = "Cancel Order";
+    this.selectedPayment = item;
+    this.controls.otp.setValidators([]);
+    this.controls.otp.updateValueAndValidity();
+    this.cancelForm.reset();
+  }
+
+  isActive(item) {
+    return this.selectedPayment === item;
+  }
+
+  proceed() {
+    if (!this.selectedPayment) {
+      this.toastr.errorToastr('Please Select Transfer Option');
+      return;
+    }
+  }
+
+  setValidation() {
+    if (this.selectedPayment.value == 'customerBank') {
+      this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
+        this.controls.customerBankName.updateValueAndValidity()
+      this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
+        this.controls.customerAccountNo.updateValueAndValidity()
+      this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')]),
+        this.controls.ifscCode.updateValueAndValidity()
+    } else {
+      this.controls.customerBankName.setValidators([]),
+        this.controls.customerBankName.updateValueAndValidity()
+      this.controls.customerAccountNo.setValidators([]),
+        this.controls.customerAccountNo.updateValueAndValidity()
+      this.controls.ifscCode.setValidators([]),
+        this.controls.ifscCode.updateValueAndValidity()
+    }
   }
 
   uploadImage(data) {
@@ -94,11 +116,7 @@ export class CancelOrderComponent implements OnInit {
   }
 
   getOtp() {
-    if (this.selectedPayment.value == 'bankAccount') {
-      this.formValidation();
-    } else {
-      this.removeValidation();
-    }
+    this.setValidation();
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
@@ -109,16 +127,10 @@ export class CancelOrderComponent implements OnInit {
     }
 
     this.shopService.getOtp(params).subscribe(res => {
-      this.confirmFlag = false;
-      if (this.selectedPayment.value == 'bankAccount'){
-        this.walletFlag = false;
-        this.bankFlag = true;
-      } else {  
-      this.walletFlag = true;
-      this.bankFlag = false;
-      }
+      this.otpFlag = false;
+      this.confirmFlag = true;
       this.value = "Confirm OTP";
-      this.referenceCode = res.referenceCode;
+      this.controls.referenceCode.patchValue(res.referenceCode);
     })
   }
 
@@ -133,8 +145,8 @@ export class CancelOrderComponent implements OnInit {
       ...this.cancelForm.value,
       amountTransferTo: '',
     }
-    if (this.selectedPayment.value == 'bankAccount') {
-        data.amountTransferTo = 'customerBank';
+    if (this.selectedPayment.value == 'customerBank') {
+      data.amountTransferTo = 'customerBank';
     } else {
       data.amountTransferTo = 'augmontWallet';
     }
@@ -147,21 +159,5 @@ export class CancelOrderComponent implements OnInit {
       error => {
         this.toastr.errorToastr(error.error);
       })
-  }
-
-  selectPaymentOption(item) {
-    this.confirmFlag = true;
-    this.value = "Cancel Order"; 
-    this.selectedPayment = item;
-    this.cancelForm.reset();
-  }
-  isActive(item) {
-    return this.selectedPayment === item;
-  }
-  proceed() {
-    if (!this.selectedPayment) {
-      this.toastr.errorToastr('Please Select Payment Option');
-      return;
-    }
   }
 }
