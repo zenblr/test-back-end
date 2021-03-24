@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ShopService } from '../../../../../core/broker';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
@@ -14,7 +14,7 @@ export class CancelOrderComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   orderId: any;
   orderData: any;
-  value: string = "Cancel Order";
+  value: string = 'Cancel Order';
   otpFlag: boolean = false;
   confirmFlag: boolean = false;
   cancelForm: FormGroup;
@@ -59,7 +59,7 @@ export class CancelOrderComponent implements OnInit {
   selectPaymentOption(item) {
     this.otpFlag = true;
     this.confirmFlag = false;
-    this.value = "Cancel Order";
+    this.value = 'Cancel Order';
     this.selectedPayment = item;
     this.controls.otp.setValidators([]);
     this.controls.otp.updateValueAndValidity();
@@ -78,7 +78,7 @@ export class CancelOrderComponent implements OnInit {
   }
 
   setValidation() {
-    if (this.selectedPayment.value == 'customerBank') {
+    if (this.selectedPayment.value == 'bankAccount') {
       this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
         this.controls.customerBankName.updateValueAndValidity()
       this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
@@ -96,22 +96,22 @@ export class CancelOrderComponent implements OnInit {
   }
 
   uploadImage(data) {
-    if (data.fieldName == "passbookCopy") {
-      this.cancelForm.controls["passbookId"].patchValue(
+    if (data.fieldName == 'passbookCopy') {
+      this.cancelForm.controls['passbookId'].patchValue(
         data.uploadData.id
       );
-    } else if (data.fieldName == "checkCopy") {
-      this.cancelForm.controls["checkCopyId"].patchValue(
+    } else if (data.fieldName == 'checkCopy') {
+      this.cancelForm.controls['checkCopyId'].patchValue(
         data.uploadData.id
       );
     }
   }
 
   removeImage(data) {
-    if (data.fieldName == "passbookCopy") {
-      this.cancelForm.controls["passbookId"].patchValue("");
-    } else if (data.fieldName == "checkCopy") {
-      this.cancelForm.controls["checkCopyId"].patchValue("");
+    if (data.fieldName == 'passbookCopy') {
+      this.cancelForm.controls['passbookId'].patchValue('');
+    } else if (data.fieldName == 'checkCopy') {
+      this.cancelForm.controls['checkCopyId'].patchValue('');
     }
   }
 
@@ -129,7 +129,7 @@ export class CancelOrderComponent implements OnInit {
     this.shopService.getOtp(params).subscribe(res => {
       this.otpFlag = false;
       this.confirmFlag = true;
-      this.value = "Confirm OTP";
+      this.value = 'Confirm OTP';
       this.controls.referenceCode.patchValue(res.referenceCode);
     })
   }
@@ -145,16 +145,16 @@ export class CancelOrderComponent implements OnInit {
       ...this.cancelForm.value,
       amountTransferTo: '',
     }
-    if (this.selectedPayment.value == 'customerBank') {
-      data.amountTransferTo = 'customerBank';
+    if (this.selectedPayment.value == 'bankAccount') {
+      data.amountTransferTo = 'bankAccount';
     } else {
       data.amountTransferTo = 'augmontWallet';
     }
 
     this.shopService.updateCancelOrder(this.orderId, data).subscribe(
       res => {
-        this.toastr.successToastr("Order Cancelled Successfully");
-        this.router.navigate(["/broker/orders"]);
+        this.toastr.successToastr('Order Cancelled Successfully');
+        this.router.navigate(['/broker/orders']);
       },
       error => {
         this.toastr.errorToastr(error.error);

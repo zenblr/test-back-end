@@ -17,7 +17,7 @@ export class OrderCancelDialogComponent implements OnInit {
   cancelData: any;
   isMandatory = true;
   transferOptionList = [
-    { value: 'customerBank', name: 'Customer Bank' },
+    { value: 'bankAccount', name: 'Customer Bank' },
     { value: 'augmontWallet', name: 'Augmont Wallet' }
   ];
   bankFields = false;
@@ -90,7 +90,7 @@ export class OrderCancelDialogComponent implements OnInit {
   }
 
   setValidation(type) {
-    if (type == 'customerBank') {
+    if (type == 'bankAccount') {
       this.controls.customerBankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]),
         this.controls.customerBankName.updateValueAndValidity()
       this.controls.customerAccountNo.setValidators([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')]),
@@ -135,7 +135,7 @@ export class OrderCancelDialogComponent implements OnInit {
       passbookId: null,
       checkCopyId: null
     });
-    if (value == 'customerBank') {
+    if (value == 'bankAccount') {
       this.bankFields = true;
     }
     else {
