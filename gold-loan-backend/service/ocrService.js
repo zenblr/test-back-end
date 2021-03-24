@@ -131,36 +131,39 @@ let ocrService = async (fileUrl, idProofType, customerId, index, number) => {
             body: JSON.stringify(data)
         }
         // static data
-        let result = await getOcrLocal(idProofType, index,number)
-        const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
-        return { data: ocrResp };
+        if (process.env.NODE_ENV == 'test' || process.env.NODE_ENV == 'new' || process.env.NODE_ENV == 'ekyc') {
+            let result = await getOcrLocal(idProofType, index, number)
+            const ocrResp = await getOcrResponse(result, idProofType, karzaDetail.confidenceVal1);
+            return { data: ocrResp };
+        } else {
 
-        return new Promise((resolve, reject) => {
-            request(options, async function (error, response, body) {
-                if (error) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
-                    return resolve({ error: 'Something Went Wrong' });
-                }
-                const respBody = JSON.parse(body);
-                if (respBody.statusCode === 101) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
-                    const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
-                    if (ocrResp.error) {
-                        return resolve({ error: ocrResp.error });
+            return new Promise((resolve, reject) => {
+                request(options, async function (error, response, body) {
+                    if (error) {
+                        await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
+                        return resolve({ error: 'Something Went Wrong' });
                     }
-                    const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
-                    if (!validationResp.error) {
-                        return resolve({ data: ocrResp });
+                    const respBody = JSON.parse(body);
+                    if (respBody.statusCode === 101) {
+                        await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
+                        const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
+                        if (ocrResp.error) {
+                            return resolve({ error: ocrResp.error });
+                        }
+                        const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
+                        if (!validationResp.error) {
+                            return resolve({ data: ocrResp });
+                        } else {
+                            return resolve({ error: validationResp.error });
+                        }
+
                     } else {
-                        return resolve({ error: validationResp.error });
+                        await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
+                        return resolve({ error: JSON.parse(body).error });
                     }
-
-                } else {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
-                    return resolve({ error: JSON.parse(body).error });
-                }
+                })
             })
-        })
+        }
     } catch (err) {
         await insertInExternalApiLogger('Karza OCR', null, null, apiPath, JSON.stringify(requestBody), JSON.stringify(err), 'Error');
         return { error: 'Something Went Wrong' }
@@ -377,9 +380,15 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     };
 
     if (proofType.includes('aadhaar card')) {
-        const extractedData = await getAadhaarResp(responseBody.result, confidenceValue, userDetailBody);
-        // const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
-        return { extractedData, idProofType };
+        if (process.env.NODE_ENV == 'test' || process.env.NODE_ENV == 'new' || process.env.NODE_ENV == 'ekyc') {
+
+            const extractedData = await getAadhaarResp(responseBody.result, confidenceValue, userDetailBody);
+            return { extractedData, idProofType };
+
+        } else {
+            const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
+            return { extractedData, idProofType };
+        }
     } else if (proofType.includes('driving license')) {
         const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody);
         return { extractedData, idProofType };
@@ -387,9 +396,16 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
         return { extractedData, idProofType };
     } else if (proofType.includes('pan card')) {
-        const extractedData = await getPanCardResp(responseBody.result, confidenceValue, userDetailBody);
-        // const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
-        return { extractedData, idProofType };
+        if (process.env.NODE_ENV == 'test' || process.env.NODE_ENV == 'new' || process.env.NODE_ENV == 'ekyc') {
+
+            const extractedData = await getPanCardResp(responseBody.result, confidenceValue, userDetailBody);
+            return { extractedData, idProofType };
+
+        } else {
+
+            const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
+            return { extractedData, idProofType };
+        }
     }
 }
 
