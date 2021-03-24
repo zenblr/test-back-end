@@ -668,6 +668,7 @@ export class CheckoutCustomerComponent implements OnInit {
           panCardFileId: res.uploadFile.id,
           panImg: res.uploadFile.URL
         })
+        this.getPanDetails()
         // event.nativeElement.value = '';
         this.ref.detectChanges();
       },
