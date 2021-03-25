@@ -118,7 +118,7 @@ export class OrderDetailsService {
 	getProforma(id): Observable<any> {
 		return this.http
 			.get(
-				API_ENDPOINT + `api/order/order-proforma-invoice/${id}`,
+				API_ENDPOINT + `api/order/order-proforma-invoice/${id}?isKeyFromWeb=true`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -142,7 +142,7 @@ export class OrderDetailsService {
 
 	getContract(id): Observable<any> {
 		return this.http
-			.get(API_ENDPOINT + `api/order/order-contract/${id}`, {
+			.get(API_ENDPOINT + `api/order/order-contract/${id}?isKeyFromWeb=true`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(

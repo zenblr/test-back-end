@@ -74,7 +74,7 @@ export class EmiDetailsService {
 
 	emiReceipt(id): Observable<any> {
 		return this.http
-			.get(API_ENDPOINT + `api/order/emi-receipt/${id}`, {
+			.get(API_ENDPOINT + `api/order/emi-receipt/${id}?isKeyFromWeb=true`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(

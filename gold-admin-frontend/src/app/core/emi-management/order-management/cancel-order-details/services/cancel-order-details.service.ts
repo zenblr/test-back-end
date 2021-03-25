@@ -78,7 +78,7 @@ export class CancelOrderDetailsService {
 	getReceipt(id): Observable<any> {
 		return this.http
 			.get(
-				API_ENDPOINT + `api/cancel-order/cancel-receipt/${id}`,
+				API_ENDPOINT + `api/cancel-order/cancel-receipt/${id}?isKeyFromWeb=true`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
