@@ -301,7 +301,11 @@ export class CheckoutCustomerComponent implements OnInit {
           nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
           panImg: res.customerDetails.panImg
         });
+      }else{
+        this.controls.panCardNumber.enable()
+        this.controls.nameOnPanCard.enable()
       }
+
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
