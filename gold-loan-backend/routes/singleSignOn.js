@@ -5,6 +5,6 @@ const signOn = require('../controllers/singleSignOn/singleSignOn');
 
 const route = express.Router();
 
-route.get('/', errorWrap.wrapper(signOn.singleSignOnBroker)); 
+route.post('/', errorWrap.wrapper(signOn.singleSignOnBroker)); 
 
 module.exports = route;
