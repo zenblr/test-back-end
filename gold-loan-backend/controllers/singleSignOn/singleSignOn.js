@@ -95,9 +95,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     if (defaultFind.status) {
 
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                        res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                        res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                        res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                         // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
@@ -217,9 +217,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     if (defaultFind.status) {
 
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                        res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                        res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                        res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                         // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
@@ -240,6 +240,45 @@ exports.singleSignOnBroker = async (req, res, next) => {
         return res.status(401).send({ message: 'invalid credentials' });
     }
 
+}
+
+exports.getTokenInfo = async (req, res, next) => {
+    let userId = req.userData.id;
+    let checkUser = await models.user.findOne({
+        where: {
+            id: userId
+        },
+        include: [{
+            model: models.role
+        }]
+    });
+    let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
+    let roleId = await getRole.map((data) => data.roleId);
+    let modules = await models.roleModule.findAll({
+        where: { roleId: { [Op.in]: roleId }, isActive: true },
+        attributes: [],
+        include: [
+            {
+                model: models.module,
+                as: 'module',
+                attributes: ['id', 'moduleName'],
+                where: { isActive: true }
+            },
+        ]
+    });
+
+    let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
+    let permissionId = await getPermissions.map((data) => data.permissionId);
+    let permissions = await models.permission.findAll({
+        attributes: ['id', 'actionName', 'description'],
+        raw: true,
+        where: { isActive: true, id: { [Op.in]: permissionId } }
+    })
+    let userDetails = {};
+    userDetails = {
+        userTypeId: checkUser.userTypeId
+    }
+    return res.status(200).json({modules, permissions, userDetails})
 }
 
 function panCardNumberrVerification(panNo) {

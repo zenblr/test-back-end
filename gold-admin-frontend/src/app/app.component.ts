@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 // Layout
-import { LayoutConfigService, SplashScreenService, TranslationService } from './core/_base/layout';
+import { LayoutConfigService, MenuAsideService, SplashScreenService, TranslationService } from './core/_base/layout';
 // language list
 import { locale as enLang } from './core/_config/i18n/en';
 import { locale as chLang } from './core/_config/i18n/ch';
@@ -42,48 +42,58 @@ export class AppComponent implements OnInit, OnDestroy {
 	 * @param splashScreenService: SplashScreenService
 	 */
 	constructor(
-		private translationService: TranslationService,
-		private router: Router,
-		private layoutConfigService: LayoutConfigService,
-		private splashScreenService: SplashScreenService,
-		private sharedService: SharedService,
-		private authService: AuthService,
-		private ref: ChangeDetectorRef,
-		private toast: ToastrService,
+        private translationService: TranslationService,
+        private router: Router,
+        private layoutConfigService: LayoutConfigService,
+        private splashScreenService: SplashScreenService,
+        private sharedService: SharedService,
+        private authService: AuthService,
+        private ref: ChangeDetectorRef,
+        private toast: ToastrService,
 		private cookieService: CookieService,
-	) {
+		private menuAsideService : MenuAsideService
+    ) {
 
-		if(this.cookieService.check('test')){
-			console.log(this.cookieService.check('test'))
-		}
-		if (this.cookieService.get('Token') && this.cookieService.get('modules') &&
-			this.cookieService.get('permissions') && this.cookieService.get('userDetails')) {
-			const userData = {
-				Token: JSON.parse(this.cookieService.get('Token')),
-				modules: JSON.parse(this.cookieService.get('modules')),
-				permissions: JSON.parse(this.cookieService.get('permissions')),
-				userDetails: JSON.parse(this.cookieService.get('userDetails')),
-			}
-			localStorage.setItem('UserDetails', JSON.stringify(userData));
-			this.cookieService.deleteAll();
-			setTimeout(() => {
-				this.router.navigate(['/broker/dashboard']);
-			});
-		}
-		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
-		// 	location.href = location.href.replace("http://", "https://");
-		//   }
-		// register translations
-		this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
-		// this.sharedService.loader$.subscribe(res => {
-		// 	if (res) {
-		// 		this.spinner.show()
-		// 	} else {
-		// 		this.spinner.hide()
-		// 		this.ref.markForCheck()
-		// 	}
-		// })
-	}
+        if(this.cookieService.check('test')){
+            console.log(this.cookieService.check('test'))
+        }
+        if (this.cookieService.get('Token')) {
+            const userData = {
+                Token: JSON.parse(this.cookieService.get('Token')),
+                modules: '',
+                permissions: '',
+                userDetails: '',
+            }
+            localStorage.setItem('UserDetails', JSON.stringify(userData));
+            this.sharedService.getBrokerPermissions().subscribe(res=>{
+                const userData = {
+                    Token: JSON.parse(this.cookieService.get('Token')),
+                    modules: res.modules,
+                    permissions: res.permissions,
+                    userDetails: res.userDetails,
+                }   
+                localStorage.setItem('UserDetails', JSON.stringify(userData));
+				this.cookieService.deleteAll();
+				this.menuAsideService.loadMenu();
+				setTimeout(() => {
+					this.router.navigate(['/broker/shop']);
+				});
+            })
+        }
+        // if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
+        //  location.href = location.href.replace("http://", "https://");
+        //   }
+        // register translations
+        this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
+        // this.sharedService.loader$.subscribe(res => {
+        //  if (res) {
+        //      this.spinner.show()
+        //  } else {
+        //      this.spinner.hide()
+        //      this.ref.markForCheck()
+        //  }
+        // })
+    }
 
 	/**
 	 * On init
