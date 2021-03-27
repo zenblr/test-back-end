@@ -94,12 +94,12 @@ exports.singleSignOnBroker = async (req, res, next) => {
 
                     if (defaultFind.status) {
 
-                        // res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
-                        // res.redirect(`${process.env.SINGLE_SIGN_ON}`);
-                        return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
+                        res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        res.redirect(`${process.env.SINGLE_SIGN_ON}`);
+                        // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
                     }
                 } else {
@@ -212,12 +212,12 @@ exports.singleSignOnBroker = async (req, res, next) => {
 
                     if (defaultFind.status) {
 
-                        // res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
-                        // res.redirect(`${process.env.SINGLE_SIGN_ON}`);
-                        return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
+                        res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        res.redirect(`${process.env.SINGLE_SIGN_ON}`);
+                        // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
                     }
             }
