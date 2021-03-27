@@ -28,7 +28,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class MerchantListComponent implements OnInit {
 
   dataSource: MerchantDatasource;
-  displayedColumns = ['merchantName', 'initial', 'fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
+  displayedColumns = ['merchantName','merchantId', 'initial', 'fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   searchValue = ''
   unsubscribeSearch$ = new Subject()

@@ -10,6 +10,14 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="merchantId">
+                    <mat-header-cell *matHeaderCellDef>Merchant ID</mat-header-cell>
+                    <mat-cell *matCellDef="let merchant">
+                        <div class="text-color">
+                            {{merchant?.user?.userUniqueId | titlecase}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="initial">
                     <mat-header-cell *matHeaderCellDef>Initial</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">

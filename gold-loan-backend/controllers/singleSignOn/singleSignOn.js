@@ -7,6 +7,7 @@ const uuidAPIKey = require('uuid-apikey');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 var multiparty = require('multiparty');
 var atob = require('atob');
+let uniqid = require('uniqid');
 exports.singleSignOnBroker = async (req, res, next) => {
     try {
 
@@ -30,18 +31,25 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decoded) {
             return res.status(401).send({ message: 'Unauthorized' });
         }
-
+        //check keys
+        if (!decoded.merchantUserId) {
+            return res.status(400).send({ message: 'merchantUserId key is required' });
+        }
         let merchantUserId = decoded.merchantUserId;
 
-        let userData = await models.user.findOne({ where: {userUniqueId: {[Op.iLike]: merchantUserId} } });
-        if (!userData) {
+        let merchantUserData = await models.user.findOne({ where: { userUniqueId: { [Op.iLike]: merchantUserId } } });
+        if (!merchantUserData) {
             return res.status(401).send({ message: 'Invalid merchant user Id' });
         }
-        let merchantData = await models.merchant.findOne({ where: { userId: userData.id } });
-        const merchantApiKeyData = await models.merchantApikey.findOne({ where: { userId: userData.id } });
+        let merchantData = await models.merchant.findOne({ where: { userId: merchantUserData.id } });
+        let merchantId = merchantData.id
+        const merchantApiKeyData = await models.merchantApikey.findOne({ where: { userId: merchantUserData.id } });
         let apiKey = uuidAPIKey.toAPIKey(merchantApiKeyData.apiKey);
         const decode = await jwt.verify(token, apiKey);
-        let mobileNumber = decode.mobileNumber;
+        if (!decode.brokerMobileNumber) {
+            return res.status(400).send({ message: 'brokerMobileNumber key is required' });
+        }
+        let mobileNumber = decode.brokerMobileNumber;
         let firstName = decode.firstName;
         let lastName = decode.lastName;
         let email = decode.email;
@@ -50,54 +58,168 @@ exports.singleSignOnBroker = async (req, res, next) => {
         let city = decode.city;
         let pincode = decode.pincode;
         let storeId = decode.storeId;
-        console.log({firstName,lastName,email,address,state,city,pincode,storeId})
+        let panCardNumber = decode.panCardNumber;
+        console.log({ firstName, lastName, email, address, state, city, pincode, storeId })
         //check state city
         if (merchantData) {
-            /// api key
-
-            ///
             console.log(merchantData)
             if (merchantData.status != true) {
                 return res.status(401).send({ message: 'Merchant account is deactivated' });
             }
-            let userData = await models.user.findOne({ where: { mobileNumber: mobileNumber } })
-            const broker = await models.broker.findOne({
-                where: {
-                    userId: userData.id,
-                    merchantId: merchantData.id
-                }
-            });
-            if (broker) {
-                if (broker.status != true) {
-                    return res.status(401).send({ message: 'your account is deactivated' })
-                }
-                if (broker.approvalStatusId != 2) {
-                    return res.status(401).send({ message: 'Broker account is not approved' });
-                }
-                let checkUser = await models.user.findOne({
+            let userData = await models.user.findOne({ where: { mobileNumber: mobileNumber } });
+            if (userData) {
+                const broker = await models.broker.findOne({
                     where: {
-                        id: broker.userId
-                    },
-                    include: [{
-                        model: models.role
-                    }]
+                        userId: userData.id,
+                        merchantId: merchantId
+                    }
                 });
+                if (broker) {
+                    if (broker.status != true) {
+                        return res.status(401).send({ message: 'your account is deactivated' })
+                    }
+                    if (broker.approvalStatusId != 2) {
+                        return res.status(401).send({ message: 'Broker account is not approved' });
+                    }
+                    let checkUser = await models.user.findOne({
+                        where: {
+                            id: broker.userId
+                        },
+                        include: [{
+                            model: models.role
+                        }]
+                    });
 
-                let defaultFind = await getTokenRolePermission(checkUser)
+                    let defaultFind = await getTokenRolePermission(checkUser)
 
-                if (defaultFind.status) {
+                    if (defaultFind.status) {
 
-                    res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                    res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                    res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                    res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
-                    res.redirect(`${process.env.SINGLE_SIGN_ON}`);
-                    // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
+                        // res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        // res.redirect(`${process.env.SINGLE_SIGN_ON}`);
+                        return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
+                    }
+                } else {
+                    return res.status(401).send({ message: 'invalid credentials' });
+                }
+            } else {
+                //create broker code
+                if (!decode.firstName) {
+                    return res.status(400).send({ message: 'firstName key is required' });
+                }
+                if (!decode.lastName) {
+                    return res.status(400).send({ message: 'lastName key is required' });
+                }
+                if (!decode.email) {
+                    return res.status(400).send({ message: 'email key is required' });
+                }
+                if (!decode.address) {
+                    return res.status(400).send({ message: 'address key is required' });
+                }
+                if (!decode.state) {
+                    return res.status(400).send({ message: 'state key is required' });
+                }
+                if (!decode.city) {
+                    return res.status(400).send({ message: 'city key is required' });
+                }
+                if (!decode.pincode) {
+                    return res.status(400).send({ message: 'pincode key is required' });
+                }
+                if (!decode.storeId) {
+                    return res.status(400).send({ message: 'storeId key is required' });
+                }
+                if (!decode.panCardNumber) {
+                    return res.status(400).send({ message: 'panCardNumber key is required' });
+                }
+                let checkPanNumber = await panCardNumberrVerification(panCardNumber);
+                if (!checkPanNumber) {
+                    return res.status(401).send({ message: 'Invalid PanCard Number' });
                 }
 
-            } else {
-                //broker does not exist create new broker
+                let checkMobileNo = await phonenumber(mobileNumber);
+                if (!checkMobileNo) {
+                    return res.status(401).send({ message: 'Invalid Mobile number' });
+                }
+
+                //check user pancard
+                let userPanData = await models.user.findOne({ where: { panCardNumber: panCardNumber } })
+                if (userPanData) {
+                    return res.status(400).send({ message: 'Pan Card Number already exists' });
+                }
+                //check email
+                let userEmailData = await models.user.findOne({ where: { email: { [Op.iLike]: email } } })
+                if (userEmailData) {
+                    return res.status(400).send({ message: 'EmailId already exists' });
+                }
+                //check city and state
+                let findCityId = await models.city.findOne({
+                    where: {
+                        name: { [Op.iLike]: city }
+                    }
+                })
+                if (findCityId) {
+                    cityId = await findCityId.id;
+                } else {
+                    return res.status(400).json({ message: "incorrect city name" });
+                }
+                let findStateId = await models.state.findOne({
+                    where: {
+                        name: { [Op.iLike]: state }
+                    }
+                })
+                if (findStateId) {
+                    stateId = await findStateId.id;
+                } else {
+                    return res.status(400).json({ message: "incorrect state name" });
+                }
+                // checkStore
+                    let userInfo = await sequelize.transaction(async t => {
+                        let storeData = await models.store.findOne({ where: { storeUniqueId: storeId } });
+                        let storeDataId;
+                        if (!storeData) {
+                            let store = await models.store.create({ storeUniqueId: storeId, merchantId, createdBy: merchantUserData.id, updatedBy: merchantUserData.id }, { transaction: t });
+                            storeDataId = store.id;
+                        } else {
+                            storeDataId = storeData.id;
+                        }
+                        ////
+                        const userTypeId = 3;  //for broker using const
+                        let userId;
+                        let userUniqueId = uniqid.time().toUpperCase();
+                        let createdUser = merchantUserData.id;
+                        const password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
+                        let userData = await models.user.create({ userUniqueId, firstName, lastName, mobileNumber, email, userTypeId, createdBy: createdUser, modifiedBy: createdUser, panCardNumber, password }, { transaction: t });
+                        userId = userData.id;
+                        await models.user_address.create({ stateId, cityId, userId, postalCode: pincode, address }, { transaction: t });
+                        await models.userRole.create({ userId, roleId: 3 }, { transaction: t });
+                        await models.broker.create({ userId, merchantId, storeId: storeDataId, approvalStatusId: 2, createdBy: createdUser, updatedBy: createdUser }, { transaction: t });
+                        let checkUser = await models.user.findOne({
+                            where: {
+                                id: userId
+                            },
+                            transaction: t,
+                            include: [{
+                                model: models.role
+                            }]
+                        });
+                        return checkUser
+                    })
+                    ///
+                    let defaultFind = await getTokenRolePermission(userInfo)
+
+                    if (defaultFind.status) {
+
+                        // res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        // res.redirect(`${process.env.SINGLE_SIGN_ON}`);
+                        return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
+
+                    }
             }
 
         } else {
@@ -106,8 +228,8 @@ exports.singleSignOnBroker = async (req, res, next) => {
 
     } catch (err) {
         console.log(err)
-        if(err.name){
-            if(err.message){
+        if (err.name) {
+            if (err.message) {
                 return res.status(401).send({ message: err.message });
             }
         }
@@ -115,6 +237,26 @@ exports.singleSignOnBroker = async (req, res, next) => {
     }
 
 }
+
+function panCardNumberrVerification(panNo) {
+    var panNumber = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+    if ((panNo.match(panNumber))) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  function phonenumber(mobNo) {
+    var phoneno = /^\d{10}$/;
+    if ((mobNo.match(phoneno))) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 
 async function getTokenRolePermission(checkUser) {
