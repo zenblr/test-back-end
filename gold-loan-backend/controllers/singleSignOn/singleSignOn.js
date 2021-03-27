@@ -177,9 +177,13 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 }
                 // checkStore
                     let userInfo = await sequelize.transaction(async t => {
-                        let storeData = await models.store.findOne({ where: { storeUniqueId: storeId } });
+                        let storeData = await models.store.findOne({ where: { storeUniqueId: storeId, merchantId } });
                         let storeDataId;
                         if (!storeData) {
+                            let storeDataCheck = await models.store.findOne({ where: { storeUniqueId: storeId } });
+                            if(storeDataCheck){
+                                return res.status(400).json({ message: "Store Id already exists" });
+                            }
                             let store = await models.store.create({ storeUniqueId: storeId, merchantId, createdBy: merchantUserData.id, updatedBy: merchantUserData.id }, { transaction: t });
                             storeDataId = store.id;
                         } else {
