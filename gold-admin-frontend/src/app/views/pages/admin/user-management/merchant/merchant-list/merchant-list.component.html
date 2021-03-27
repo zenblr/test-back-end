@@ -14,7 +14,7 @@
                     <mat-header-cell *matHeaderCellDef>Merchant ID</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
-                            {{merchant?.user?.userUniqueId | titlecase}}
+                            {{merchant?.user?.userUniqueId | uppercase}}
                         </div>
                     </mat-cell>
                 </ng-container>
