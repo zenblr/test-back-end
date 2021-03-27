@@ -106,6 +106,11 @@ exports.singleSignOnBroker = async (req, res, next) => {
 
     } catch (err) {
         console.log(err)
+        if(err.name){
+            if(err.message){
+                return res.status(401).send({ message: err.message });
+            }
+        }
         return res.status(401).send({ message: 'invalid credentials' });
     }
 
