@@ -46,9 +46,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
         const merchantApiKeyData = await models.merchantApikey.findOne({ where: { userId: merchantUserData.id } });
         let apiKey = uuidAPIKey.toAPIKey(merchantApiKeyData.apiKey);
         const decode = await jwt.verify(token, apiKey);
-        if (!decode.brokerMobileNumber) {
-            return res.status(400).send({ message: 'brokerMobileNumber key is required' });
+        if (!decode.brokerId) {
+            return res.status(400).send({ message: 'brokerId key is required' });
         }
+        let brokerId = decode.brokerId;
         let mobileNumber = decode.brokerMobileNumber;
         let firstName = decode.firstName;
         let lastName = decode.lastName;
@@ -59,14 +60,13 @@ exports.singleSignOnBroker = async (req, res, next) => {
         let pincode = decode.pincode;
         let storeId = decode.storeId;
         let panCardNumber = decode.panCardNumber;
-        console.log({ firstName, lastName, email, address, state, city, pincode, storeId })
         //check state city
         if (merchantData) {
             console.log(merchantData)
             if (merchantData.status != true) {
                 return res.status(401).send({ message: 'Merchant account is deactivated' });
             }
-            let userData = await models.user.findOne({ where: { mobileNumber: mobileNumber } });
+            let userData = await models.user.findOne({ where: { userUniqueId: { [Op.iLike]: brokerId } } });
             if (userData) {
                 const broker = await models.broker.findOne({
                     where: {
@@ -107,6 +107,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 }
             } else {
                 //create broker code
+                if (!decode.brokerMobileNumber) {
+                    return res.status(400).send({ message: 'brokerMobileNumber key is required' });
+                }
                 if (!decode.firstName) {
                     return res.status(400).send({ message: 'firstName key is required' });
                 }
@@ -142,6 +145,11 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 let checkMobileNo = await phonenumber(mobileNumber);
                 if (!checkMobileNo) {
                     return res.status(401).send({ message: 'Invalid Mobile number' });
+                }
+
+                let checkMobile = await models.user.findOne({ where: { mobileNumber:  mobileNumber}});
+                if (checkMobile) {
+                    return res.status(400).send({ message: 'Mobile number already exists' });
                 }
 
                 //check user pancard
@@ -192,7 +200,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                         ////
                         const userTypeId = 3;  //for broker using const
                         let userId;
-                        let userUniqueId = uniqid.time().toUpperCase();
+                        let userUniqueId = brokerId;
                         let createdUser = merchantUserData.id;
                         const password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
                         let userData = await models.user.create({ userUniqueId, firstName, lastName, mobileNumber, email, userTypeId, createdBy: createdUser, modifiedBy: createdUser, panCardNumber, password }, { transaction: t });
