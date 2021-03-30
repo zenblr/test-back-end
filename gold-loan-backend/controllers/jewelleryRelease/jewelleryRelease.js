@@ -205,8 +205,9 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 
         let interest = await nextDueDateInterest(loan.loan)
         let ornamentWeight = releaseData.ornamentWeight;
-        ornamentWeight.previousOutstandingAmount = Math.ceil(Number(ornamentWeight.previousOutstandingAmount)).toFixed(2)
+        // ornamentWeight.previousOutstandingAmount =   Math.ceil(Number(ornamentWeight.previousOutstandingAmount)).toFixed(2)
         let loanInfo = releaseData.loanInfo;
+        loanInfo.totalPayableAmount = Math.ceil(Number(ornamentWeight.previousOutstandingAmount)).toFixed(2)
         let amount = releaseData.amount;
         return res.status(200).json({ message: 'Success', ornamentWeight, loanInfo, amount, interest });
     } else {
