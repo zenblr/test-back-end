@@ -317,12 +317,13 @@ export class PartReleaseComponent implements OnInit {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
     }
-    if (this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount <= 0) {
+    let path = this.url.split('/')
+    let url = path[path.length - 2]
+    if (this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount <= 0 && this.paymentValue.paymentType != 'cash' && url == 'part-release') {
       return this.toastr.error('Amount should be greater than zero')
     }
 
-    let path = this.url.split('/')
-    let url = path[path.length - 2]
+    
     const releaseType = url === 'part-release' ? 'Part Release' : 'Full Release'
     const _title = `Confirm ${releaseType}?`;
     const _description = `Are you sure you want to place a ${releaseType} request?`;

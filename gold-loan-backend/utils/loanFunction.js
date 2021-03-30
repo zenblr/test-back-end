@@ -2635,7 +2635,7 @@ let partPaymnetSettlement = async (transactionId, status, paymentReceivedDate, m
 
         let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-        let receivedDate = moment(paymentReceivedDate)
+        let receivedDate = moment(paymentReceivedDate).format('YYYY-MM-DD')
         let todaysDate = moment(new Date()).format('YYYY-MM-DD')
 
         let quickPayData = await sequelize.transaction(async (t) => {
@@ -3397,7 +3397,7 @@ let quickSettlement = async (transactionId, status, paymentReceivedDate, masterL
         status = 'Completed'
         let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-        let receivedDate = moment(paymentReceivedDate)
+        let receivedDate = moment(paymentReceivedDate).format('YYYY-MM-DD')
         let todaysDate = moment(new Date()).format('YYYY-MM-DD')
 
         let quickPayData = await sequelize.transaction(async (t) => {
