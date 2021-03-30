@@ -301,7 +301,7 @@ export class CheckoutCustomerComponent implements OnInit {
           nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
           panImg: res.customerDetails.panImg
         });
-      }else{
+      } else {
         this.controls.panCardNumber.enable()
         this.controls.nameOnPanCard.enable()
       }

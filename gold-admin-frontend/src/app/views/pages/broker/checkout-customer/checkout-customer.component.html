@@ -458,7 +458,7 @@
                                     <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                         class="kt-pointer remove-icon" (click)="editPan.click()"
                                         *ngIf="controls?.panImg?.value && existingCustomerData?.customerDetails?.digiKycApplied?.status != 'approved'">
-                                    <input type="file" class="d-none" accept="image/*,application/pdf" #editPan
+                                    <input type="file" class="d-none" accept="image/*" #editPan
                                         (input)="validateImage($event)">
                                     <!-- <div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
                                         <iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
@@ -467,6 +467,10 @@
                                 </div>
                                 <div class="kt-margin-t-20 text-color font-11">
                                     (Click on image to view)
+                                </div>
+                                <div *ngIf="controls?.panImg?.enabled">
+                                    <div class="mt-2">Size of image - Maximum 200 KB</div>
+                                    <div>Image dimensions - Maximum 1500 pixels x 1500 pixels</div>
                                 </div>
                                 <!-- <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
