@@ -242,7 +242,6 @@ exports.singleSignOnBroker = async (req, res, next) => {
 
                 if (defaultFind.status) {
                     let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
-                    console.log(customerView)
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
