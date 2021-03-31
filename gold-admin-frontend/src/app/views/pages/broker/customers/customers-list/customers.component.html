@@ -78,8 +78,8 @@
                                     *ngIf="isPdf(controls.signatureProofImg.value)"></iframe>
                         </div> -->
                         <span class="text-primary kt-pointer"
-                            *ngIf="(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImage);else elseBlock"
-                            (click)="open(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImage)">View</span>
+                            *ngIf="(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg);else elseBlock"
+                            (click)="previewImage(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg)">View</span>
                     </mat-cell>
                 </ng-container>
                 <ng-template #blank>-</ng-template>

@@ -139,8 +139,8 @@
                         <!-- <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.URL;else elseBlock"
                             (click)="open(element.kycDetails.panCard.URL)">View</span> -->
                         <span class="text-primary kt-pointer"
-                            *ngIf="(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImage);else elseBlock"
-                            (click)="open(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImage)">View</span>
+                            *ngIf="(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg);else elseBlock"
+                            (click)="open(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg)">View</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="merchant">
