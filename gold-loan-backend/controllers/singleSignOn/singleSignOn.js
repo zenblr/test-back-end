@@ -12,7 +12,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
     try {
 
         var form = new multiparty.Form();
-
+        let productId;
+        let isProductGiven;
+        let redirectOn;
         const newFields = await new Promise((resolve, reject) => {
 
             form.parse(req, async function (err, fields, files) {
@@ -49,6 +51,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decode.brokerId) {
             return res.status(400).send({ message: 'brokerId key is required' });
         }
+        let skuCode = decode.skuCode;
         let brokerId = decode.brokerId;
         let mobileNumber = decode.brokerMobileNumber;
         let firstName = decode.firstName;
@@ -60,6 +63,21 @@ exports.singleSignOnBroker = async (req, res, next) => {
         let pincode = decode.pincode;
         let storeId = decode.storeId;
         let panCardNumber = decode.panCardNumber;
+        //check product
+        if(decode.skuCode){
+            isProductGiven = true
+            let productData = await models.products.findOne({where : {sku : { [Op.iLike]: skuCode } }});
+            if(productData){
+                productId = productData.id
+            }else{
+                isProductGiven = false
+            }
+        }
+        if(isProductGiven){
+            redirectOn = `/broker/shop/product/${productId}`
+        }else{
+            redirectOn = `/broker/shop`
+        }
         //check state city
         if (merchantData) {
             console.log(merchantData)
@@ -95,9 +113,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     if (defaultFind.status) {
 
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                         // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
                         // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                        // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                        res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                         // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
@@ -224,9 +243,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 if (defaultFind.status) {
 
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                    res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
                     // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
-                    // res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
+                    res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                     res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                     // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
 
