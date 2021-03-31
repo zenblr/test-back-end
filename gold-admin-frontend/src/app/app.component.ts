@@ -62,7 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
             const userData = {
 				Token: JSON.parse(this.cookieService.get('Token')),
                 modules: '',
-                permissions: '',
+                permissions: JSON.parse(this.cookieService.get('permissions')),
                 userDetails:JSON.parse(this.cookieService.get('userDetails')),
 			}
 			this.redirectOn = JSON.parse(this.cookieService.get('RedirectOn'))

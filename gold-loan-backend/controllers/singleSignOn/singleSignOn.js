@@ -111,11 +111,11 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     let defaultFind = await getTokenRolePermission(checkUser)
 
                     if (defaultFind.status) {
-
+                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                         // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                        // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                        res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                         res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                         // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
@@ -241,11 +241,12 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 let defaultFind = await getTokenRolePermission(userInfo)
 
                 if (defaultFind.status) {
-
+                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                    console.log(customerView)
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
-                    // res.cookie(`permissions`, `${JSON.stringify(defaultFind.permissions)}`);
+                    res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                     res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                     res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                     // return res.status(200).json({ Token: defaultFind.Token, modules: defaultFind.modules, permissions: defaultFind.permissions, userDetails: defaultFind.userDetails })
