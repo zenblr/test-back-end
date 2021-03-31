@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
 	// Public properties
 	title = 'Metronic';
 	loader: boolean;
+	redirectOn;
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
 	public spinkit = Spinkit;
@@ -59,11 +60,12 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         if (this.cookieService.get('Token')) {
             const userData = {
-                Token: JSON.parse(this.cookieService.get('Token')),
+				Token: JSON.parse(this.cookieService.get('Token')),
                 modules: '',
                 permissions: '',
-                userDetails: '',
-            }
+                userDetails:JSON.parse(this.cookieService.get('userDetails')),
+			}
+			this.redirectOn = JSON.parse(this.cookieService.get('RedirectOn'))
             localStorage.setItem('UserDetails', JSON.stringify(userData));
             this.sharedService.getBrokerPermissions().subscribe(res=>{
                 const userData = {
@@ -77,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
 				this.menuAsideService.loadMenu();
 				this.ref.detectChanges()
 				setTimeout(() => {
-					this.router.navigate(['/broker/shop']);
+					this.router.navigate([this.redirectOn]);
 				});
             })
         }
