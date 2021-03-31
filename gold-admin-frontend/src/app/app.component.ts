@@ -72,9 +72,10 @@ export class AppComponent implements OnInit, OnDestroy {
                     permissions: res.permissions,
                     userDetails: res.userDetails,
                 }   
-                localStorage.setItem('UserDetails', JSON.stringify(userData));
+				localStorage.setItem('UserDetails', JSON.stringify(userData));
 				this.cookieService.deleteAll();
 				this.menuAsideService.loadMenu();
+				this.ref.detectChanges()
 				setTimeout(() => {
 					this.router.navigate(['/broker/shop']);
 				});
