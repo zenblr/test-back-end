@@ -110,7 +110,7 @@ export class AddBrokerComponent implements OnInit {
       cityId: broker.user.address[0].cityId,
       pinCode: broker.user.address[0].postalCode,
       nameOnPanCard: broker.nameOnPanCard,
-      panCard: broker.nameOnPanCard,
+      panCard: broker.panCard,
       passbookStatementChequeId: broker.passbookStatementCheque,
     })
 

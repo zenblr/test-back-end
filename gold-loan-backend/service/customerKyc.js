@@ -163,6 +163,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // }
                         //     reasonFromOperationalTeam = ""
 
+                        
                         //     //change check unique id
                         let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
                         let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
@@ -195,7 +196,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                             }
 
                         } else {
-                            await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                            await models.customer.update({ customerUniqueId, digiKycStatus: 'approved', kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                             await models.customerKyc.update(
                                 { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
@@ -730,7 +731,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                         }
 
                     } else {
-                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved', digiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                         await models.customerKyc.update(
                             { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
@@ -1757,7 +1758,7 @@ let kycPersonalDetail = async (req) => {
                         }
 
                     } else {
-                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ customerUniqueId, kycStatus: "approved", userType: "Individual", scrapKycStatus: "approved", emiKycStatus: 'approved', digiKycStatus: 'approved' }, { where: { id: customerId }, transaction: t })
 
                         await models.customerKyc.update(
                             { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true, isVerifiedByCce: true }, { where: { customerId: customerId }, transaction: t })
@@ -2067,13 +2068,13 @@ let applyDigiKyc = async (req) => {
                 await models.digiKycApplied.create({ customerId: customerId, status: 'approved' }, { transaction: t })
             }
             if (firstName || lastName) {
-                await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+                await models.customer.update({ firstName, lastName, digiKycStatus: 'approved', emiKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
             } else {
-                await models.customer.update({ digiKycStatus: 'approved', scrapKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+                await models.customer.update({ digiKycStatus: 'approved', emiKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
             }
             let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-            
+
             let data = await createKyc(customer)
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
             // if(!data.success){

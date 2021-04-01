@@ -205,7 +205,9 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 
         let interest = await nextDueDateInterest(loan.loan)
         let ornamentWeight = releaseData.ornamentWeight;
+        // ornamentWeight.previousOutstandingAmount =   Math.ceil(Number(ornamentWeight.previousOutstandingAmount)).toFixed(2)
         let loanInfo = releaseData.loanInfo;
+        loanInfo.totalPayableAmount = Math.ceil(Number(ornamentWeight.previousOutstandingAmount)).toFixed(2)
         let amount = releaseData.amount;
         return res.status(200).json({ message: 'Success', ornamentWeight, loanInfo, amount, interest });
     } else {
@@ -839,7 +841,7 @@ exports.updateAmountStatus = async (req, res, next) => {
         } else {
             const { paymentReceivedDate, razorPayOrderId } = req
             amountStatus = req.status
-            let receivedDate = moment(paymentReceivedDate)
+            let receivedDate = moment(paymentReceivedDate).format('YYYY-MM-DD')
             let todaysDate = moment(new Date()).format('YYYY-MM-DD')
             if (razorPayOrderId) {
                 var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorPayOrderId } })
@@ -2158,7 +2160,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
         } else {
             const { paymentReceivedDate, razorPayOrderId } = req
             amountStatus = req.status
-            let receivedDate = moment(paymentReceivedDate)
+            let receivedDate = moment(paymentReceivedDate).format('YYYY-MM-DD')
             let todaysDate = moment(new Date()).format('YYYY-MM-DD')
             if (razorPayOrderId) {
                 var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorPayOrderId } })
