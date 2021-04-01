@@ -168,7 +168,7 @@ exports.sendFullReleaseRequestApprovalMessage = async (mobileNumber, customerNam
     //Dear <Customer Name>, Your Jewellery release request against gold loan (<loan id>) has been approved
     //Dear {#var#}, Your Jewellery release request against gold loan ({#var#}) has been approved. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -187,7 +187,7 @@ exports.sendJewelleryFullReleaseCompletedMessage = async (mobileNumber, customer
     //Dear <Customer Name>, Your jewellery release request has been completed against gold loan (<loan id>)
     //Dear {#var#}, Your jewellery release request has been completed against gold loan {#var#}. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -197,7 +197,7 @@ exports.sendTransferLoanRequestMessage = async (mobileNumber, customerName) => {
     //Dear <Customer Name>, We have received the loan transfer request, we will check and update you in 48 hrs
     //Dear {#var#}, We have received the loan transfer request, we will check and update you in 48 hrs. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", customerName)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -476,7 +476,7 @@ exports.sendDisbursalMessageLoanTransfer = async (mobileNumber, customerName, lo
     let messageTemplate = await models.smsAlert.getSmsTemplate('Disbursal (LOAN TRANSFER)');
     // Dear {#var#}, Your request for gold loan transfer has been approved and amount has been transfered to your bank account against loan id {#var#}. Team Augmont
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", customerName).replace("{#var#}", loanUniqueId)
+        let message = await messageTemplate.content.replace("<customerName>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
