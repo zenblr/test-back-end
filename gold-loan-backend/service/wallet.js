@@ -396,6 +396,7 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
     {
       model: models.walletTransactionDetails,
       as: 'walletTransactionDetails',
+      distinct: true,
       include:{
         model: models.customer,
         as: "customer",
@@ -424,18 +425,19 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
     {
       model: models.orderEmiDetails,
       as: "orderEmiDetail",
-      // raw: true,
-      attributes: ['orderId', 'emiAmount', 'emiBalancePayment', 'emiPaidAmount', 'paymentDescription', 'walletId', 'currentWalletBalance'],
+      distinct: true,
+      // separate: true,
+      attributes: ['orderId', 'emiAmount', 'emiBalancePayment', 'emiPaidAmount', 'walletId', 'currentWalletBalance'],
       include:{
         model: models.paymentTransaction,
         as: "paymentTransaction",
-        attributes: ['id', 'orderEmiId', 'ordertransactionId'],
-        // raw: true,
+        attributes: [ 'ordertransactionId'],
+        distinct: true,
+        // separate: true,
         include: {
           model: models.orderTransaction,
           as: "orderTransactionDetails",
-          // raw: true,
-          attributes: ['id'],
+          attributes: ['id']
         }
       }
     }
@@ -445,11 +447,11 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
     where: searchQuery,
     order: [['updatedAt', 'DESC']],
     include: includeArray,
+    separate: true,
     offset: offset,
     limit: pageSize,
     subQuery: false,
   });
-
 
   for(let transaction of transactionDetails){
     if(transaction && transaction.orderEmiDetail && transaction.orderEmiDetail.paymentTransaction && transaction.orderEmiDetail.paymentTransaction.orderTransactionDetails){
@@ -462,7 +464,15 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
 
     }
   }
-  
+
+let result = []
+const map = new Map();
+for (const item of transactionDetails) {
+    if(!map.has(item.id)){
+        map.set(item.id, true);
+        result.push(item);
+    }
+}
 
   let count = await models.walletDetails.findAll({
     where: searchQuery,
@@ -477,7 +487,7 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
   }
 
   return {
-    transactionDetails,
+    transactionDetails: result,
     count
   }
 }
