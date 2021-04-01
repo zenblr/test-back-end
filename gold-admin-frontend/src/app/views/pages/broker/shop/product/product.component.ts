@@ -26,6 +26,7 @@ export class ProductComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.ref.detectChanges();
     if (this.data.productId) {
       this.productId = this.data.productId;
     } else {

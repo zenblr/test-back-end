@@ -7,6 +7,7 @@
         "migrate": "npx sequelize-cli db:migrate"
     },
     "dependencies": {
+        "atob": "^2.1.2",
         "aws-sdk": "^2.817.0",
         "axios": "^0.19.2",
         "bcrypt": "^4.0.1",
@@ -36,6 +37,7 @@
         "mssql": "^6.3.1",
         "multer": "^1.4.2",
         "multer-s3": "^2.9.0",
+        "multiparty": "^4.2.2",
         "node-cron": "^2.0.3",
         "nodemailer": "^6.4.17",
         "nodemon": "^2.0.6",

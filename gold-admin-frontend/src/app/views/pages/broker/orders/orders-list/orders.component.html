@@ -10,37 +10,40 @@
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
+                        {{element?.customerDetails?.customerUniqueId ? element?.customerDetails?.customerUniqueId :
+                        '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["customerDetails.firstName"] || element["customerDetails.lastName"] ? (element["customerDetails.firstName"] + ' ' + element["customerDetails.lastName"] | titlecase) : '-'}}
+                        {{element?.customerDetails?.firstName || element?.customerDetails?.lastName ?
+                        (element?.customerDetails?.firstName + ' ' + element?.customerDetails?.lastName | titlecase) :
+                        '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userId">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["customerDetails.mobileNumber"] ? element["customerDetails.mobileNumber"] : '-'}}
+                        {{element?.customerDetails?.mobileNumber ? element?.customerDetails?.mobileNumber : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["orderUniqueId"] ? element["orderUniqueId"] : '-'}}
+                        {{element?.orderUniqueId ? element?.orderUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderId">
                     <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["orderdetails.finalOrderPrice"] ? element["orderdetails.finalOrderPrice"] : '-'}}
+                        {{element?.orderdetails[0]?.finalOrderPrice ? element?.orderdetails[0]?.finalOrderPrice : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiDate">
                     <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["orderdetails.initialPayment"] ? element["orderdetails.initialPayment"] : '-'}}
+                        {{element?.orderdetails[0]?.initialPayment ? element?.orderdetails[0]?.initialPayment : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
@@ -58,7 +61,7 @@
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element["paymentType.paymentType"] ? element["paymentType.paymentType"] : '-'}}
+                        {{element?.paymentType?.paymentType ? element?.paymentType?.paymentType : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="quantity">
@@ -70,8 +73,8 @@
                     <mat-header-cell *matHeaderCellDef>EMI Start Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
-                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'MMM d, y') : '-'}}</div>
-                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'h:mm a') : ''}}</div>
+                            <div>{{element?.emiStartDate ? (element?.emiStartDate | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.emiStartDate ? (element?.emiStartDate | date:'h:mm a') : ''}}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -79,24 +82,25 @@
                     <mat-header-cell *matHeaderCellDef>EMI End Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
-                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'MMM d, y') : '-'}}</div>
-                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'h:mm a') : ''}}</div>
+                            <div>{{element?.emiEndDate ? (element?.emiEndDate | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.emiEndDate ? (element?.emiEndDate | date:'h:mm a') : ''}}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 1 || element['orderCurrentStatus.id'] == 5,
-                    'text-red' : element['orderCurrentStatus.id'] == 9 || element['orderCurrentStatus.id'] == 13,
-                    'text-green' : element['orderCurrentStatus.id'] != 1 || element['orderCurrentStatus.id'] != 5 ||
-                    element['orderCurrentStatus.id'] != 9 || element['orderCurrentStatus.id'] != 13}">
-                        {{element["orderCurrentStatus.statusName"] ? (element["orderCurrentStatus.statusName"] | titlecase) : '-'}}
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.orderCurrentStatus?.id == 1 || element?.orderCurrentStatus?.id == 5,
+                    'text-red' : element?.orderCurrentStatus?.id == 9 || element?.orderCurrentStatus?.id == 13,
+                    'text-green' : element?.orderCurrentStatus?.id != 1 || element?.orderCurrentStatus?.id != 5 ||
+                    element?.orderCurrentStatus?.id != 9 || element?.orderCurrentStatus.id != 13}">
+                        {{element?.orderCurrentStatus?.statusName ? (element?.orderCurrentStatus?.statusName |
+                        titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="performa">
                     <mat-header-cell *matHeaderCellDef>Proforma Invoice</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element['orderCurrentStatus.id'] != 13">
+                        <span *ngIf="element?.orderCurrentStatus.id != 13">
                             <kt-button [value]="'Print'" [type]="'submit'" (click)="performa(element)"></kt-button>
                         </span>
                     </mat-cell>
@@ -110,7 +114,7 @@
                 <ng-container matColumnDef="cancelReceipt">
                     <mat-header-cell *matHeaderCellDef>Cancel Receipt</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element['orderCurrentStatus.id'] == 13">
+                        <span *ngIf="element?.orderCurrentStatus?.id == 13">
                             <kt-button [value]="'Print'" [type]="'submit'" (click)="cancelReceipt(element)"></kt-button>
                         </span>
                     </mat-cell>
@@ -118,10 +122,10 @@
                 <ng-container matColumnDef="orderPayment">
                     <mat-header-cell *matHeaderCellDef>Order Payment</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element['orderCurrentStatus.id'] != 2 && element['orderCurrentStatus.id'] != 3">
+                        <span *ngIf="element?.orderCurrentStatus?.id != 2 && element?.orderCurrentStatus?.id != 3">
                             <kt-button [value]="'View'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
                         </span>
-                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                        <span *ngIf="element?.orderCurrentStatus?.id == 2 || element?.orderCurrentStatus?.id == 3">
                             <kt-button [value]="'Pay'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
                         </span>
                     </mat-cell>
@@ -129,7 +133,8 @@
                 <ng-container matColumnDef="cancelOrder">
                     <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="(element['orderCurrentStatus.id'] == 2 && element['paymentType.id'] != 4) || element['orderCurrentStatus.id'] == 3">
+                        <span
+                            *ngIf="(element?.orderCurrentStatus?.id == 2 && element?.paymentType?.id != 4) || element?.orderCurrentStatus?.id == 3">
                             <kt-button [value]="'Cancel'" [type]="'button'" (click)="cancelOrder(element)">
                             </kt-button>
                         </span>
@@ -141,20 +146,13 @@
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
-            <!-- Message for empty data  -->
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
 
-        <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
-            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <!-- MATERIAL PAGINATOR | Binded to dasources -->
-            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
-        <!-- end: BOTTOM -->
     </kt-portlet-body>
-    <!-- end::Body -->
 </kt-portlet>
