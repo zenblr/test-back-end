@@ -163,7 +163,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // }
                         //     reasonFromOperationalTeam = ""
 
-                        
+
                         //     //change check unique id
                         let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
                         let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
@@ -278,6 +278,8 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
                     await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
+                } else {
+                    await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
                 }
 
             } else {
@@ -1837,6 +1839,8 @@ let kycPersonalDetail = async (req) => {
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
+            } else {
+                await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
             }
 
         } else {
