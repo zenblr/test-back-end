@@ -110,6 +110,10 @@ export class SharedService {
 		return this.http.get(`/api/scrap/scrap-process/get-scrap-status`);
 	}
 
+	getBrokerPermissions():Observable<any> {
+		return this.http.get(`/api/single-sign-on/user-data`)
+	}
+	
 	getStates(): Observable<any> {
 		return this.http.get(`/api/state`);
 	}

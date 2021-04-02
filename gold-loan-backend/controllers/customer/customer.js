@@ -652,7 +652,7 @@ exports.getAllCampaignList = async (req, res) => {
     }],
     isActive: true,
     merchantId: 1,
-    isCampaign : true
+    isCampaign: true
   };
 
   // if (isCampaign) {
@@ -914,6 +914,10 @@ exports.getsingleCustomerManagement = async (req, res) => {
           ['id', 'DESC']
         ],
         include: [
+          {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail'
+          },
           {
             model: models.customerLoan,
             as: 'customerLoan',

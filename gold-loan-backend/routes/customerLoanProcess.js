@@ -33,11 +33,11 @@ route.post('/final-loan-details', checkAuth, wrapper(loanFinalLoan)); // ADD CUS
 
 route.post('/bank-details', checkAuth, wrapper(loanBankDetails)); // ADD CUSTOMER BANK DETAIL
 
-route.post('/appraiser-rating', checkAuth, wrapper(loanAppraiserRating)); // ADD CUSTOMER BANK DETAIL
+route.post('/appraiser-rating', checkAuth,checkRolePermission, wrapper(loanAppraiserRating)); // ADD CUSTOMER BANK DETAIL
 
-route.post('/bm-rating', checkAuth, wrapper(loanBmRating)); // ADD CUSTOMER BANK DETAIL
+route.post('/bm-rating', checkAuth, checkRolePermission,wrapper(loanBmRating)); // ADD CUSTOMER BANK DETAIL
 
-route.post('/ops-rating', checkAuth, wrapper(loanOpsTeamRating)); // ADD CUSTOMER BANK DETAIL
+route.post('/ops-rating', checkAuth,checkRolePermission, wrapper(loanOpsTeamRating)); // ADD CUSTOMER BANK DETAIL
 
 route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); // ADD CUSTOMER BANK DETAIL
 

@@ -8,6 +8,7 @@ import { AuthService } from '../../../../core/auth/_services/auth.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { Location } from "@angular/common";
 
 /**
  * More information there => https://medium.com/@MetonymyQT/angular-http-interceptors-what-are-they-and-how-to-use-them-52e060321088
@@ -20,6 +21,7 @@ export class InterceptService implements HttpInterceptor {
 		private sharedSerivce: SharedService,
 		private router: Router,
 		private cookieService: CookieService,
+		public location: Location
 	) {
 	}
 	// intercept request and add token
@@ -77,6 +79,11 @@ export class InterceptService implements HttpInterceptor {
 						localStorage.clear();
 						this.cookieService.deleteAll();
 						this.router.navigate(['/auth/login']);
+					}
+					if(err.error.message == 'Access denied'){
+						setTimeout(() =>{
+							this.location.back();
+						},2000)
 					}
 					throw err
 				}
