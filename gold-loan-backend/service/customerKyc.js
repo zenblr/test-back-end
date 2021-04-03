@@ -594,9 +594,15 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
 
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+        let panType 
+        if(customerKycBasicDetails.panImage){
+            panType='pan'
+        }else if(customerKycBasicDetails.form60Image){
+            panType='form60'
 
+        }
         await models.customer.update({
-            firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer,
+            firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer,
             //dob changes
             age: customerKycPersonal.age,
             gender: customerKycPersonal.gender,
@@ -623,7 +629,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                 }
                 , { where: { customerId: customerId }, transaction: t });
 
-            await models.customer.update(
+        /*    await models.customer.update(
                 {
                     firstName: customerKycBasicDetails.firstName,
                     lastName: customerKycBasicDetails.lastName,
@@ -632,7 +638,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                     panImage: customerKycBasicDetails.panImage,
                     form60Image: customerKycBasicDetails.form60Image
                 }
-                , { where: { id: customerId }, transaction: t });
+                , { where: { id: customerId }, transaction: t });*/
 
         }
         if (moduleId == 3) {
