@@ -479,12 +479,12 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
                 if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                    let checkKycComplete = await createKyc(checkPanCard)
+                    // let checkKycComplete = await createKyc(checkPanCard)
 
-                    if (!checkKycComplete.success) {
-                        t.rollback()
-                        return res.status(400).json({ message: checkKycComplete.message })
-                    }
+                    // if (!checkKycComplete.success) {
+                    //     t.rollback()
+                    //     return res.status(400).json({ message: checkKycComplete.message })
+                    // }
                 }
             });
 
