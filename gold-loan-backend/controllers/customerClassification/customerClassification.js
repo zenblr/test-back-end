@@ -260,14 +260,13 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                         { operationalTeamVerifiedBy: operationalTeamId, isVerifiedByCce: false },
                         { where: { customerId: customerId }, transaction: t })
 
-                    
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, kycStatusFromCce: "pending" }, { where: { customerId }, transaction: t })
                 });
-                await models.customerKycClassification.update({ customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, kycStatusFromCce: "pending" }, { where: { customerId } })
                 return res.status(200).json({ message: 'success' })
             } else {
-                let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
-                let z = await sequelize.transaction(async (t) => {
-                    
+
+                await sequelize.transaction(async (t) => {
+                    let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
                     await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
 
@@ -281,7 +280,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                             { operationalTeamVerifiedBy: operationalTeamId },
                             { where: { customerId: customerId }, transaction: t })
 
-                        
+                        await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: kycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: kycClassificationData.kycStatusFromCce, scrapReasonFromCce: kycClassificationData.reasonFromCce, scrapCceId: kycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                     } else if (customerData.scrapKycStatus == 'approved') {
                         await models.customer.update({ digiKycStatus: kycStatusFromOperationalTeam, emiKycStatus: kycStatusFromOperationalTeam, kycStatus: kycStatusFromOperationalTeam, scrapKycStatus: kycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
 
@@ -289,17 +288,11 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                             { operationalTeamVerifiedBy: operationalTeamId },
                             { where: { customerId: customerId }, transaction: t })
 
-                        // await models.customerKycClassification.update({ customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                        await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                     }
 
 
                 });
-                if(customerData.scrapKycStatus != 'approved'){
-                    await models.customerKycClassification.update({ customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: kycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: kycClassificationData.kycStatusFromCce, scrapReasonFromCce: kycClassificationData.reasonFromCce, scrapCceId: kycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }})
-                }else if (customerData.scrapKycStatus == 'approved'){
-                    await models.customerKycClassification.update({ customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }})
-                }
-
                 let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
 
@@ -357,12 +350,12 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 }
                 if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                    let checkKycComplete = await createKyc(checkPanCard)
+                    // let checkKycComplete = await createKyc(checkPanCard)
 
-                    if (!checkKycComplete.success) {
-                        t.rollback()
-                        return res.status(400).json({ message: checkKycComplete.message })
-                    }
+                    // if (!checkKycComplete.success) {
+                    //     t.rollback()
+                    //     return res.status(400).json({ message: checkKycComplete.message })
+                    // }
                 }
             });
 
