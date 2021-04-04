@@ -116,7 +116,7 @@ exports.makePayment = async (req, res) => {
   } catch (err) {
     console.log(err);
     await models.errorLogger.create({
-      message: err.error.description,
+      message:  JSON.stringify(err),
       url: req.url,
       method: req.method,
       host: req.hostname,
