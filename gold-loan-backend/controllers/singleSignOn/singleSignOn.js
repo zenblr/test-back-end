@@ -341,7 +341,8 @@ async function getTokenRolePermission(checkUser) {
         roleId: userRoleId,
         roleName: roleName,
         userTypeId: checkUser.userTypeId,
-        internalBranchId: null
+        internalBranchId: null,
+        ssoRedirect : true,
     },
         JWT_SECRETKEY, {
         expiresIn: JWT_EXPIRATIONTIME
