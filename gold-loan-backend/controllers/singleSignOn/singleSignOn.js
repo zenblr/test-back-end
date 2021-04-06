@@ -29,7 +29,6 @@ exports.singleSignOnBroker = async (req, res, next) => {
         let token = newFields.token[0];
         var fields = token.split('.');
         const decoded = JSON.parse(atob(`${fields[1]}`));
-        console.log(decoded)
         if (!decoded) {
             return res.status(401).send({ message: 'Unauthorized' });
         }
@@ -51,6 +50,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decode.brokerId) {
             return res.status(400).send({ message: 'brokerId key is required' });
         }
+        if(!decode.vleSession) {
+            return res.status(400).send({ message: 'vleSession key is required' });
+        }
+        let vleSession = decode.vleSession;
         let skuCode = decode.skuCode;
         let brokerId = decode.brokerId;
         let mobileNumber = decode.brokerMobileNumber;
@@ -80,7 +83,6 @@ exports.singleSignOnBroker = async (req, res, next) => {
         }
         //check state city
         if (merchantData) {
-            console.log(merchantData)
             if (merchantData.status != true) {
                 return res.status(401).send({ message: 'Merchant account is deactivated' });
             }
@@ -113,6 +115,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     if (defaultFind.status) {
                         let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        res.cookie('vleSession',`${vleSession}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                         // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
                         res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
@@ -244,6 +247,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
+                    res.cookie('vleSession',`${vleSession}`);
                     // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
                     res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                     res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
@@ -258,7 +262,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
         }
 
     } catch (err) {
-        console.log(err)
+        errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
         if (err.name) {
             if (err.message) {
                 return res.status(401).send({ message: err.message });
