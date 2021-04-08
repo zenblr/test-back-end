@@ -165,12 +165,11 @@ export class PageConfig {
 				}
 			},
 			"transaction": {
+				page: { title: "Transaction", desc: "" },
+				id: {
 					page: { title: "Transaction", desc: "" },
-					id: {
-						page: { title: "Transaction", desc: "" },
-					}				
-				},
-				
+				}
+			},
 			"account": {
 				"loan-disbursement": {
 					page: { title: "Loan Disbursement", desc: "" },
@@ -525,6 +524,9 @@ export class PageConfig {
 						page: { title: "Cancel Order", desc: "" },
 					},
 				},
+			},
+			"refund-details": {
+				page: { title: "Refund Details", desc: "" },
 			},
 			"shop": {
 				page: { title: "Shop", desc: "" },

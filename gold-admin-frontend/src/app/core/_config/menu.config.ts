@@ -847,6 +847,12 @@ export class MenuConfig {
 							permission: !this.permissionsArr.includes('orderView'),
 						},
 						{
+							title: "Refund Details",
+							page: "/broker/refund-details",
+							src: "assets/media/aside-icons/icons-30.svg",
+							// permission: !this.permissionsArr.includes('refundDetailsView'),
+						},
+						{
 							title: "Shop",
 							root: true,
 							page: "/broker/shop",
