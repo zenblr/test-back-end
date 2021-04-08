@@ -50,9 +50,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decode.brokerId) {
             return res.status(400).send({ message: 'brokerId key is required' });
         }
-        if(!decode.vleSession) {
-            return res.status(400).send({ message: 'vleSession key is required' });
-        }
+        // if(!decode.vleSession) {
+        //     return res.status(400).send({ message: 'vleSession key is required' });
+        // }
         let vleSession = decode.vleSession;
         let skuCode = decode.skuCode;
         let brokerId = decode.brokerId;
