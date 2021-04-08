@@ -4,29 +4,17 @@ module.exports = (sequelize, DataTypes) => {
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         email: {
             type: DataTypes.STRING,
             field: 'email',
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         mobileNumber: {
             type: DataTypes.STRING,

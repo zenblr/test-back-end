@@ -17,21 +17,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'first_name',
             allowNull: false,
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',
             allowNull: false,
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         mobileNumber: {
             type: DataTypes.STRING,
@@ -42,11 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'email',
             allowNull: false,
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
+            
         },
         stateId: {
             type: DataTypes.INTEGER,
