@@ -237,7 +237,6 @@ const routes: Routes = [
 		EmiDetailsListComponent,
 		EmiDetailsViewComponent,
 		OrderDetailsEditComponent,
-		RefundDetailsComponent,
 		RefundDetailsEditComponent,
 		CustomerDetailsListComponent,
 		ReportsComponent,
