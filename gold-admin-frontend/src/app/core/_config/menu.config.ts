@@ -849,7 +849,7 @@ export class MenuConfig {
 						{
 							title: "Refund Details",
 							page: "/broker/refund-details",
-							src: "assets/media/aside-icons/refund-details.svg",
+							src: "assets/media/aside-icons/icons-30.svg",
 							permission: !this.permissionsArr.includes('refundDetailsView'),
 						},
 						{
