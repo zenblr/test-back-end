@@ -113,7 +113,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     let defaultFind = await getTokenRolePermission(checkUser)
 
                     if (defaultFind.status) {
-                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                         res.cookie('vleSession',`${vleSession}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
@@ -244,7 +244,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 let defaultFind = await getTokenRolePermission(userInfo)
 
                 if (defaultFind.status) {
-                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     res.cookie('vleSession',`${vleSession}`);
