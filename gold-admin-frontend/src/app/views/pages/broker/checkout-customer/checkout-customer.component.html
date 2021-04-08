@@ -578,7 +578,7 @@
                                 </mat-error>
                             </div>
                         </div>
-                        <div class="row py-3" *ngIf="!walletMode">
+                        <div class="row py-3" *ngIf="merchantPaymentDetails?.paymentGateway == 'razorpay' && !walletMode">
                             <div class="col-4 align-self-center">
                                 <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Payment
                                     Mode</label>
@@ -622,3 +622,39 @@
         </div>
     </kt-portlet-body>
 </kt-portlet>
+
+<!-- Edwaar Payment Redirect Form -->
+<ng-container>
+    <div class="d-none">
+        <form ngNoForm method="POST" action="{{edwaarDetails?.url}}">
+            <input type="hidden" name="vle_id" [value]="edwaarDetails?.body?.vle_id">
+            <input type="hidden" name="partner_key" [value]="edwaarDetails?.body?.partner_key">
+            <input type="hidden" name="partner_code" [value]="edwaarDetails?.body?.partner_code">
+            <input type="hidden" name="hash" [value]="edwaarDetails?.body?.hash">
+            <input type="hidden" name="vle_session" [value]="edwaarDetails?.body?.vle_session">
+            <input type="hidden" name="total_txn_amount" [value]="edwaarDetails?.body?.total_txn_amount">
+            <input type="hidden" name="txn_ref_no" [value]="edwaarDetails?.body?.txn_ref_no">
+            <input type="hidden" name="customer_unique_id" [value]="edwaarDetails?.body?.customer_unique_id">
+            <input type="hidden" name="customer_name" [value]="edwaarDetails?.body?.customer_name">
+            <input type="hidden" name="customer_mobile" [value]="edwaarDetails?.body?.customer_mobile">
+            <input type="hidden" name="customer_billing_address" [value]="edwaarDetails?.body?.customer_billing_address">
+            <input type="hidden" name="customer_billing_landmark" [value]="edwaarDetails?.body?.customer_billing_landmark">
+            <input type="hidden" name="customer_billing_state" [value]="edwaarDetails?.body?.customer_billing_state">
+            <input type="hidden" name="customer_billing_city" [value]="edwaarDetails?.body?.customer_billing_city">
+            <input type="hidden" name="customer_billing_pin_code" [value]="edwaarDetails?.body?.customer_billing_pin_code">
+            <input type="hidden" name="customer_shipping_address" [value]="edwaarDetails?.body?.customer_shipping_address">
+            <input type="hidden" name="customer_shipping_landmark" [value]="edwaarDetails?.body?.customer_shipping_landmark">
+            <input type="hidden" name="customer_shipping_state" [value]="edwaarDetails?.body?.customer_shipping_state">
+            <input type="hidden" name="customer_shipping_city" [value]="edwaarDetails?.body?.customer_shipping_city">
+            <input type="hidden" name="customer_shipping_pin_code" [value]="edwaarDetails?.body?.customer_shipping_pin_code">
+            <input type="hidden" name="product" [value]="edwaarDetails?.body?.product">
+            <input type="hidden" name="blockId" [value]="edwaarDetails?.body?.blockId">
+            <input type="hidden" name="brokerUniqueId" [value]="edwaarDetails?.body?.brokerUniqueId">
+            <input type="hidden" name="customerId" [value]="edwaarDetails?.body?.customerId">
+            <input type="hidden" name="transactionUniqueId" [value]="edwaarDetails?.body?.transactionUniqueId">
+            <input type="hidden" name="paymentMode" [value]="edwaarDetails?.body?.paymentMode">
+            <input type="hidden" name="callback_url" [value]="edwaarDetails?.body?.callback_url">
+            <button #submitForm type="submit" id="formsubmit">{{'submit'}}</button>
+        </form>
+    </div>
+</ng-container>
