@@ -50,9 +50,9 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decode.brokerId) {
             return res.status(400).send({ message: 'brokerId key is required' });
         }
-        if(!decode.vleSession) {
-            return res.status(400).send({ message: 'vleSession key is required' });
-        }
+        // if(!decode.vleSession) {
+        //     return res.status(400).send({ message: 'vleSession key is required' });
+        // }
         let vleSession = decode.vleSession;
         let skuCode = decode.skuCode;
         let brokerId = decode.brokerId;
@@ -113,7 +113,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     let defaultFind = await getTokenRolePermission(checkUser)
 
                     if (defaultFind.status) {
-                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                         res.cookie('vleSession',`${vleSession}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
@@ -244,7 +244,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 let defaultFind = await getTokenRolePermission(userInfo)
 
                 if (defaultFind.status) {
-                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     res.cookie('vleSession',`${vleSession}`);
