@@ -163,7 +163,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                         // }
                         //     reasonFromOperationalTeam = ""
 
-                        
+
                         //     //change check unique id
                         let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
                         let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
@@ -274,10 +274,12 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                     await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
 
                     let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                    await createKyc(customer)
+                    // await createKyc(customer)
 
                     await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
+                } else {
+                    await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
                 }
 
             } else {
@@ -592,9 +594,15 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
 
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+        let panType
+        if (customerKycBasicDetails.panImage) {
+            panType = 'pan'
+        } else if (customerKycBasicDetails.form60Image) {
+            panType = 'form60'
 
+        }
         await models.customer.update({
-            firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer,
+            firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer,
             //dob changes
             age: customerKycPersonal.age,
             gender: customerKycPersonal.gender,
@@ -621,16 +629,16 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                 }
                 , { where: { customerId: customerId }, transaction: t });
 
-            await models.customer.update(
-                {
-                    firstName: customerKycBasicDetails.firstName,
-                    lastName: customerKycBasicDetails.lastName,
-                    panCardNumber: customerKycBasicDetails.panCardNumber,
-                    panType: customerKycBasicDetails.panType,
-                    panImage: customerKycBasicDetails.panImage,
-                    form60Image: customerKycBasicDetails.form60Image
-                }
-                , { where: { id: customerId }, transaction: t });
+            /*    await models.customer.update(
+                    {
+                        firstName: customerKycBasicDetails.firstName,
+                        lastName: customerKycBasicDetails.lastName,
+                        panCardNumber: customerKycBasicDetails.panCardNumber,
+                        panType: customerKycBasicDetails.panType,
+                        panImage: customerKycBasicDetails.panImage,
+                        form60Image: customerKycBasicDetails.form60Image
+                    }
+                    , { where: { id: customerId }, transaction: t });*/
 
         }
         if (moduleId == 3) {
@@ -807,7 +815,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
                 let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                await createKyc(customer)
+                // await createKyc(customer)
 
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
             }
@@ -1834,10 +1842,12 @@ let kycPersonalDetail = async (req) => {
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
                 let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                await createKyc(customer)
+                // await createKyc(customer)
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
+            } else {
+                await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
             }
 
         } else {
@@ -2083,7 +2093,7 @@ let applyDigiKyc = async (req) => {
             }
             let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
 
-            let data = await createKyc(customer)
+            let data = createKyc(customer)
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
             // if(!data.success){
             //     t.rollBack()

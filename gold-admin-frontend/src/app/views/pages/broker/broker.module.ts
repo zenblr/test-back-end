@@ -52,6 +52,7 @@ import { ViewPayComponent } from './orders/view-pay/view-pay.component';
 import { CancelOrderComponent } from './orders/cancel-order/cancel-order.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 import { CreateCustomerComponent } from './customers/create-customer/create-customer.component';
+import { RefundDetailsComponent } from '../admin/emi-management/order-management/refund-details/refund-details-list/refund-details.component';
 
 const routes: Routes = [
   {
@@ -109,6 +110,10 @@ const routes: Routes = [
         path: "order-received",
         component: OrderReceivedComponent,
       },
+			{
+				path: "refund-details",
+				component: RefundDetailsComponent,
+			},
     ],
   },
 ];

@@ -48,7 +48,8 @@
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.Createdby?.broker?.store?.storeUniqueId ? element?.Createdby?.broker?.store?.storeUniqueId : '-'}}
+                        {{element?.Createdby?.broker?.store?.storeUniqueId ?
+                        element?.Createdby?.broker?.store?.storeUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="vkMobileNumber">
@@ -60,13 +61,15 @@
                 <ng-container matColumnDef="centerState">
                     <mat-header-cell *matHeaderCellDef>Center State</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.Createdby?.address[0]?.state?.name ? element?.Createdby?.address[0]?.state?.name : '-'}}
+                        {{element?.Createdby?.address[0]?.state?.name ? element?.Createdby?.address[0]?.state?.name :
+                        '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="centerCity">
                     <mat-header-cell *matHeaderCellDef>Center City</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.Createdby?.address[0]?.city?.name ? element?.Createdby?.address[0]?.city?.name : '-'}}
+                        {{element?.Createdby?.address[0]?.city?.name ? element?.Createdby?.address[0]?.city?.name :
+                        '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerId">
@@ -84,7 +87,7 @@
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.firstName || element?.lastName  ? element?.firstName + ' ' +element?.lastName : '-'}}
+                        {{element?.firstName || element?.lastName ? element?.firstName + ' ' +element?.lastName : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
@@ -115,29 +118,36 @@
                     <mat-header-cell *matHeaderCellDef>Name on PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <!-- {{element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard : '-'}} -->
-                        <span *ngIf = "element?.kycDetails?.nameOnPanCard else blank">{{element?.kycDetails?.nameOnPanCard | titlecase}}</span>
-
+                        <!-- <span *ngIf = "element?.kycDetails?.nameOnPanCard else blank">{{element?.kycDetails?.nameOnPanCard | titlecase}}</span> -->
+                        <span>{{(element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard :
+                            element?.firstName + ' ' + element?.lastName) | titlecase}}</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="panCardNumber">
                     <mat-header-cell *matHeaderCellDef>PAN Card No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <!-- {{element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber : '-'}} -->
-                        <span *ngIf = "element?.kycDetails?.panCardNumber else blank">{{element?.kycDetails?.panCardNumber | uppercase}}</span>
+                        <!-- <span *ngIf = "element?.kycDetails?.panCardNumber else blank">{{element?.kycDetails?.panCardNumber | uppercase}}</span> -->
+                        <span>{{(element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber :
+                            (element?.panCardNumber ? element?.panCardNumber : '-')) | uppercase}}</span>
 
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="viewPanCard">
                     <mat-header-cell *matHeaderCellDef>View PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.URL;else elseBlock"
-                            (click)="open(element.kycDetails.panCard.URL)">View</span>
+                        <!-- <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.URL;else elseBlock"
+                            (click)="open(element.kycDetails.panCard.URL)">View</span> -->
+                        <span class="text-primary kt-pointer"
+                            *ngIf="(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg);else elseBlock"
+                            (click)="open(element?.kycDetails?.panCard?.URL ? element?.kycDetails?.panCard?.URL : element?.panImg)">View</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="merchant">
                     <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.merchant?.merchant?.merchantName ? (element?.merchant?.merchant?.merchantName | titlecase) : '-'}}
+                        {{element?.merchant?.merchant?.merchantName ? (element?.merchant?.merchant?.merchantName |
+                        titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="createdDate">

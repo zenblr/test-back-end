@@ -104,7 +104,12 @@ export class LoanApplicationFormService {
   bmRating(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/bm-rating`, data).pipe(
-      map(res => res)
+      map(res => res),
+      catchError(err=>{
+        if(err.error.message)
+        this.toastr.error(err.error.message)
+        throw (err)
+      })
     )
   }
 
@@ -112,6 +117,11 @@ export class LoanApplicationFormService {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/ops-rating`, data).pipe(
       map(res => res),
+      catchError(err=>{
+        if(err.error.message)
+        this.toastr.error(err.error.message)
+        throw (err)
+      })
     )
   }
 

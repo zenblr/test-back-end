@@ -74,7 +74,7 @@ export class CustomerDetailsComponent implements OnInit {
       Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
       Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[1].addressProofImage)
     }
-    // Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.masterLoan[0].loanBankDetail.passbookProofImage)
     if (this.cutomerDetails.customerKycPersonal && this.cutomerDetails.customerKycPersonal.identityProofImage) {
       Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycPersonal.identityProofImage)
     }

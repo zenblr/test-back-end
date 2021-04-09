@@ -115,6 +115,8 @@ import { LeadManagementComponent } from '../pages/admin/lead-management/lead-man
 import { AddLeadComponent } from '../pages/admin/lead-management/add-lead/add-lead.component';
 import { NewRequestAddComponent } from '../pages/admin/lead-management/new-request-add/new-request-add.component';
 import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
+import { RefundDetailsComponent } from '../pages/admin/emi-management/order-management/refund-details/refund-details-list/refund-details.component';
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -191,7 +193,7 @@ import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 		AddLeadComponent,
 		NewRequestAddComponent,
 		RpgEditComponent,
-		
+		RefundDetailsComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -277,7 +279,8 @@ import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 		AddLeadComponent,
 		NewRequestAddComponent,
 		RpgEditComponent,
-		MatCheckboxModule
+		MatCheckboxModule,
+		RefundDetailsComponent,
 	],
 	imports: [
 		PdfViewerModule,

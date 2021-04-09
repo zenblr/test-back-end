@@ -12,8 +12,8 @@ import { LeadService } from '../../../../core/lead-management/services/lead.serv
 import { map } from 'rxjs/operators';
 import { AppliedKycService } from '../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
 import * as moment from 'moment';
-import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { ImagePreviewDialogComponent } from '../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -43,7 +43,7 @@ export class CheckoutCustomerComponent implements OnInit {
   finalOrderData: any;
   finalOrderOld: any;
   finalOrderNew: any;
-  shippingCityCounter = 1;
+  // shippingCityCounter = 1;
   isSameAddress: boolean = false;
   pan: any = { name: { firstName: '', lastName: '' }, userName: { firstName: '', lastName: '' } };
   internalBranchId: any;
@@ -367,7 +367,11 @@ export class CheckoutCustomerComponent implements OnInit {
           nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
           panImg: res.customerDetails.panImg
         });
+      } else {
+        this.controls.panCardNumber.enable()
+        this.controls.nameOnPanCard.enable()
       }
+
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
@@ -432,10 +436,10 @@ export class CheckoutCustomerComponent implements OnInit {
       }
       let res = await this.sharedService.getCities(stateData)
 
-      if (this.shippingCityCounter > 1) {
-        this.controls.shippingCityName.patchValue('');
-      }
-      this.shippingCityCounter++
+      // if (this.shippingCityCounter > 1) {
+      //   this.controls.shippingCityName.patchValue('');
+      // }
+      // this.shippingCityCounter++
 
       this.shippingCityList = res['data'];
       this.ref.detectChanges();
@@ -634,6 +638,21 @@ export class CheckoutCustomerComponent implements OnInit {
   validateImage(event) {
     // if (this.validate) {
     const file = event.target.files[0];
+    let ext = this.sharedService.getExtension(file.name)
+    if (Math.round(file.size / 1024) > 4000 && ext != 'pdf') {
+      this.toastr.errorToastr('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+    if (ext == 'pdf') {
+      if (Math.round(file.size / 1024) > 2000) {
+        this.toastr.errorToastr('Maximun size is 2MB')
+      } else {
+        this.uploadFile(event);
+      }
+      event.target.value = ''
+      return
+    }
     const reader = new FileReader();
     const img = new Image();
     img.src = window.URL.createObjectURL(file);
@@ -643,8 +662,8 @@ export class CheckoutCustomerComponent implements OnInit {
         const width = img.naturalWidth;
         const height = img.naturalHeight;
         window.URL.revokeObjectURL(img.src);
-        if ((width > 1500 || height > 1500) || (file.size > 200000)) {
-          this.toastr.errorToastr('Please Upload Image of Valid Size');
+        if (width > 3000 || height > 3000) {
+          this.toastr.errorToastr('Image of height and width should be less than 3000px')
           event.target.value = '';
         } else {
           this.uploadFile(event);
@@ -704,9 +723,11 @@ export class CheckoutCustomerComponent implements OnInit {
   }
 
   isPdf(image: string): boolean {
-    const ext = this.sharedService.getExtension(image)
-    const isPdf = ext == 'pdf' ? true : false
-    return isPdf
+    if (image) {
+      const ext = this.sharedService.getExtension(image)
+      const isPdf = ext == 'pdf' ? true : false
+      return isPdf
+    }
   }
 
   uploadImage(data) {

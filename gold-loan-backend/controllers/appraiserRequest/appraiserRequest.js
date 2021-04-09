@@ -65,7 +65,7 @@ exports.addAppraiserRequest = async (req, res, next) => {
     })
     if (customerLoan.length != 0) {
         for (const loan of customerLoan) {
-            if (loan.loanTransfer.loanTransferStatusForBM == 'rejected' || loan.loanTransfer.loanTransferStatusForAppraiser == 'rejected') {
+            if (loan.loanTransfer.loanTransferStatusForBM == 'rejected' || loan.loanTransfer.loanTransferStatusForAppraiser == 'rejected' || loan.loanStatusForAppraiser == 'rejected' || loan.loanStatusForBM == 'rejected' || loan.loanStatusForOperatinalTeam == 'rejected') {
                 console.log("false")
             } else {
                 return res.status(400).json({ message: `This customer's loan transfer is in process` })
