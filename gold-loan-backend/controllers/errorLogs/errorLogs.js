@@ -65,7 +65,7 @@ exports.getErrorForMail = async (req, res) => {
                 };
                 transporter.sendMail(options, function (err, info) {
                     if (err) {
-                        return res.status(400).json(err)
+                        errorLogger(JSON.stringify(err), 'cron for error mail', 'cron', 'cron', 'cron');
                     } else {
                         console.log({ message: 'Your message has been sent successfully' });
                         // return res.status(200).json({ message: 'Your message has been sent successfully' })
