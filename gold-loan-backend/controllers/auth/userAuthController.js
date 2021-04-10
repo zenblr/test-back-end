@@ -183,6 +183,28 @@ exports.userLogin = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     let token = await req.headers.authorization.split(" ")[1];
     let logout = await models.logger.destroy({ where: { token: token } });
+    const decoded = await jwt.verify(token, JWT_SECRETKEY);
+    if(decoded.ssoRedirect){
+        let userId = decoded.id;
+        let userTypeId = decoded.userTypeId
+        if (userTypeId == 2 || userTypeId == 3) {
+            if (userTypeId == 3) {
+              let brokerData = await models.broker.findOne({ where: { userId, isActive: true } });
+              let merchantData = await models.merchant.findOne({ where: { id: brokerData.merchantId, isActive: true } });
+              userId = await merchantData.userId;
+            } else {
+              userId = await userId
+            }
+        }
+        let merchantData = await models.merchant.findOne({where : {userId: userId}});
+        client.del(token, JSON.stringify(token));
+        if(merchantData.ssoRedirectOn){
+            return res.status(202).json({ message: `logout successfull`, redirect: true, url: merchantData.ssoRedirectOn })
+        }else{
+            return res.status(202).json({ message: `Logout successfull` })
+        }
+        
+    }
     client.del(token, JSON.stringify(token));
 
     return res.status(202).json({ message: `Logout successfull` })

@@ -266,7 +266,11 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				localStorage.removeItem('UserDetails')
 				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
-				this.router.navigate(['/auth/login']);
+				if (res.redirect) {
+                    window.location.href = res.url;
+                } else {
+                    this.router.navigate(['/auth/login']);
+                }
 			}
 		), catchError(err => {
 			throw err

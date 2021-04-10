@@ -32,12 +32,12 @@ exports.getErrorForMail = async (req, res) => {
         order: [
             ['id', 'desc']
         ],
-        where : {
-            createdAt : {[Op.between]: [startTime, endTime]}
+        where: {
+            createdAt: { [Op.between]: [startTime, endTime] }
         }
     });
     // return res.status(200).json({ getAllErrors })
-    if(getAllErrors.length > 0){
+    if (getAllErrors.length > 0) {
         let newData = [];
         for (const data of getAllErrors) {
             data.body = JSON.stringify(data.body);
@@ -52,7 +52,7 @@ exports.getErrorForMail = async (req, res) => {
                 pass: 'AiOsGtMxz12P7DAkl1gUO9X6Vax7ZNVl56f9cFFldKWw'
             },
         });
-    
+
         ejs.renderFile(__dirname + "/errorEmailTemplate.ejs", { newData }, function (err, data) {
             if (err) {
                 console.log(err);
@@ -65,7 +65,7 @@ exports.getErrorForMail = async (req, res) => {
                 };
                 transporter.sendMail(options, function (err, info) {
                     if (err) {
-                        return res.json(err)
+                        errorLogger(JSON.stringify(err), 'cron for error mail', 'cron', 'cron', 'cron');
                     } else {
                         console.log({ message: 'Your message has been sent successfully' });
                         // return res.status(200).json({ message: 'Your message has been sent successfully' })
