@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 const check = require("../lib/checkLib");
 const moment = require("moment");
 const _ = require('lodash');
-let { getFirstInterestToPay, getExtraInterest, getAllInterestGreaterThanDate, getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getLastInterest, getAllInterest, getAllPaidInterestForCalculation, calculationDataForReleasedLoan, getAllPaidPartialyPaidInterest } = require('./loanFunction')
+let { getFirstInterestToPay, getExtraInterest, getAllInterestGreaterThanDate, getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getLastInterest, getAllInterest, getAllPaidInterestForCalculation, calculationDataForReleasedLoan, getAllPaidPartialyPaidInterest, calculateInterestForParticularDueDate } = require('./loanFunction')
 
 //cron for daily interest calculation
 exports.dailyIntrestCalculation = async (date) => {
@@ -25,26 +25,26 @@ exports.dailyIntrestCalculation = async (date) => {
                         as: 'schemeInterest'
                     }]
                 })
-                if(scheme){
+                if (scheme) {
                     let rebateInterestRate = scheme.schemeInterest[0].interestRate;
-                await models.customerLoan.update({rebateInterestRate},{ where: { id: loan.id }, transaction: t });
-                let allInterest = await getAllInterest(loan.id);
-                let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
-                //update rebate and rebateInterestAmount 3 60
-                for (const interestData of allInterest) {
-                    let highestInterestAmount = interest.amount;
-                    let rebateAmount = highestInterestAmount - interestData.interestAmount;
-                    await models.customerLoanInterest.update({ rebateInterestRate:rebateInterestRate,highestInterestAmount,rebateAmount }, { where: { id: interestData.id }, transaction: t });
-                }
-                //update last interest if changed
-                if (!Number.isInteger(interest.length)) {
-                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterest.length - 1) * loan.selectedSlab)) / 30)
-                    let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
-                    let highestInterestAmount = (oneMonthAmount * noOfMonths).toFixed(2);
-                    let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                    let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
-                    await models.customerLoanInterest.update({ rebateAmount,highestInterestAmount,rebateInterestRate }, { where: { id: lastInterest.id}, transaction: t });
-                }
+                    await models.customerLoan.update({ rebateInterestRate }, { where: { id: loan.id }, transaction: t });
+                    let allInterest = await getAllInterest(loan.id);
+                    let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
+                    //update rebate and rebateInterestAmount 3 60
+                    for (const interestData of allInterest) {
+                        let highestInterestAmount = interest.amount;
+                        let rebateAmount = highestInterestAmount - interestData.interestAmount;
+                        await models.customerLoanInterest.update({ rebateInterestRate: rebateInterestRate, highestInterestAmount, rebateAmount }, { where: { id: interestData.id }, transaction: t });
+                    }
+                    //update last interest if changed
+                    if (!Number.isInteger(interest.length)) {
+                        const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterest.length - 1) * loan.selectedSlab)) / 30)
+                        let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
+                        let highestInterestAmount = (oneMonthAmount * noOfMonths).toFixed(2);
+                        let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
+                        let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
+                        await models.customerLoanInterest.update({ rebateAmount, highestInterestAmount, rebateInterestRate }, { where: { id: lastInterest.id }, transaction: t });
+                    }
                 }
             }
         }
@@ -76,6 +76,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 date = moment(date).format('YYYY-MM-DD')
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
+            //step up
             if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
@@ -88,7 +89,7 @@ exports.dailyIntrestCalculation = async (date) => {
                     let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                     if (checkDebitEntry.length == 0) {
                         let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount:rebateAmount }, { transaction: t });
+                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount: rebateAmount }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                     } else {
                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -96,24 +97,33 @@ exports.dailyIntrestCalculation = async (date) => {
                         let newDebitAmount = interest.amount - totalDebitedAmount;
                         if (newDebitAmount > 0) {
                             let rebateAmount = -Math.abs(newDebitAmount)
-                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                         } else if (newDebitAmount < 0) {
                             let rebateAmount = Math.abs(newDebitAmount)
-                            let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                            let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: credit.id }, transaction: t });
                         }
                     }
-                    let outstandingInterest = interest.amount - interestData.paidAmount;
-                    let interestAccrual = interest.amount - interestData.paidAmount;
-                    if(interestAccrual < 0){
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual : 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                    }else{
+                    let outstandingInterest
+                    let interestAccrual
+
+                    if (interest.interestPaidFrom == 'partPayment') {
+                        // cal interest from emi received date 
+                        outstandingInterest = await calculateInterestForParticularDueDate(interestData.emiReceivedDate, interestData.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, false)
+                        interestAccrual = outstandingInterest
+                    } else {
+                        outstandingInterest = interest.amount - interestData.interestAmtPaidDuringQuickPay;
+                        interestAccrual = interest.amount - interestData.interestAmtPaidDuringQuickPay;
+                    }
+
+                    if (interestAccrual < 0) {
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual: 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    } else {
                         await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
-                    
                 }
-
+                //cal interest accural by no of days
                 if (allInterest.length != interestLessThanDate.length) {
                     let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
                     if (pendingNoOfDays > 0) {
@@ -123,18 +133,26 @@ exports.dailyIntrestCalculation = async (date) => {
                         let nextInterest = await getPendingNoOfDaysInterest(loan.id, date);
                         if (nextInterest) {
                             let amount
-                            if (pendingDaysAmount > Number(nextInterest.paidAmount)) {
-                                amount = pendingDaysAmount - nextInterest.paidAmount;
 
-                                await models.customerLoanInterest.update({ interestAccrual: amount, totalInterestAccrual: pendingDaysAmount, interestRate: stepUpSlab.interestRate, outstandingInterest: amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            if (nextInterest.interestPaidFrom == 'partPayment') {
+                                // cal interest from emi received date 
+                                pendingDaysAmount = await calculateInterestForParticularDueDate(nextInterest.emiReceivedDate, nextInterest.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, false)
+                            }
+
+
+                            if (pendingDaysAmount > Number(nextInterest.interestAmtPaidDuringQuickPay)) {
+                                amount = pendingDaysAmount - nextInterest.interestAmtPaidDuringQuickPay;
+
+                                await models.customerLoanInterest.update({ interestAccrual: amount, totalInterestAccrual: pendingDaysAmount, interestRate: stepUpSlab.interestRate }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             } else {
-                                amount = nextInterest.paidAmount - pendingDaysAmount;
+                                amount = nextInterest.interestAmtPaidDuringQuickPay - pendingDaysAmount;
 
-                                await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccrual: pendingDaysAmount, interestRate: stepUpSlab.interestRate, outstandingInterest: amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                                await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccrual: pendingDaysAmount, interestRate: stepUpSlab.interestRate }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             }
                         }
                     }
                 }
+
                 //calculate extra interest
                 if (interestGreaterThanDate.length == 0) {
                     let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
@@ -151,47 +169,76 @@ exports.dailyIntrestCalculation = async (date) => {
                         //
                         if (!extraInterest) {
                             let amount = pendingDaysAmount;
-                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: stepUpSlab.interestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true, rebateAmount,highestInterestAmount,rebateInterestRate:loan.rebateInterestRate  }, { transaction: t });
+                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: stepUpSlab.interestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true, rebateAmount, highestInterestAmount, rebateInterestRate: loan.rebateInterestRate }, { transaction: t });
                         } else {
-                            let amount = pendingDaysAmount;
-                            let interestAccrual = amount - extraInterest.paidAmount;
-                            if(interestAccrual < 0){
+                            let amount;
+                            let interestAccrual
+                            if (extraInterest.interestPaidFrom == 'partPayment') {
+                                let startDate
+                                let daysPlusOne = false
+                                if (extraInterest.emiReceivedDate) {
+                                    startDate = extraInterest.emiReceivedDate
+                                } else {
+                                    startDate = extraInterest.emiStartDate
+                                    daysPlusOne = true
+                                }
+                                amount = await calculateInterestForParticularDueDate(startDate, interestData.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, daysPlusOne)
+                            } else {
+                                amount = pendingDaysAmount
+                            }
+                            interestAccrual = amount - extraInterest.interestAmtPaidDuringQuickPay;
+
+                            if (interestAccrual < 0) {
                                 interestAccrual = 0
                             }
-                            let outstandingInterest = amount - extraInterest.paidAmount;
-                            if (amount > Number(extraInterest.paidAmount)) {
-                                interestAccrual = amount - extraInterest.paidAmount;
-                                outstandingInterest = amount - extraInterest.paidAmount;
+                            let outstandingInterest = amount - extraInterest.interestAmtPaidDuringQuickPay;
+                            if (amount > Number(extraInterest.interestAmtPaidDuringQuickPay)) {
+                                interestAccrual = amount - extraInterest.interestAmtPaidDuringQuickPay;
+                                outstandingInterest = amount - extraInterest.interestAmtPaidDuringQuickPay;
                             } else {
-                                interestAccrual = extraInterest.paidAmount - amount;
-                                outstandingInterest = extraInterest.paidAmount - amount;
+                                interestAccrual = extraInterest.interestAmtPaidDuringQuickPay - amount;
+                                outstandingInterest = extraInterest.interestAmtPaidDuringQuickPay - amount;
                             }
-                            await models.customerLoanInterest.update({ interestAmount: amount, emiDueDate: date, emiEndDate: date, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount,highestInterestAmount,rebateInterestRate:loan.rebateInterestRate }, { where: { id: extraInterest.id }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAmount: amount, emiDueDate: date, emiEndDate: date, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount, highestInterestAmount, rebateInterestRate: loan.rebateInterestRate }, { where: { id: extraInterest.id }, transaction: t });
                         }
                     }
                 }
+
                 //update all interest amount
                 for (const interestData of allInterest) {
-                    let outstandingInterest = interest.amount - interestData.paidAmount;
-                    let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                    if(outstandingInterest >= 0){
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                    }else{
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest : 0.00, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    let rebateAmount = interestData.highestInterestAmount - interest.interestAmtPaidDuringQuickPay;
+                    let outstandingInterest
+
+                    if (interest.interestPaidFrom == 'partPayment') {
+                        // cal interest from emi received date 
+                        outstandingInterest = await calculateInterestForParticularDueDate(interestData.emiReceivedDate, interestData.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, false)
+                    } else {
+                        outstandingInterest = interest.amount - interestData.interestAmtPaidDuringQuickPay;
+                    }
+
+                    if (outstandingInterest >= 0) {
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    } else {
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest: 0.00, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
                 }
-                //update last interest if changed
+
+                //update last interest if does not match payment frequency changed
                 if (!Number.isInteger(interest.length)) {
                     const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
                     let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                    let outstandingInterest = amount - lastInterest.paidAmount;
+                    let outstandingInterest
+                    if (lastInterest.interestPaidFrom == 'partPayment') {
+                        amount = await calculateInterestForParticularDueDate(lastInterest.emiReceivedDate, lastInterest.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount)
+                    }
+                    outstandingInterest = amount - interestData.interestAmtPaidDuringQuickPay
                     let rebateAmount = lastInterest.highestInterestAmount - amount;
-                    if(outstandingInterest >= 0){
-                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                    }else{
-                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest:0.00, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if (amount >= 0) {
+                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    } else {
+                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest: 0.00, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
                 }
                 //update current slab in customer loan table
@@ -209,48 +256,60 @@ exports.dailyIntrestCalculation = async (date) => {
                         if (isDueDate) {
                             let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                             if (!checkDebitEntry) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount:interestData.rebateAmount }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount: interestData.rebateAmount }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }
-                        
+
                         if (!Number.isInteger(interest.length) && interestGreaterThanDate.length == 0) {
                             const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
                             let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                             let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                             let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                            let interestAccrual = amount - lastInterest.paidAmount;
-                            if(interestAccrual < 0){
-                                await models.customerLoanInterest.update({ interestAccrual : 0,totalInterestAccrual:amount}, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                            }else{
-                                await models.customerLoanInterest.update({ interestAccrual,totalInterestAccrual:amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            let interestAccrual = amount;
+                            if (lastInterest.interestPaidFrom == 'partPayment') {
+                                amount = await calculateInterestForParticularDueDate(lastInterest.emiReceivedDate, currentDate, loan.currentInterestRate, loan.outstandingAmount)
+                            } else {
+                                amount = amount - interestData.interestAmtPaidDuringQuickPay
                             }
-                        }else{
-                            let interestAccrual = interest.amount - interestData.paidAmount;
-                            if(interestAccrual < 0){
-                                await models.customerLoanInterest.update({ interestAccrual : 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                            }else{
+
+                            if (interestAccrual < 0) {
+                                await models.customerLoanInterest.update({ interestAccrual: 0, totalInterestAccrual: amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            } else {
+                                await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            }
+                        } else {
+                            let interestAccrual = interest.amount;
+                            if (lastInterest.interestPaidFrom == 'partPayment') {
+                                interestAccrual = await calculateInterestForParticularDueDate(lastInterest.emiReceivedDate, currentDate, loan.currentInterestRate, loan.outstandingAmount)
+                            } else {
+                                interestAccrual = interestData.interestAmtPaidDuringQuickPay
+                            }
+
+                            if (interestAccrual < 0) {
+                                await models.customerLoanInterest.update({ interestAccrual: 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            } else {
                                 await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             }
                         }
                         //current date == selected interest emi due date then debit
                     }
 
-                       //update last interest if changed
-                // if (!Number.isInteger(interest.length)) {
-                //     const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
-                //     let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
-                //     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
-                //     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                //     let interestAccrual = amount - lastInterest.paidAmount;
-                //     if(interestAccrual < 0){
-                //         await models.customerLoanInterest.update({ interestAccrual : 0,totalInterestAccrual:amount}, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                //     }else{
-                //         await models.customerLoanInterest.update({ interestAccrual,totalInterestAccrual:amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                //     }
-                // }
+                    //update last interest if changed
+                    // if (!Number.isInteger(interest.length)) {
+                    //     const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                    //     let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
+                    //     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
+                    //     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
+                    //     let interestAccrual = amount - lastInterest.paidAmount;
+                    //     if(interestAccrual < 0){
+                    //         await models.customerLoanInterest.update({ interestAccrual : 0,totalInterestAccrual:amount}, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    //     }else{
+                    //         await models.customerLoanInterest.update({ interestAccrual,totalInterestAccrual:amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    //     }
+                    // }
 
-                
+
                     if (allInterest.length != interestLessThanDate.length) {
                         let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
                         if (pendingNoOfDays > 0) {
@@ -260,12 +319,18 @@ exports.dailyIntrestCalculation = async (date) => {
                             let nextInterest = await getPendingNoOfDaysInterest(loan.id, date);
                             if (nextInterest) {
                                 let amount
-                                if (pendingDaysAmount > Number(nextInterest.paidAmount)) {
-                                    amount = pendingDaysAmount - nextInterest.paidAmount;
+
+                                if (nextInterest.interestPaidFrom == 'partPayment') {
+                                    // cal interest from emi received date 
+                                    pendingDaysAmount = await calculateInterestForParticularDueDate(nextInterest.emiReceivedDate, nextInterest.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, false)
+                                }
+
+                                if (pendingDaysAmount > Number(nextInterest.interestAmtPaidDuringQuickPay)) {
+                                    amount = pendingDaysAmount - nextInterest.interestAmtPaidDuringQuickPay;
 
                                     await models.customerLoanInterest.update({ interestAccrual: amount, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                                 } else {
-                                    amount = nextInterest.paidAmount - pendingDaysAmount;
+                                    amount = nextInterest.interestAmtPaidDuringQuickPay - pendingDaysAmount;
 
                                     await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                                 }
@@ -276,10 +341,10 @@ exports.dailyIntrestCalculation = async (date) => {
                     //calculate extra interest
                     if (interestGreaterThanDate.length == 0) {
                         let pendingNoOfDays = 0;
-                        if (!Number.isInteger(interest.length) && interestGreaterThanDate.length == 0){
+                        if (!Number.isInteger(interest.length) && interestGreaterThanDate.length == 0) {
                             const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30);
-                            pendingNoOfDays =  noOfDays - (30 * noOfMonths)
-                        }else{
+                            pendingNoOfDays = noOfDays - (30 * noOfMonths)
+                        } else {
                             pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
                         }
                         if (pendingNoOfDays > 0) {
@@ -291,16 +356,29 @@ exports.dailyIntrestCalculation = async (date) => {
                                 let amount = pendingDaysAmount;
                                 await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
                             } else {
-                                let amount = pendingDaysAmount;
+                                let amount;
                                 let interestAccrual
                                 let outstandingInterest
-                                if (amount > Number(extraInterest.paidAmount)) {
-                                    interestAccrual = amount - extraInterest.paidAmount;
-                                    outstandingInterest = amount - extraInterest.paidAmount;
+                                if (extraInterest.interestPaidFrom == 'partPayment') {
+                                    let startDate
+                                    let daysPlusOne = false
+                                    if (extraInterest.emiReceivedDate) {
+                                        startDate = extraInterest.emiReceivedDate
+                                    } else {
+                                        startDate = extraInterest.emiStartDate
+                                        daysPlusOne = true
+                                    }
+                                    amount = await calculateInterestForParticularDueDate(startDate, interestData.emiDueDate, loan.currentInterestRate, loan.outstandingAmount, daysPlusOne)
+                                } else {
+                                    amount = pendingDaysAmount
+                                }
+                                if (amount > Number(extraInterest.interestAmtPaidDuringQuickPay)) {
+                                    interestAccrual = amount - extraInterest.interestAmtPaidDuringQuickPay;
+                                    outstandingInterest = amount - extraInterest.interestAmtPaidDuringQuickPay;
                                 }
                                 else {
-                                    interestAccrual = extraInterest.paidAmount - amount;
-                                    outstandingInterest = extraInterest.paidAmount - amount;
+                                    interestAccrual = extraInterest.interestAmtPaidDuringQuickPay - amount;
+                                    outstandingInterest = extraInterest.interestAmtPaidDuringQuickPay - amount;
                                 }
                                 await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, emiDueDate: date, emiEndDate: date, totalInterestAccrual: amount, outstandingInterest }, { where: { id: extraInterest.id }, transaction: t });
                             }
@@ -308,6 +386,7 @@ exports.dailyIntrestCalculation = async (date) => {
                     }
                 }
             }
+
             for (const interestData of allPaidInterest) {
                 let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                 if (checkDebitEntry.length == 0) {
@@ -324,6 +403,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 }
             }
         }
+
         for (const loan of releasedLoanInfo) {
             let allpaidPartialyPaidInterest = await getAllPaidPartialyPaidInterest(loan.id);
             for (const interestData of allpaidPartialyPaidInterest) {
