@@ -7,6 +7,7 @@ const cron = require('node-cron');
 const moment = require('moment');
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
+const errorLogger = require('../../utils/errorLogger');
 
 exports.readErrorLogs = async (req, res) => {
     let { search, offset, pageSize } =
@@ -65,9 +66,11 @@ exports.getErrorForMail = async (req, res) => {
                 };
                 transporter.sendMail(options, function (err, info) {
                     if (err) {
-                        return res.status(400).json(err)
+                        errorLogger(JSON.stringify(err), 'cron for error mail', 'cron', 'cron', 'cron');
+                        return
                     } else {
                         console.log({ message: 'Your message has been sent successfully' });
+                        return
                         // return res.status(200).json({ message: 'Your message has been sent successfully' })
                     }
                 });
