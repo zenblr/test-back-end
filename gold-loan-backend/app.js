@@ -110,9 +110,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-cron.schedule(' 0 */30 * * * *', async function () {
-    await getErrorForMail();
-})
+// cron.schedule(' 0 */30 * * * *', async function () {
+//     await getErrorForMail();
+// })
 
 // cron.schedule('0 1 * * *', async function () {
 //     let date = moment()
