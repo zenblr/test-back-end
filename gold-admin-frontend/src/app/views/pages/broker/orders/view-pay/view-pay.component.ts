@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ShopService } from '../../../../../core/broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { EmiDetailsService } from "../../../../../core/emi-management/order-management";
@@ -6,8 +6,7 @@ import { ToastrComponent } from '../../../../partials/components/toastr/toastr.c
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentDialogComponent } from '../../payment-dialog/payment-dialog.component';
-import { MatCheckbox, MatDialog } from '@angular/material';
-import { CheckoutCustomerService, ShoppingCartService } from '../../../../../core/broker';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'kt-view-pay',
@@ -16,6 +15,7 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../../cor
 })
 export class ViewPayComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  @ViewChild('submitForm', { static: false }) submitForm: ElementRef;
   paymentForm: FormGroup;
   orderId: any;
   blockId: any;
@@ -29,6 +29,7 @@ export class ViewPayComponent implements OnInit {
   walletMode = false;
   onlineOfflineMode = false;
   onlineMode = false;
+  edwaarDetails: any;
 
   constructor(
     private zone: NgZone,
@@ -37,10 +38,9 @@ export class ViewPayComponent implements OnInit {
     private route: ActivatedRoute,
     private emiDetailsService: EmiDetailsService,
     private router: Router,
-    private checkoutCustomerService: CheckoutCustomerService,
-    private shoppingCartService: ShoppingCartService,
     private razorpayPaymentService: RazorpayPaymentService,
     public dialog: MatDialog,
+    private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -83,14 +83,12 @@ export class ViewPayComponent implements OnInit {
             const emiIndex = this.emi.indexOf(emidetail.id);
             if (emiIndex > -1) {
               this.emi.splice(emiIndex, 1);
-              this.emiValue -= emidetail.emiAmount--;
+              this.emiValue -= emidetail.emiAmount;
             }
           }
         });
       }
     }
-    console.log(this.emi)
-    console.log(this.emiValue)
     if (this.orderData.customerDetails.currentWalletBalance) {
       if (Number(this.orderData.customerDetails.currentWalletBalance) < Number(this.emiValue)) {
         this.depositAmount = (Number(this.emiValue) - Number(this.orderData.customerDetails.currentWalletBalance)).toFixed(2);
@@ -115,19 +113,36 @@ export class ViewPayComponent implements OnInit {
       emiId: this.emi,
       paymentMode: this.paymentForm.controls.paymentMode.value,
       orderId: this.orderId,
-      // transactionAmount: this.depositAmount,
-      depositDate: new Date()
+      depositDate: new Date(),
+      vleId: '',
+      vleSession: '',
     }
 
     if (this.walletMode) {
       params.paymentMode = 'augmontWallet';
-    } else {
+    }
 
+    let edwaarSessionData = JSON.parse(sessionStorage.getItem('edwaar-session'));
+    if (edwaarSessionData) {
+      params.vleId = edwaarSessionData.vleId;
+      params.vleSession = edwaarSessionData.vleSession;
+      params.paymentMode = 'partnerWallet';
     }
 
     if (this.emi) {
       this.shopService.getEmiAmount(params).subscribe(res => {
         this.emiAmount = res.amount;
+
+        if (this.orderData.merchantDetails.paymentGateway == 'edwaar') {
+          this.edwaarDetails = res.data.response;
+          let inputElement: HTMLElement = this.submitForm.nativeElement as HTMLElement;
+          if (this.edwaarDetails) {
+            setTimeout(function () { inputElement.click() });
+          }
+          this.ref.detectChanges();
+          return;
+        }
+
         if (this.walletMode) {
           const payEMIData = {
             transactionAmount: Number(this.emiAmount),
@@ -161,7 +176,6 @@ export class ViewPayComponent implements OnInit {
             });
             dialogRef.afterClosed().subscribe(res => {
               if (res) {
-                console.log(res)
                 const msg = 'EMI Paid Successfully';
                 this.toastr.successToastr(msg);
                 this.router.navigate(['/broker/orders/']);
@@ -193,7 +207,6 @@ export class ViewPayComponent implements OnInit {
 
   payEMI(data) {
     this.shopService.payEMI(data).subscribe(res => {
-      console.log(data)
       this.toastr.successToastr("EMI Paid Successfully");
       this.emi = [];
       this.getOrderDetails();

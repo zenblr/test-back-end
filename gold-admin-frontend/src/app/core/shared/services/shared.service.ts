@@ -82,8 +82,8 @@ export class SharedService {
 	]
 
 	public sellPaymentOptionList =
-	[{ value: 'bankAccount', Name: 'Bank Account', image: 'assets/media/bank-account.svg' },
-	{ value: 'augmontWallet', Name: 'Augmont Wallet', image: 'assets/media/augmont-wallet.svg' }];
+		[{ value: 'bankAccount', Name: 'Bank Account', image: 'assets/media/bank-account.svg' },
+		{ value: 'augmontWallet', Name: 'Augmont Wallet', image: 'assets/media/augmont-wallet.svg' }];
 
 
 	userManagementPermission = [
@@ -110,10 +110,10 @@ export class SharedService {
 		return this.http.get(`/api/scrap/scrap-process/get-scrap-status`);
 	}
 
-	getBrokerPermissions():Observable<any> {
+	getBrokerPermissions(): Observable<any> {
 		return this.http.get(`/api/single-sign-on/user-data`)
 	}
-	
+
 	getStates(): Observable<any> {
 		return this.http.get(`/api/state`);
 	}
@@ -250,7 +250,6 @@ export class SharedService {
 		)
 	}
 
-
 	soaDownload(masterLoanId): Observable<any> {
 		let endDate = ""
 		let startDate = ""
@@ -320,13 +319,11 @@ export class SharedService {
 		return new Date(formattedDate.getTime() - formattedDate.getTimezoneOffset() * 60000).toISOString();
 	}
 
-
 	createEmiCustomer(data): Observable<any> {
-		return this.http.post(API_ENDPOINT + `api/customer/create-emi-customer`, data ).pipe(map(res => res))
+		return this.http.post(API_ENDPOINT + `api/customer/create-emi-customer`, data).pipe(map(res => res))
 	}
 
-
-	getOtp():Observable<any>{
+	getOtp(): Observable<any> {
 		return this.http.get(`/api/user/get-all-otp`)
 	}
 }
