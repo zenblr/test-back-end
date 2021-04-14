@@ -386,7 +386,8 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         let amountStatus = "completed";
                         let partReleaseId = addPartRelease.id;
                         //
-                        let payment = await allInterestPayment(loanTransaction.id, newTransactionSplitUp);
+                        let isInterestSettledFromQuickPay = false 
+                        let payment = await allInterestPayment(isInterestSettledFromQuickPay,loanTransaction.id, newTransactionSplitUp);
                         let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(loanTransaction.id, securedTransactionSplit, unsecuredTransactionSplit);
 
                         //update in interest table
@@ -1030,8 +1031,8 @@ exports.updateAmountStatus = async (req, res, next) => {
             if (partReleaseData.amountStatus == 'pending' || partReleaseData.amountStatus == 'rejected') {
                 if (amountStatus == 'completed') {
 
-
-                    let payment = await allInterestPayment(partReleaseData.customerLoanTransactionId, newTransactionSplitUp);
+                    let isInterestSettledFromQuickPay = false
+                    let payment = await allInterestPayment(isInterestSettledFromQuickPay,partReleaseData.customerLoanTransactionId, newTransactionSplitUp);
                     let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(partReleaseData.customerLoanTransactionId, null, null, newTransactionSplitUp);
                     //update in interest table
                     if (payment.securedLoanDetails) {
@@ -1878,7 +1879,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         let fullReleaseId = addFullRelease.id;
                         let modifiedBy = null;
                         let createdBy = null;
-                        let payment = await allInterestPayment(loanTransaction.id, newTransactionSplitUp);
+                        let isInterestSettledFromQuickPay =false
+                        let payment = await allInterestPayment(isInterestSettledFromQuickPay,loanTransaction.id, newTransactionSplitUp);
                         let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(loanTransaction.id, securedTransactionSplit, unsecuredTransactionSplit);
                         //update in interest table
                         if (payment.securedLoanDetails) {
@@ -2345,7 +2347,8 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
         if (fullReleaseData) {
             if (fullReleaseData.amountStatus == 'pending' || fullReleaseData.amountStatus == 'rejected') {
                 if (amountStatus == 'completed') {
-                    let payment = await allInterestPayment(fullReleaseData.customerLoanTransactionId, newTransactionSplitUp);
+                    let isInterestSettledFromQuickPay = false
+                    let payment = await allInterestPayment(isInterestSettledFromQuickPay,fullReleaseData.customerLoanTransactionId, newTransactionSplitUp);
                     let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(fullReleaseData.customerLoanTransactionId, null, null, newTransactionSplitUp);
                     // await sequelize.transaction(async t => {
 
