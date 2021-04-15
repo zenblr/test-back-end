@@ -27,6 +27,7 @@ import { Router } from "@angular/router";
 export class OrdersComponent implements OnInit {
   dataSource: OrdersDatasource;
   displayedColumns = [
+    "brokerId",
     "storeId",
     "customerName",
     "userId",
