@@ -13,4 +13,17 @@ export class DashboardService {
     getBrokerDashboard(): Observable<any> {
         return this.http.get<any>(API_ENDPOINT + `api/dashboard/broker-dashboard`);
     }
+
+    getAllOrders(event?: any): Observable<any>{
+        const reqParams: any = {};
+		if (event && event.from) {
+			reqParams.from = event.from;
+		}
+		if (event && event.to) {
+			reqParams.to = event.to;
+		}
+		return this.http.get<any>(API_ENDPOINT + `api/dashboard/todays-booked-order`, {
+			params: reqParams,
+		});
+    }
 }
