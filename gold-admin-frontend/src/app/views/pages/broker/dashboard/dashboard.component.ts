@@ -1,13 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DashboardService, DashboardDatasource} from '../../../../core/broker';
+import { DashboardService, DashboardDatasource } from '../../../../core/broker';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
-import {
-	MatPaginator,
-	MatDialog,
-	MatSnackBar,
-	MatSort,
-  } from "@angular/material";
-  import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
+import { MatPaginator, MatDialog, MatSnackBar, MatSort, } from "@angular/material";
+import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
+
 @Component({
 	selector: 'kt-dashboard',
 	templateUrl: './dashboard.component.html',
@@ -15,8 +11,7 @@ import {
 })
 export class DashboardComponent implements OnInit {
 	dataSource: DashboardDatasource;
-	displayedColumns = ['memberId', 'name',
-	   'mobileNumber', 'orderId', 'productName', 'weight', 'emiTenure'];
+	displayedColumns = ['memberId', 'name', 'mobileNumber', 'orderId', 'productName', 'weight', 'emiTenure'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	dashboardDetails$: Observable<any>;
 	orderList: any;
@@ -25,7 +20,8 @@ export class DashboardComponent implements OnInit {
 	orderData = {
 		from: 1,
 		to: 25,
-	  };
+	};
+	
 	constructor(
 		private dashboardService: DashboardService,
 		public dialog: MatDialog,
@@ -34,25 +30,25 @@ export class DashboardComponent implements OnInit {
 
 	ngOnInit() {
 		this.getBrokerDashboard();
-		// const paginatorSubscriptions = merge(
-		// 	this.paginator.page
-		//   )
-		// 	.pipe(
-		// 	  tap(() => {
-		// 		this.loadOrderDetailsPage();
-		// 	  })
-		// 	)
-		// 	.subscribe();
-		//   this.subscriptions.push(paginatorSubscriptions);
+		const paginatorSubscriptions = merge(
+			this.paginator.page
+		  )
+			.pipe(
+			  tap(() => {
+				this.loadOrderDetailsPage();
+			  })
+			)
+			.subscribe();
+		  this.subscriptions.push(paginatorSubscriptions);
 		// Init DataSource
-    this.dataSource = new DashboardDatasource(this.dashboardService);
-    const entitiesSubscription = this.dataSource.entitySubject
-      .pipe(skip(1), distinctUntilChanged())
-      .subscribe((res) => {
-        this.orderList = res;
-      });
-    this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadOrderDetails(this.orderData);
+		this.dataSource = new DashboardDatasource(this.dashboardService);
+		const entitiesSubscription = this.dataSource.entitySubject
+			.pipe(skip(1), distinctUntilChanged())
+			.subscribe((res) => {
+				this.orderList = res;
+			});
+		this.subscriptions.push(entitiesSubscription);
+		this.dataSource.loadOrderDetails(this.orderData);
 	}
 
 	getBrokerDashboard() {
@@ -61,15 +57,15 @@ export class DashboardComponent implements OnInit {
 
 	loadOrderDetailsPage() {
 		if (
-		  this.paginator.pageIndex < 0 ||
-		  this.paginator.pageIndex >
-		  this.paginator.length / this.paginator.pageSize
+			this.paginator.pageIndex < 0 ||
+			this.paginator.pageIndex >
+			this.paginator.length / this.paginator.pageSize
 		)
-		  return;
+			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
 		let to = (this.paginator.pageIndex + 1) * this.paginator.pageSize;
 		this.orderData.from = from;
 		this.orderData.to = to;
 		this.dataSource.loadOrderDetails(this.orderData);
-	  }
+	}
 }

@@ -4,18 +4,18 @@ import { HttpClient } from "@angular/common/http";
 import { API_ENDPOINT } from '../../../../app.constant';
 
 @Injectable({
-    providedIn: "root",
+	providedIn: "root",
 })
 export class DashboardService {
 
-    constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-    getBrokerDashboard(): Observable<any> {
-        return this.http.get<any>(API_ENDPOINT + `api/dashboard/broker-dashboard`);
-    }
+	getBrokerDashboard(): Observable<any> {
+		return this.http.get<any>(API_ENDPOINT + `api/dashboard/broker-dashboard`);
+	}
 
-    getAllOrders(event?: any): Observable<any>{
-        const reqParams: any = {};
+	getAllOrders(event?: any): Observable<any> {
+		const reqParams: any = {};
 		if (event && event.from) {
 			reqParams.from = event.from;
 		}
@@ -25,5 +25,5 @@ export class DashboardService {
 		return this.http.get<any>(API_ENDPOINT + `api/dashboard/todays-booked-order`, {
 			params: reqParams,
 		});
-    }
+	}
 }

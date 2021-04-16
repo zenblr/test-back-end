@@ -1,8 +1,8 @@
 <!-- <img src="../../../../../assets/media/dashboard/dashboard.jpg" alt=""> -->
 
 <kt-portlet>
-	<kt-portlet-body [class]="'kt-portlet__body--fit'" *ngIf="dashboardDetails$ | async as details">
-		<div class="row">
+	<kt-portlet-body [class]="'kt-portlet__body--fit'">
+		<div class="row" *ngIf="dashboardDetails$ | async as details">
 			<div class="col-12">
 				<div class="row">
 					<div class="col align-self-center pr-5">
@@ -128,19 +128,22 @@
 					<ng-container matColumnDef="memberId">
 						<mat-header-cell *matHeaderCellDef>Member ID</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.customerDetails?.customerUniqueId ? element?.customerDetails?.customerUniqueId : '-'}}
+							{{element?.customerDetails?.customerUniqueId ? element?.customerDetails?.customerUniqueId :
+							'-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="name">
 						<mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.customerDetails?.firstName || element?.customerDetails?.lastName  ? element?.customerDetails?.firstName + ' ' +element?.customerDetails?.lastName : '-'}}
+							{{element?.customerDetails?.firstName || element?.customerDetails?.lastName ?
+							element?.customerDetails?.firstName + ' ' +element?.customerDetails?.lastName : '-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="mobileNumber">
 						<mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.customerDetails?.mobileNumber ? element?.customerDetails?.mobileNumber : '-'}}						</mat-cell>
+							{{element?.customerDetails?.mobileNumber ? element?.customerDetails?.mobileNumber : '-'}}
+						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="orderId">
 						<mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
@@ -168,15 +171,15 @@
 					</ng-container>
 					<ng-template #blank>-</ng-template>
 					<mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 140%;"></mat-header-row>
-	
+
 					<mat-row *matRowDef="let row; columns: displayedColumns" style="width: 140%;"></mat-row>
 				</mat-table>
-	
+
 				<div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
 				<!-- Message for empty data  -->
 				<div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
 			</div>
-	
+
 			<!-- start: BOTTOM -->
 			<div class="mat-table__bottom">
 				<!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
@@ -193,7 +196,7 @@
 				<h4>Overdue Payment</h4>
 				<hr>
 			</div>
-			<div class="col-12">
+			<!-- <div class="col-12">
 				<table class="table">
 					<thead>
 						<tr>
@@ -210,10 +213,13 @@
 						<ng-container *ngIf="details?.overdueCustomer?.length; else noOverdueCustomer">
 							<tr *ngFor="let prod of details?.overdueCustomer">
 								<td>
-									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
+									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId
+									: '-'}}
 								</td>
 								<td>
-									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
+									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ?
+									(prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName |
+									titlecase) : '-'}}
 								</td>
 								<td>
 									{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
@@ -239,7 +245,7 @@
 						</ng-template>
 					</tbody>
 				</table>
-			</div>
+			</div> -->
 		</div>
 	</kt-portlet-body>
 </kt-portlet>

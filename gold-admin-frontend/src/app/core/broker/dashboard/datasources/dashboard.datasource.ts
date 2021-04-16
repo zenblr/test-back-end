@@ -3,6 +3,7 @@ import { map } from "rxjs/operators";
 import { BehaviorSubject, of } from "rxjs";
 import { BaseDataSource } from "../../../_base/crud";
 import { DashboardService } from "../services/dashboard.service";
+
 export class DashboardDatasource extends BaseDataSource {
 	private loadingSubject = new BehaviorSubject<boolean>(false);
 	private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
