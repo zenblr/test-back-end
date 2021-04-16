@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         createdAt: {
             type: DataTypes.DATE,
+        },
+        isBeta: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_beta',
         }
 
     }, {
