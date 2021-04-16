@@ -159,7 +159,7 @@
 				<mat-spinner [diameter]="20" *ngIf="todaysOrderDataSource.loading$ | async"></mat-spinner>
 				<!-- MATERIAL PAGINATOR | Binded to dasources -->
 				<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-				<mat-paginator [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+				<mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
 					[length]="todaysOrderDataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
 			</div>
 			<!-- end: BOTTOM -->
@@ -255,7 +255,7 @@
 				<mat-spinner [diameter]="20" *ngIf="overDueOrderataSource.loading$ | async"></mat-spinner>
 				<!-- MATERIAL PAGINATOR | Binded to dasources -->
 				<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-				<mat-paginator [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+				<mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
 					[length]="overDueOrderataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
 			</div>
 			<!-- end: BOTTOM -->
