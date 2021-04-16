@@ -11,4 +11,20 @@
             display: none;
         }
     }
+    .mat-table__wrapper {
+        min-height: auto !important
+    }
+    // .mat-column-memberId {
+    //     flex: 0 0 9% !important;
+    //     padding-left: 5px !important;
+    // }
+    .mat-column-brokerName {
+        flex: 0 0 12% !important;
+    }
+    .mat-column-customerName {
+        flex: 0 0 12% !important;
+    }
+     .mat-column-productName {
+        flex: 0 0 15% !important;
+    }
 }
