@@ -12,12 +12,10 @@ import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 export class DashboardComponent implements OnInit {
 	todaysOrderDataSource: DashboardDatasource;
 	overDueOrderataSource: DashboardOverDueDatasource;
-	displayedTodayOrderColumns = ['brokerName','brokerId','storeId','customerId', 'customerName', 'mobileNumber', 'orderId', 'productName', 'weight', 'emiTenure'];
-	displayedOverDueColumns = ['brokerName','brokerId','storeId','customerId', 'customerName', 'mobileNumber', 'orderId', 'productName', 'emiAmmount', 'emiTenure'];
-
-	@ViewChild(MatPaginator, { static: true }) paginator1: MatPaginator;
-	@ViewChild(MatPaginator, { static: true }) paginator2: MatPaginator;
-
+	displayedTodayOrderColumns = ['brokerName', 'brokerId', 'storeId', 'customerId', 'customerName', 'mobileNumber', 'orderId', 'productName', 'weight', 'emiTenure'];
+	displayedOverDueColumns = ['brokerName', 'brokerId', 'storeId', 'customerId', 'customerName', 'mobileNumber', 'orderId', 'productName', 'emiAmmount', 'emiTenure'];
+	@ViewChild('paginator1', { static: true }) paginator1: MatPaginator;
+	@ViewChild('paginator2', { static: true }) paginator2: MatPaginator;
 	dashboardDetails$: Observable<any>;
 	orderList: any;
 	overDueOrderList: any;
@@ -25,9 +23,9 @@ export class DashboardComponent implements OnInit {
 	private destroy$ = new Subject();
 	orderData = {
 		from: 1,
-		to: 25,
+		to: 5
 	};
-	
+
 	constructor(
 		private dashboardService: DashboardService,
 		public dialog: MatDialog,
@@ -39,14 +37,13 @@ export class DashboardComponent implements OnInit {
 		//first table
 		const paginatorSubscriptions = merge(
 			this.paginator1.page
-		  )
-			.pipe(
-			  tap(() => {
+		).pipe(
+			tap(() => {
 				this.loadOrderDetails();
-			  })
-			)
+			})
+		)
 			.subscribe();
-		  this.subscriptions.push(paginatorSubscriptions);
+		this.subscriptions.push(paginatorSubscriptions);
 		// Init DataSource
 		this.todaysOrderDataSource = new DashboardDatasource(this.dashboardService);
 		const entitiesSubscription = this.todaysOrderDataSource.entitySubject
@@ -60,14 +57,13 @@ export class DashboardComponent implements OnInit {
 		//second table 
 		const paginatorSubscription = merge(
 			this.paginator2.page
-		  )
-			.pipe(
-			  tap(() => {
+		).pipe(
+			tap(() => {
 				this.loadOverDueOrder();
-			  })
-			)
+			})
+		)
 			.subscribe();
-		  this.subscriptions.push(paginatorSubscription);
+		this.subscriptions.push(paginatorSubscription);
 		// Init DataSource
 		this.overDueOrderataSource = new DashboardOverDueDatasource(this.dashboardService);
 		const entitiesSubscriptions = this.overDueOrderataSource.entitySubject
@@ -90,10 +86,8 @@ export class DashboardComponent implements OnInit {
 			this.paginator1.length / this.paginator1.pageSize
 		)
 			return;
-		let from = this.paginator1.pageIndex * this.paginator1.pageSize + 1;
-		let to = (this.paginator1.pageIndex + 1) * this.paginator1.pageSize;
-		this.orderData.from = from;
-		this.orderData.to = to;
+		this.orderData.from = this.paginator1.pageIndex * this.paginator1.pageSize + 1;
+		this.orderData.to = (this.paginator1.pageIndex + 1) * this.paginator1.pageSize;
 		this.todaysOrderDataSource.loadOrderDetails(this.orderData);
 	}
 
@@ -104,10 +98,8 @@ export class DashboardComponent implements OnInit {
 			this.paginator2.length / this.paginator2.pageSize
 		)
 			return;
-		let from = this.paginator2.pageIndex * this.paginator2.pageSize + 1;
-		let to = (this.paginator2.pageIndex + 1) * this.paginator2.pageSize;
-		this.orderData.from = from;
-		this.orderData.to = to;
+		this.orderData.from = this.paginator2.pageIndex * this.paginator2.pageSize + 1;
+		this.orderData.to = (this.paginator2.pageIndex + 1) * this.paginator2.pageSize;
 		this.overDueOrderataSource.loadOverDueOrder(this.orderData);
 	}
 }
