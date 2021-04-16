@@ -73,15 +73,14 @@
 				<h4>Today's Orders</h4>
 				<hr>
 			</div>
-			
 			<div class="mat-table__wrapper">
-				<mat-table class="lmat-elevation-z8" #table [dataSource]="todaysOrderDataSource" matSort #sort1="matSort"
-					matSortActive="id" matSortDirection="asc" matSortDisableClear>
+				<mat-table class="lmat-elevation-z8" #table [dataSource]="todaysOrderDataSource" matSort
+					#sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
 					<ng-container matColumnDef="brokerName">
 						<mat-header-cell *matHeaderCellDef>Broker Name</mat-header-cell>
 						<mat-cell *matCellDef="let element">
 							{{element?.orderBy?.firstName || element?.orderBy?.lastName ?
-								element?.orderBy?.firstName + ' ' +element?.orderBy?.lastName : '-'}}
+							element?.orderBy?.firstName + ' ' +element?.orderBy?.lastName : '-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="brokerId">
@@ -94,7 +93,8 @@
 					<ng-container matColumnDef="storeId">
 						<mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.orderBy?.broker?.store?.storeUniqueId ? element?.orderBy?.broker?.store?.storeUniqueId :
+							{{element?.orderBy?.broker?.store?.storeUniqueId ?
+							element?.orderBy?.broker?.store?.storeUniqueId :
 							'-'}}
 						</mat-cell>
 					</ng-container>
@@ -143,61 +143,56 @@
 						</mat-cell>
 					</ng-container>
 					<ng-template #blank>-</ng-template>
-					<mat-header-row *matHeaderRowDef="displayedTodayOrderColumns;" style="width: 140%;"></mat-header-row>
-
+					<mat-header-row *matHeaderRowDef="displayedTodayOrderColumns;" style="width: 140%;">
+					</mat-header-row>
 					<mat-row *matRowDef="let row; columns: displayedTodayOrderColumns" style="width: 140%;"></mat-row>
 				</mat-table>
-
 				<div class="mat-table__message" *ngIf="orderList?.length == 0">No records found</div>
-				<!-- Message for empty data  -->
-				<div class="mat-table__message" *ngIf="todaysOrderDataSource.isPreloadTextViewed$ | async">Please wait....</div>
+				<div class="mat-table__message" *ngIf="todaysOrderDataSource.isPreloadTextViewed$ | async">Please
+					wait....</div>
 			</div>
-
-			<!-- start: BOTTOM -->
 			<div class="mat-table__bottom ml-auto">
-				<!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
 				<mat-spinner [diameter]="20" *ngIf="todaysOrderDataSource.loading$ | async"></mat-spinner>
-				<!-- MATERIAL PAGINATOR | Binded to dasources -->
-				<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-				<mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
-					[length]="todaysOrderDataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+				<mat-paginator #paginator1 [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+					[length]="todaysOrderDataSource.paginatorTotal$ | async" [showFirstLastButtons]="true">
+				</mat-paginator>
 			</div>
-			<!-- end: BOTTOM -->
 		</div>
 		<div class="row pt-5">
 			<div class="col-12">
 				<h4>Overdue Payment</h4>
 				<hr>
 			</div>
-
 			<div class="mat-table__wrapper">
-				<mat-table class="lmat-elevation-z8" #table [dataSource]="overDueOrderataSource" matSort #sort1="matSort"
-					matSortActive="id" matSortDirection="asc" matSortDisableClear>
+				<mat-table class="lmat-elevation-z8" #table [dataSource]="overDueOrderataSource" matSort
+					#sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
 					<ng-container matColumnDef="brokerName">
 						<mat-header-cell *matHeaderCellDef>Broker Name</mat-header-cell>
 						<mat-cell *matCellDef="let element">
 							{{element?.order?.orderBy?.firstName || element?.order?.orderBy?.lastName ?
-								element?.order?.orderBy?.firstName + ' ' +element?.order?.orderBy?.lastName : '-'}}
+							element?.order?.orderBy?.firstName + ' ' +element?.order?.orderBy?.lastName : '-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="brokerId">
 						<mat-header-cell *matHeaderCellDef>Broker ID</mat-header-cell>
 						<mat-cell *matCellDef="let element">
 							{{element?.order?.orderBy?.userUniqueId ? element?.order?.orderBy?.userUniqueId :
-								'-'}}
+							'-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="storeId">
 						<mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.order?.orderBy?.broker?.store?.storeUniqueId ? element?.order?.orderBy?.broker?.store?.storeUniqueId :
-								'-'}}
+							{{element?.order?.orderBy?.broker?.store?.storeUniqueId ?
+							element?.order?.orderBy?.broker?.store?.storeUniqueId :
+							'-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="customerId">
 						<mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.order?.customerDetails?.customerUniqueId ? element?.order?.customerDetails?.customerUniqueId :
+							{{element?.order?.customerDetails?.customerUniqueId ?
+							element?.order?.customerDetails?.customerUniqueId :
 							'-'}}
 						</mat-cell>
 					</ng-container>
@@ -205,13 +200,15 @@
 						<mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
 						<mat-cell *matCellDef="let element">
 							{{element?.order?.customerDetails?.firstName || element?.order?.customerDetails?.lastName ?
-							element?.order?.customerDetails?.firstName + ' ' +element?.order?.customerDetails?.lastName : '-'}}
+							element?.order?.customerDetails?.firstName + ' ' +element?.order?.customerDetails?.lastName
+							: '-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="mobileNumber">
 						<mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.order?.customerDetails?.mobileNumber ? element?.order?.customerDetails?.mobileNumber : '-'}}
+							{{element?.order?.customerDetails?.mobileNumber ?
+							element?.order?.customerDetails?.mobileNumber : '-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="orderId">
@@ -235,30 +232,24 @@
 					<ng-container matColumnDef="emiTenure">
 						<mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							{{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType : '-'}}
+							{{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType :
+							'-'}}
 						</mat-cell>
 					</ng-container>
 					<ng-template #blank>-</ng-template>
 					<mat-header-row *matHeaderRowDef="displayedOverDueColumns;" style="width: 140%;"></mat-header-row>
-
 					<mat-row *matRowDef="let row; columns: displayedOverDueColumns" style="width: 140%;"></mat-row>
 				</mat-table>
-
 				<div class="mat-table__message" *ngIf="overDueOrderList?.length == 0">No records found</div>
-				<!-- Message for empty data  -->
-				<div class="mat-table__message" *ngIf="overDueOrderataSource.isPreloadTextViewed$ | async">Please wait....</div>
+				<div class="mat-table__message" *ngIf="overDueOrderataSource.isPreloadTextViewed$ | async">Please
+					wait....</div>
 			</div>
-
-			<!-- start: BOTTOM -->
 			<div class="mat-table__bottom ml-auto">
-				<!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
 				<mat-spinner [diameter]="20" *ngIf="overDueOrderataSource.loading$ | async"></mat-spinner>
-				<!-- MATERIAL PAGINATOR | Binded to dasources -->
-				<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-				<mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
-					[length]="overDueOrderataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+				<mat-paginator #paginator2 [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+					[length]="overDueOrderataSource.paginatorTotal$ | async" [showFirstLastButtons]="true">
+				</mat-paginator>
 			</div>
-			<!-- end: BOTTOM -->
 		</div>
 	</kt-portlet-body>
 </kt-portlet>
