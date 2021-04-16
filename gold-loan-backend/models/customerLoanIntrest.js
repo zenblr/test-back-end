@@ -66,6 +66,21 @@ module.exports = (sequelize, DataTypes) => {
             field: 'outstanding_interest',
             defaultValue: 0
         },
+        interestPaidFrom:{
+            type:DataTypes.ENUM,
+            field:'interest_paid_from',
+            values: ['quickPay','partPayment'],
+            defaultValue:'quickPay'
+        },
+        interestAmtPaidDuringQuickPay: {
+            type: DataTypes.DECIMAL(10,2),
+            field:'interest_amt_paid_during_quick_pay'
+        },
+        isPartPaymentEverReceived: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_part_payment_ever_received',
+            defaultValue: false
+        },
         emiReceivedDate: {
             type: DataTypes.DATEONLY,
             field: 'emi_received_date'
