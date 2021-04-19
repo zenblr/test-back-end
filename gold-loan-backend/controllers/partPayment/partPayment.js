@@ -14,7 +14,7 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion,
-    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab, nextDueDateInterest, getAllInterest, partPaymnetSettlement } = require('../../utils/loanFunction')
+    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab, nextDueDateInterest, getAllInterest, partPaymnetSettlement,calculateInterestForParticularDueDate } = require('../../utils/loanFunction')
 let crypto = require('crypto');
 const qs = require('qs');
 
