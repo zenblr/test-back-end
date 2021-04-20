@@ -204,7 +204,7 @@
                 <div class="col-12 text-right font-weight-500">
                     <label class="custom-checkbox position-relative">
                         <span class="label-checkbox pl-2">Shipping Address same as Billing Address</span>
-                        <input type="checkbox" (change)="sameAddress($event.target.checked)">
+                        <input type="checkbox" (change)="sameAddress($event.target.checked)" [checked]="isSameAddress">
                         <span class="checkmark top-0"></span>
                     </label>
                 </div>
@@ -558,7 +558,7 @@
                 </div>
                 <div class="col-6 pl-4">
                     <form [formGroup]="otpForm">
-                        <div class="row py-3">
+                        <div class="row pb-3">
                             <div class="col-4 align-self-center">
                                 <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">OTP</label>
                             </div>

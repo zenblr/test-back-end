@@ -195,6 +195,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.controls['shippingStateName'].patchValue('');
     this.controls['shippingCityName'].patchValue('');
     this.controls['kycRequired'].patchValue(this.customerKyc);
+    this.isSameAddress = false;
 
     if (type == 'new') {
       this.showformFlag = true;
@@ -366,6 +367,11 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls.nameOnPanCard.enable()
       }
 
+      if (this.customerData.sameAsBillingAddress) {
+        this.isSameAddress = this.customerData.sameAsBillingAddress;
+        this.sameAddress(this.isSameAddress);
+      }
+
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
@@ -466,8 +472,8 @@ export class CheckoutCustomerComponent implements OnInit {
     }
   }
 
-  sameAddress(event: MatCheckbox) {
-    if (event) {
+  sameAddress(value) {
+    if (value) {
       this.isSameAddress = true;
       this.shippingCityList = this.cityList;
       this.checkoutCustomerForm.patchValue({
