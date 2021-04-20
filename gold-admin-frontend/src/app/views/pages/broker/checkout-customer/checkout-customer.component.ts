@@ -57,6 +57,7 @@ export class CheckoutCustomerComponent implements OnInit {
   onlineMode = false;
   merchantPaymentDetails: any;
   edwaarDetails: any;
+  customerData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -228,6 +229,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
       this.existingCustomerData = { ...res };
       this.merchantPaymentDetails = res.customerDetails.merchant.merchant.merchantPaymentGatewayConfig;
+      this.customerData = res.customerDetails;
       setTimeout(() => {
         this.checkoutCustomerForm.patchValue({
           firstName: res.customerDetails.firstName,
@@ -281,28 +283,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls['shippingPostalCode'].enable();
         this.getShippingCities();
 
-        if (this.merchantPaymentDetails.paymentGateway == 'razorpay') {
-          if (res.customerDetails.currentWalletBalance) {
-            if (Number(res.customerDetails.currentWalletBalance) < Number(this.checkoutData.nowPayableAmount)) {
-              this.depositAmount = (Number(this.checkoutData.nowPayableAmount) - Number(res.customerDetails.currentWalletBalance)).toFixed(2);
-              this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
-              this.walletMode = false;
-              this.onlineMode = true;
-              this.setPaymentModeValidators();
-            } else {
-              this.depositAmount = (Number(0));
-              this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
-              this.onlineMode = false;
-              this.walletMode = true;
-              // this.otpForm.controls.paymentMode.setValidators([]),
-              //   this.otpForm.controls.paymentMode.updateValueAndValidity()
-            }
-          } else {
-            this.depositAmount = this.checkoutData.nowPayableAmount;
-            this.onlineOfflineMode = true;
-            this.setPaymentModeValidators();
-          }
-        }
+        this.checkAvailablePaymentMode();
 
         // if (res.customerDetails.kycDetails) {
         //   this.checkoutCustomerForm.patchValue({
@@ -408,6 +389,8 @@ export class CheckoutCustomerComponent implements OnInit {
             this.checkoutCustomerForm.controls['firstName'].disable()
             this.checkoutCustomerForm.controls['lastName'].disable()
             this.merchantPaymentDetails = res.customer.merchant.merchant.merchantPaymentGatewayConfig;
+            this.customerData = res.customer;
+            this.checkAvailablePaymentMode();
           }
         })
         setTimeout(() => {
@@ -416,6 +399,29 @@ export class CheckoutCustomerComponent implements OnInit {
           this.ref.detectChanges();
         });
       });
+  }
+
+  checkAvailablePaymentMode() {
+    if (this.merchantPaymentDetails.paymentGateway == 'razorpay') {
+      if (this.customerData.currentWalletBalance) {
+        if (Number(this.customerData.currentWalletBalance) < Number(this.checkoutData.nowPayableAmount)) {
+          this.depositAmount = (Number(this.checkoutData.nowPayableAmount) - Number(this.customerData.currentWalletBalance)).toFixed(2);
+          this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+          this.walletMode = false;
+          this.onlineMode = true;
+          this.setPaymentModeValidators();
+        } else {
+          this.depositAmount = (Number(0));
+          this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+          this.onlineMode = false;
+          this.walletMode = true;
+        }
+      } else {
+        this.depositAmount = this.checkoutData.nowPayableAmount;
+        this.onlineOfflineMode = true;
+        this.setPaymentModeValidators();
+      }
+    }
   }
 
   getStates() {
