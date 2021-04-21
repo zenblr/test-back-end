@@ -1,8 +1,8 @@
-<img src="../../../../../assets/media/dashboard/dashboard.jpg" alt="">
+<!-- <img src="../../../../../assets/media/dashboard/dashboard.jpg" alt=""> -->
 
-<!-- <kt-portlet>
-	<kt-portlet-body [class]="'kt-portlet__body--fit'" *ngIf="dashboardDetails$ | async as details">
-		<div class="row">
+<kt-portlet>
+	<kt-portlet-body [class]="'kt-portlet__body--fit'">
+		<div class="row" *ngIf="dashboardDetails$ | async as details">
 			<div class="col-12">
 				<div class="row">
 					<div class="col align-self-center pr-5">
@@ -73,52 +73,89 @@
 				<h4>Today's Orders</h4>
 				<hr>
 			</div>
-			<div class="col-12">
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col">Member ID</th>
-							<th scope="col">Name</th>
-							<th scope="col">Mobile No.</th>
-							<th scope="col">Order ID</th>
-							<th scope="col">Product Name</th>
-							<th scope="col">Weight</th>
-							<th scope="col">EMI Tenure</th>
-						</tr>
-					</thead>
-					<tbody class="font-weight-normal">
-						<ng-container *ngIf="details?.todaysOrderDetail?.length; else noTodaysOrder">
-							<tr *ngFor="let prod of details?.todaysOrderDetail">
-								<td>
-									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
-								</td>
-								<td>
-									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
-								</td>
-								<td>
-									{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
-								</td>
-								<td>
-									{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
-								</td>
-								<td>
-									{{prod?.product?.productName ? prod?.product?.productName : '-'}}
-								</td>
-								<td>
-									{{prod?.weight | number:'1.0-2' | removeComma}}
-								</td>
-								<td>
-									{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
-								</td>
-							</tr>
-						</ng-container>
-						<ng-template #noTodaysOrder>
-							<tr>
-								<td class="text-center" colspan="7">No records found</td>
-							</tr>
-						</ng-template>
-					</tbody>
-				</table>
+			<div class="mat-table__wrapper">
+				<mat-table class="lmat-elevation-z8" #table [dataSource]="todaysOrderDataSource" matSort
+					#sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
+					<ng-container matColumnDef="brokerName">
+						<mat-header-cell *matHeaderCellDef>Broker Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.orderBy?.firstName || element?.orderBy?.lastName ?
+							element?.orderBy?.firstName + ' ' +element?.orderBy?.lastName : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="brokerId">
+						<mat-header-cell *matHeaderCellDef>Broker ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.orderBy?.userUniqueId ? element?.orderBy?.userUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="storeId">
+						<mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.orderBy?.broker?.store?.storeUniqueId ?
+							element?.orderBy?.broker?.store?.storeUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="customerId">
+						<mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.customerDetails?.customerUniqueId ? element?.customerDetails?.customerUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="customerName">
+						<mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.customerDetails?.firstName || element?.customerDetails?.lastName ?
+							element?.customerDetails?.firstName + ' ' +element?.customerDetails?.lastName : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="mobileNumber">
+						<mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.customerDetails?.mobileNumber ? element?.customerDetails?.mobileNumber : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="orderId">
+						<mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.orderUniqueId ? element?.orderUniqueId : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="productName">
+						<mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.product?.productName ? element?.product?.productName : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="weight">
+						<mat-header-cell *matHeaderCellDef>Weight</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.weight ? element?.weight : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="emiTenure">
+						<mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.paymentType?.paymentType ? element?.paymentType?.paymentType : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-template #blank>-</ng-template>
+					<mat-header-row *matHeaderRowDef="displayedTodayOrderColumns;" style="width: 140%;">
+					</mat-header-row>
+					<mat-row *matRowDef="let row; columns: displayedTodayOrderColumns" style="width: 140%;"></mat-row>
+				</mat-table>
+				<div class="mat-table__message" *ngIf="orderList?.length == 0">No records found</div>
+				<div class="mat-table__message" *ngIf="todaysOrderDataSource.isPreloadTextViewed$ | async">Please
+					wait....</div>
+			</div>
+			<div class="mat-table__bottom ml-auto">
+				<mat-spinner [diameter]="20" *ngIf="todaysOrderDataSource.loading$ | async"></mat-spinner>
+				<mat-paginator #paginator1 [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+					[length]="todaysOrderDataSource.paginatorTotal$ | async" [showFirstLastButtons]="true">
+				</mat-paginator>
 			</div>
 		</div>
 		<div class="row pt-5">
@@ -126,53 +163,93 @@
 				<h4>Overdue Payment</h4>
 				<hr>
 			</div>
-			<div class="col-12">
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col">Member ID</th>
-							<th scope="col">Name</th>
-							<th scope="col">Mobile No.</th>
-							<th scope="col">Order ID</th>
-							<th scope="col">Product Name</th>
-							<th scope="col">EMI Amount</th>
-							<th scope="col">EMI Tenure</th>
-						</tr>
-					</thead>
-					<tbody class="font-weight-normal">
-						<ng-container *ngIf="details?.overdueCustomer?.length; else noOverdueCustomer">
-							<tr *ngFor="let prod of details?.overdueCustomer">
-								<td>
-									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
-								</td>
-								<td>
-									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
-								</td>
-								<td>
-									{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
-								</td>
-								<td>
-									{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
-								</td>
-								<td>
-									{{prod?.product?.productName ? prod?.product?.productName : '-'}}
-								</td>
-								<td>
-									{{prod?.emiAmount ? prod?.emiAmount : '-'}}
-								</td>
-								<td>
-									{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
-								</td>
-							</tr>
-						</ng-container>
-						<ng-template #noOverdueCustomer>
-							<tr>
-								<td class="text-center" colspan="7">No records found</td>
-							</tr>
-						</ng-template>
-					</tbody>
-				</table>
+			<div class="mat-table__wrapper">
+				<mat-table class="lmat-elevation-z8" #table [dataSource]="overDueOrderataSource" matSort
+					#sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
+					<ng-container matColumnDef="brokerName">
+						<mat-header-cell *matHeaderCellDef>Broker Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.orderBy?.firstName || element?.order?.orderBy?.lastName ?
+							element?.order?.orderBy?.firstName + ' ' +element?.order?.orderBy?.lastName : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="brokerId">
+						<mat-header-cell *matHeaderCellDef>Broker ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.orderBy?.userUniqueId ? element?.order?.orderBy?.userUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="storeId">
+						<mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.orderBy?.broker?.store?.storeUniqueId ?
+							element?.order?.orderBy?.broker?.store?.storeUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="customerId">
+						<mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.customerDetails?.customerUniqueId ?
+							element?.order?.customerDetails?.customerUniqueId :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="customerName">
+						<mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.customerDetails?.firstName || element?.order?.customerDetails?.lastName ?
+							element?.order?.customerDetails?.firstName + ' ' +element?.order?.customerDetails?.lastName
+							: '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="mobileNumber">
+						<mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.customerDetails?.mobileNumber ?
+							element?.order?.customerDetails?.mobileNumber : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="orderId">
+						<mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.orderUniqueId ? element?.order?.orderUniqueId : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="productName">
+						<mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.product?.productName ? element?.order?.product?.productName : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="emiAmmount">
+						<mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.emiAmount ? element?.emiAmount : '-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="emiTenure">
+						<mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							{{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType :
+							'-'}}
+						</mat-cell>
+					</ng-container>
+					<ng-template #blank>-</ng-template>
+					<mat-header-row *matHeaderRowDef="displayedOverDueColumns;" style="width: 140%;"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: displayedOverDueColumns" style="width: 140%;"></mat-row>
+				</mat-table>
+				<div class="mat-table__message" *ngIf="overDueOrderList?.length == 0">No records found</div>
+				<div class="mat-table__message" *ngIf="overDueOrderataSource.isPreloadTextViewed$ | async">Please
+					wait....</div>
+			</div>
+			<div class="mat-table__bottom ml-auto">
+				<mat-spinner [diameter]="20" *ngIf="overDueOrderataSource.loading$ | async"></mat-spinner>
+				<mat-paginator #paginator2 [pageSize]="5" [pageSizeOptions]="[5,25,50,100]"
+					[length]="overDueOrderataSource.paginatorTotal$ | async" [showFirstLastButtons]="true">
+				</mat-paginator>
 			</div>
 		</div>
 	</kt-portlet-body>
-</kt-portlet> -->
+</kt-portlet>
