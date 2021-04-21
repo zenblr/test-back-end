@@ -117,7 +117,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                         res.cookie('vleSession',`${vleSession}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
-                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                         res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                         res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
@@ -248,7 +248,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                     res.cookie('vleSession',`${vleSession}`);
-                    // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                    res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                     res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                     res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                     res.redirect(`${process.env.SINGLE_SIGN_ON}`);
