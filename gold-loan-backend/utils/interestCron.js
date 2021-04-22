@@ -57,8 +57,8 @@ exports.dailyIntrestCalculation = async (date) => {
     let noOfDays = 0;
     let releasedLoanData = await calculationDataForReleasedLoan()
     let releasedLoanInfo = releasedLoanData.loanInfo;
-    await sequelize.transaction(async t => {
-        for (const loan of loanInfo) {
+    for (const loan of loanInfo) {
+        await sequelize.transaction(async t => {
             let allInterestTable = await getAllInterest(loan.id);
             let allPaidInterest = await getAllPaidInterestForCalculation(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
@@ -126,7 +126,8 @@ exports.dailyIntrestCalculation = async (date) => {
                     if (interestAccrual < 0) {
                         await models.customerLoanInterest.update({ interestAmount: interestAmount, totalInterestAccrual: interestAmount, outstandingInterest, interestAccrual: 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     } else {
-                        await models.customerLoanInterest.update({ interestAmount: interestAmount, totalInterestAccrual: interestAmount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        let x = await models.customerLoanInterest.update({ interestAmount: interestAmount, totalInterestAccrual: interestAmount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        console.log(x)
                     }
                 }
                 //cal interest accural by no of days
@@ -256,7 +257,7 @@ exports.dailyIntrestCalculation = async (date) => {
                     if (lastInterest.interestPaidFrom == 'partPayment' || lastInterest.isPartPaymentEverReceived) {
                         amount = await calculateInterestForParticularDueDate(lastInterest.emiReceivedDate, lastInterest.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount)
                     }
-                    outstandingInterest = amount - interestData.interestAmtPaidDuringQuickPay
+                    outstandingInterest = amount - lastInterest.interestAmtPaidDuringQuickPay
                     let rebateAmount = lastInterest.highestInterestAmount - amount;
                     if (amount >= 0) {
                         await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
@@ -443,9 +444,13 @@ exports.dailyIntrestCalculation = async (date) => {
                     }
                 }
             }
-        }
+        });
 
-        for (const loan of releasedLoanInfo) {
+    }
+
+    for (const loan of releasedLoanInfo) {
+        await sequelize.transaction(async t => {
+
             let allpaidPartialyPaidInterest = await getAllPaidPartialyPaidInterest(loan.id);
             for (const interestData of allpaidPartialyPaidInterest) {
                 let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
@@ -462,8 +467,8 @@ exports.dailyIntrestCalculation = async (date) => {
                     }
                 }
             }
-        }
-    });
+        })
+    }
     return noOfDays;
 }
 
