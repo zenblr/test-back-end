@@ -11,44 +11,44 @@ let { getFirstInterestToPay, getExtraInterest, getAllInterestGreaterThanDate, ge
 exports.dailyIntrestCalculation = async (date) => {
     //for rebate
     //If rebate is not added
-    let rebateData = await calculationData();
-    let loanInfoRebate = rebateData.loanInfo;
-    await sequelize.transaction(async t => {
-        for (const loan of loanInfoRebate) {
-            if (!loan.rebateInterestRate) {
-                let scheme = await models.scheme.findOne({
-                    where: { id: loan.schemeId },
-                    attributes: ['schemeName'],
-                    order: [[models.schemeInterest, 'id', 'desc']],
-                    include: [{
-                        model: models.schemeInterest,
-                        as: 'schemeInterest'
-                    }]
-                })
-                if (scheme) {
-                    let rebateInterestRate = scheme.schemeInterest[0].interestRate;
-                    await models.customerLoan.update({ rebateInterestRate }, { where: { id: loan.id }, transaction: t });
-                    let allInterest = await getAllInterest(loan.id);
-                    let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
-                    //update rebate and rebateInterestAmount 3 60
-                    for (const interestData of allInterest) {
-                        let highestInterestAmount = interest.amount;
-                        let rebateAmount = highestInterestAmount - interestData.interestAmount;
-                        await models.customerLoanInterest.update({ rebateInterestRate: rebateInterestRate, highestInterestAmount, rebateAmount }, { where: { id: interestData.id }, transaction: t });
-                    }
-                    //update last interest if changed
-                    if (!Number.isInteger(interest.length)) {
-                        const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterest.length - 1) * loan.selectedSlab)) / 30)
-                        let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
-                        let highestInterestAmount = (oneMonthAmount * noOfMonths).toFixed(2);
-                        let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                        let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
-                        await models.customerLoanInterest.update({ rebateAmount, highestInterestAmount, rebateInterestRate }, { where: { id: lastInterest.id }, transaction: t });
-                    }
-                }
-            }
-        }
-    })
+    // let rebateData = await calculationData();
+    // let loanInfoRebate = rebateData.loanInfo;
+    // await sequelize.transaction(async t => {
+    //     for (const loan of loanInfoRebate) {
+    //         if (!loan.rebateInterestRate) {
+    //             let scheme = await models.scheme.findOne({
+    //                 where: { id: loan.schemeId },
+    //                 attributes: ['schemeName'],
+    //                 order: [[models.schemeInterest, 'id', 'desc']],
+    //                 include: [{
+    //                     model: models.schemeInterest,
+    //                     as: 'schemeInterest'
+    //                 }]
+    //             })
+    //             if (scheme) {
+    //                 let rebateInterestRate = scheme.schemeInterest[0].interestRate;
+    //                 await models.customerLoan.update({ rebateInterestRate }, { where: { id: loan.id }, transaction: t });
+    //                 let allInterest = await getAllInterest(loan.id);
+    //                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
+    //                 //update rebate and rebateInterestAmount 3 60
+    //                 for (const interestData of allInterest) {
+    //                     let highestInterestAmount = interest.amount;
+    //                     let rebateAmount = highestInterestAmount - interestData.interestAmount;
+    //                     await models.customerLoanInterest.update({ rebateInterestRate: rebateInterestRate, highestInterestAmount, rebateAmount }, { where: { id: interestData.id }, transaction: t });
+    //                 }
+    //                 //update last interest if changed
+    //                 if (!Number.isInteger(interest.length)) {
+    //                     const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterest.length - 1) * loan.selectedSlab)) / 30)
+    //                     let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
+    //                     let highestInterestAmount = (oneMonthAmount * noOfMonths).toFixed(2);
+    //                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
+    //                     let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
+    //                     await models.customerLoanInterest.update({ rebateAmount, highestInterestAmount, rebateInterestRate }, { where: { id: lastInterest.id }, transaction: t });
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
     ///
 
     let data = await calculationData();
@@ -409,7 +409,7 @@ exports.dailyIntrestCalculation = async (date) => {
                                         startDate = extraInterest.emiStartDate
                                         daysPlusOne = true
                                     }
-                                    amount = await calculateInterestForParticularDueDate(startDate, interestData.emiDueDate, loan.currentInterestRate, loan.outstandingAmount, daysPlusOne)
+                                    amount = await calculateInterestForParticularDueDate(startDate, currentDate, loan.currentInterestRate, loan.outstandingAmount, daysPlusOne)
                                 } else {
                                     amount = pendingDaysAmount
                                 }
