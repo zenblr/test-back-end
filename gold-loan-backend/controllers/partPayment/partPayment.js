@@ -140,13 +140,13 @@ exports.checkPartAmount = async (req, res, next) => {
     data.partPaymentAmount = (partPaymentAmount.toFixed(2))
     data.paidAmount = paidAmount
     data.loanDetails = loan.loan
-    let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan.loan, amount, paidAmount);
+    let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied,securedInterest,unsecuredInterest } = await getAmountLoanSplitUpData(loan.loan, amount, paidAmount);
 
-    data.securedRatio = (securedRatio.toFixed(2))
-    data.newSecuredOutstanding = (data.securedOutstandingAmount - securedRatio).toFixed(2)
+    data.securedRatio = (securedRatio-securedInterest).toFixed(2)
+    data.newSecuredOutstanding = (data.securedOutstandingAmount - data.securedRatio).toFixed(2)
     if (isUnsecuredSchemeApplied) {
-        data.unsecuredRatio = (unsecuredRatio.toFixed(2))
-        data.newUnSecuredOutstanding = (data.unsecuredOutstandingAmount - unsecuredRatio).toFixed(2)
+        data.unsecuredRatio = (unsecuredRatio-unsecuredInterest).toFixed(2)
+        data.newUnSecuredOutstanding = (data.unsecuredOutstandingAmount - data.unsecuredRatio).toFixed(2)
 
     }
 
@@ -656,17 +656,7 @@ exports.partPayment = async (req, res, next) => {
                         }
                     }
                     let stepUpSlab = await getStepUpslab1(loan.id, noOfDays);
-                    var currentInterestRate
-                    if (securedInterest || unsecuredInterest) {
-                        if (index % 2 == 0) {
-                            currentInterestRate = securedInterest
-                        } else {
-                            currentInterestRate = unsecuredInterest
-    
-                        }
-                    } else {
-                        currentInterestRate = loan.currentInterestRate
-                    }
+                    var currentInterestRate = loan.currentInterestRate
     
                     let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, currentInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
     
@@ -801,10 +791,10 @@ exports.partPayment = async (req, res, next) => {
                             outstandingInterest = interest.amount - interestData.interestAmtPaidDuringQuickPay;
                         }
                         let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                        if (outstandingInterest >= 0) {
+                        if (outstandingInterest > 0) {
                             await models.customerLoanInterest.update({ interestAmount: interestAmount, outstandingInterest, interestRate: currentInterestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         } else {
-                            await models.customerLoanInterest.update({ interestAmount: interestAmount, outstandingInterest: 0.00, interestRate: currentInterestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAmount: interestAmount, outstandingInterest: 0.00, interestRate: currentInterestRate, rebateAmount,emiStatus:'paid' }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         }
     
                     }
@@ -831,10 +821,10 @@ exports.partPayment = async (req, res, next) => {
                         }
                         outstandingInterest = amount - interestData.interestAmtPaidDuringQuickPay
                         let rebateAmount = lastInterest.highestInterestAmount - amount;
-                        if (outstandingInterest >= 0) {
+                        if (outstandingInterest > 0) {
                             await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: currentInterestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         } else {
-                            await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest: 0.00, interestRate: currentInterestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest: 0.00, interestRate: currentInterestRate, rebateAmount,emiStatus:'paid' }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         }
     
                     }
@@ -881,6 +871,7 @@ exports.partPayment = async (req, res, next) => {
                             let lastInterest = await getLastInterest2(loan.id, loan.masterLoanId)
                             let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
                             await models.customerLoanInterest.update({ rebateAmount, highestInterestAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            
                         }
                     }
                 }
