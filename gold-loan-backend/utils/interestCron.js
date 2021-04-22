@@ -202,7 +202,7 @@ exports.dailyIntrestCalculation = async (date) => {
                                     startDate = extraInterest.emiStartDate
                                     daysPlusOne = true
                                 }
-                                amount = await calculateInterestForParticularDueDate(startDate, interestData.emiDueDate, stepUpSlab.interestRate, loan.outstandingAmount, daysPlusOne)
+                                amount = await calculateInterestForParticularDueDate(startDate, currentDate, stepUpSlab.interestRate, loan.outstandingAmount, daysPlusOne)
                             } else {
                                 amount = pendingDaysAmount
                             }
