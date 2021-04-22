@@ -400,7 +400,8 @@ exports.quickPayment = async (req, res, next) => {
                         }
                     })
                 }
-                payment = await allInterestPayment(transactionId, newTransactionSplitUp, securedLoanDetails, unsecuredLoanDetails, receivedDate);
+                let isInterestSettledFromQuickPay = true
+                payment = await allInterestPayment(isInterestSettledFromQuickPay,transactionId, newTransactionSplitUp, securedLoanDetails, unsecuredLoanDetails, receivedDate);
 
                 await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: receivedDate }, { where: { id: transactionId }, transaction: t });
                 if (razorpay_order_id)
@@ -409,12 +410,12 @@ exports.quickPayment = async (req, res, next) => {
                     });
                 if (payment.securedLoanDetails) {
                     for (const interest of payment.securedLoanDetails) {
-                        await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: interest.emiReceivedDate, penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        await models.customerLoanInterest.update({interestPaidFrom:'quickPay', paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: interest.emiReceivedDate, penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus,interestAmtPaidDuringQuickPay:interest.interestAmtPaidDuringQuickPay }, { where: { id: interest.id }, transaction: t });
                     }
                 }
                 if (payment.unsecuredLoanDetails) {
                     for (const interest of payment.unsecuredLoanDetails) {
-                        await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: interest.emiReceivedDate, penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        await models.customerLoanInterest.update({interestPaidFrom:'quickPay', paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: interest.emiReceivedDate, penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus,interestAmtPaidDuringQuickPay:interest.interestAmtPaidDuringQuickPay }, { where: { id: interest.id }, transaction: t });
                     }
                 }
                 //update in transaction

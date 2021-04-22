@@ -7,6 +7,12 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
+                <ng-container matColumnDef="brokerId">
+                    <mat-header-cell *matHeaderCellDef>Broker ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.orderBy?.userUniqueId ? element?.orderBy?.userUniqueId : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
@@ -140,9 +146,9 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 200%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 220%;"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 200%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 220%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

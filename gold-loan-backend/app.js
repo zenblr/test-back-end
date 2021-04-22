@@ -111,7 +111,7 @@ app.use(function (err, req, res, next) {
 });
 
 cron.schedule(' 0 */30 * * * *', async function () {
-    await getErrorForMail();
+    // await getErrorForMail();
 })
 
 // cron.schedule('0 1 * * *', async function () {
