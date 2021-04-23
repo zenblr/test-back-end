@@ -36,6 +36,7 @@ export class UserProfileComponent implements OnInit {
 		this.auth.logout().pipe(map(
 			res => {
 				localStorage.clear();
+				sessionStorage.clear();
 				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
 				if (res.redirect) {

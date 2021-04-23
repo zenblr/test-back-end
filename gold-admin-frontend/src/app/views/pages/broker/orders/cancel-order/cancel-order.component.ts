@@ -35,6 +35,9 @@ export class CancelOrderComponent implements OnInit {
     this.shopService.getCancelDetails(this.orderId).subscribe(res => {
       this.orderData = res;
       this.formInitialize();
+      if (this.orderData.merchantPaymentConfig.paymentGateway == 'edwaar') {
+        this.selectPaymentOption((this.sharedService.sellPaymentOptionList.filter(e => e.value == 'bankAccount')[0]));
+      }
     })
   }
 
@@ -144,11 +147,20 @@ export class CancelOrderComponent implements OnInit {
     let data = {
       ...this.cancelForm.value,
       amountTransferTo: '',
+      vleId: '',
     }
+
     if (this.selectedPayment.value == 'bankAccount') {
       data.amountTransferTo = 'bankAccount';
     } else {
       data.amountTransferTo = 'augmontWallet';
+    }
+
+    let edwaarSessionData = JSON.parse(sessionStorage.getItem('edwaar-session'));
+    if (edwaarSessionData) {
+      data.vleId = edwaarSessionData.vleId;
+      data.vleSession = edwaarSessionData.vleSession;
+      data.amountTransferTo = 'partnerWallet';
     }
 
     this.shopService.updateCancelOrder(this.orderId, data).subscribe(

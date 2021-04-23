@@ -6,6 +6,7 @@ const Op = Sequelize.Op;
 const csv = require('csvtojson')
 
 
+
 exports.postCity = async (req, res, next) => {
     const csvFilePath = req.file.path;
     const jsonArray = await csv().fromFile(csvFilePath);
