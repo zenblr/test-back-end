@@ -115,7 +115,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     if (defaultFind.status) {
                         let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
-                        res.cookie('vleSession',`${vleSession}`);
+                        res.cookie('vleSession',`${JSON.stringify(vleSession)}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
                         res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                         res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
@@ -246,8 +246,8 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 if (defaultFind.status) {
                     let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                    res.cookie('vleSession',`${JSON.stringify(vleSession)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
-                    res.cookie('vleSession',`${vleSession}`);
                     res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                     res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                     res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
