@@ -43,60 +43,65 @@ export class AppComponent implements OnInit, OnDestroy {
 	 * @param splashScreenService: SplashScreenService
 	 */
 	constructor(
-        private translationService: TranslationService,
-        private router: Router,
-        private layoutConfigService: LayoutConfigService,
-        private splashScreenService: SplashScreenService,
-        private sharedService: SharedService,
-        private authService: AuthService,
-        private ref: ChangeDetectorRef,
-        private toast: ToastrService,
+		private translationService: TranslationService,
+		private router: Router,
+		private layoutConfigService: LayoutConfigService,
+		private splashScreenService: SplashScreenService,
+		private sharedService: SharedService,
+		private authService: AuthService,
+		private ref: ChangeDetectorRef,
+		private toast: ToastrService,
 		private cookieService: CookieService,
-		private menuAsideService : MenuAsideService
-    ) {
+		private menuAsideService: MenuAsideService
+	) {
 
-        if(this.cookieService.check('test')){
-            console.log(this.cookieService.check('test'))
-        }
-        if (this.cookieService.get('Token')) {
-            const userData = {
+		if (this.cookieService.check('test')) {
+			console.log(this.cookieService.check('test'))
+		}
+		if (this.cookieService.get('Token')) {
+			const userData = {
 				Token: JSON.parse(this.cookieService.get('Token')),
-                modules: '',
-                permissions: JSON.parse(this.cookieService.get('permissions')),
-                userDetails:JSON.parse(this.cookieService.get('userDetails')),
+				modules: '',
+				permissions: JSON.parse(this.cookieService.get('permissions')),
+				userDetails: JSON.parse(this.cookieService.get('userDetails')),
 			}
 			this.redirectOn = JSON.parse(this.cookieService.get('RedirectOn'))
-            localStorage.setItem('UserDetails', JSON.stringify(userData));
-            this.sharedService.getBrokerPermissions().subscribe(res=>{
-                const userData = {
-                    Token: JSON.parse(this.cookieService.get('Token')),
-                    modules: res.modules,
-                    permissions: res.permissions,
-                    userDetails: res.userDetails,
-                }   
+			localStorage.setItem('UserDetails', JSON.stringify(userData));
+			this.sharedService.getBrokerPermissions().subscribe(res => {
+				const userData = {
+					Token: JSON.parse(this.cookieService.get('Token')),
+					modules: res.modules,
+					permissions: res.permissions,
+					userDetails: res.userDetails,
+				}
 				localStorage.setItem('UserDetails', JSON.stringify(userData));
+				const sessionData = {
+					vleSession: JSON.parse(this.cookieService.get('vleSession')),
+					vleId: JSON.parse(this.cookieService.get('vleId')),
+				}
+				sessionStorage.setItem('edwaar-session', JSON.stringify(sessionData));
 				this.cookieService.deleteAll();
 				this.menuAsideService.loadMenu();
 				this.ref.detectChanges()
 				setTimeout(() => {
 					this.router.navigate([this.redirectOn]);
 				});
-            })
-        }
-        // if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
-        //  location.href = location.href.replace("http://", "https://");
-        //   }
-        // register translations
-        this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
-        // this.sharedService.loader$.subscribe(res => {
-        //  if (res) {
-        //      this.spinner.show()
-        //  } else {
-        //      this.spinner.hide()
-        //      this.ref.markForCheck()
-        //  }
-        // })
-    }
+			})
+		}
+		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
+		//  location.href = location.href.replace("http://", "https://");
+		//   }
+		// register translations
+		this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
+		// this.sharedService.loader$.subscribe(res => {
+		//  if (res) {
+		//      this.spinner.show()
+		//  } else {
+		//      this.spinner.hide()
+		//      this.ref.markForCheck()
+		//  }
+		// })
+	}
 
 	/**
 	 * On init
@@ -120,7 +125,7 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 		});
 		this.unsubscribe.push(routerSubscription);
-		
+
 		this.sharedService.hideLoader$.subscribe(res => this.hideLoader = res)
 	}
 
