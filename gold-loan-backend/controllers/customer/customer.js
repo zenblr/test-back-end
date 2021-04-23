@@ -56,7 +56,7 @@ exports.addCustomer = async (req, res, next) => {
   let mobileNumber = getMobileNumber.mobileNumber;
 
   let customerExist = await models.customer.findOne({
-    where: { mobileNumber: mobileNumber },
+    where: { mobileNumber: mobileNumber, merchantId: 1 },
   });
   if (!check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "This Mobile number already Exists" });
