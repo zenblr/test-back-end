@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ElementRef } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
@@ -23,6 +23,7 @@ import { PdfViewerComponent } from '../../../../views/partials/components/pdf-vi
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  @ViewChild('submitForm', { static: false }) submitForm: ElementRef;
   numberSearchForm: FormGroup;
   checkoutCustomerForm: FormGroup;
   otpForm: FormGroup;
@@ -54,6 +55,9 @@ export class CheckoutCustomerComponent implements OnInit {
   walletMode = false;
   onlineOfflineMode = false;
   onlineMode = false;
+  merchantPaymentDetails: any;
+  edwaarDetails: any;
+  customerData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -113,7 +117,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-      paymentMode: ['', [Validators.required]],
+      paymentMode: [''],
     });
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -153,6 +157,11 @@ export class CheckoutCustomerComponent implements OnInit {
     });
   }
 
+  setPaymentModeValidators() {
+    this.otpForm.controls.paymentMode.setValidators([Validators.required]),
+      this.otpForm.controls.paymentMode.updateValueAndValidity()
+  }
+
   getCheckoutCart() {
     this.shoppingCartService.getCheckoutCart().subscribe(res => {
       if (res && res.blockId) {
@@ -186,6 +195,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.controls['shippingStateName'].patchValue('');
     this.controls['shippingCityName'].patchValue('');
     this.controls['kycRequired'].patchValue(this.customerKyc);
+    this.isSameAddress = false;
 
     if (type == 'new') {
       this.showformFlag = true;
@@ -219,6 +229,8 @@ export class CheckoutCustomerComponent implements OnInit {
     }
     this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
       this.existingCustomerData = { ...res };
+      this.merchantPaymentDetails = res.customerDetails.merchant.merchant.merchantPaymentGatewayConfig;
+      this.customerData = res.customerDetails;
       setTimeout(() => {
         this.checkoutCustomerForm.patchValue({
           firstName: res.customerDetails.firstName,
@@ -226,7 +238,7 @@ export class CheckoutCustomerComponent implements OnInit {
           mobileNumber: res.customerDetails.mobileNumber,
           email: res.customerDetails.email,
           kycRequired: res.kycRequired,
-          customerId: res.customerDetails.id
+          customerId: res.customerDetails.id,
         });
         this.pan.userName.firstName = res.customerDetails.firstName
         this.pan.userName.lastName = res.customerDetails.lastName
@@ -272,24 +284,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls['shippingPostalCode'].enable();
         this.getShippingCities();
 
-        if (res.customerDetails.currentWalletBalance) {
-          if (Number(res.customerDetails.currentWalletBalance) < Number(this.checkoutData.nowPayableAmount)) {
-            this.depositAmount = (Number(this.checkoutData.nowPayableAmount) - Number(res.customerDetails.currentWalletBalance)).toFixed(2);
-            this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
-            this.walletMode = false;
-            this.onlineMode = true;
-          } else {
-            this.depositAmount = (Number(0));
-            this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
-            this.onlineMode = false;
-            this.walletMode = true;
-            this.otpForm.controls.paymentMode.setValidators([]),
-              this.otpForm.controls.paymentMode.updateValueAndValidity()
-          }
-        } else {
-          this.depositAmount = this.checkoutData.nowPayableAmount;
-          this.onlineOfflineMode = true;
-        }
+        this.checkAvailablePaymentMode();
 
         // if (res.customerDetails.kycDetails) {
         //   this.checkoutCustomerForm.patchValue({
@@ -378,6 +373,11 @@ export class CheckoutCustomerComponent implements OnInit {
         this.controls.nameOnPanCard.enable()
       }
 
+      if (this.customerData.sameAsBillingAddress) {
+        this.isSameAddress = this.customerData.sameAsBillingAddress;
+        this.sameAddress(this.isSameAddress);
+      }
+
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
@@ -400,6 +400,9 @@ export class CheckoutCustomerComponent implements OnInit {
             this.checkoutCustomerForm.controls['lastName'].patchValue(res.lastName)
             this.checkoutCustomerForm.controls['firstName'].disable()
             this.checkoutCustomerForm.controls['lastName'].disable()
+            this.merchantPaymentDetails = res.customer.merchant.merchant.merchantPaymentGatewayConfig;
+            this.customerData = res.customer;
+            this.checkAvailablePaymentMode();
           }
         })
         setTimeout(() => {
@@ -408,6 +411,29 @@ export class CheckoutCustomerComponent implements OnInit {
           this.ref.detectChanges();
         });
       });
+  }
+
+  checkAvailablePaymentMode() {
+    if (this.merchantPaymentDetails.paymentGateway == 'razorpay') {
+      if (this.customerData.currentWalletBalance) {
+        if (Number(this.customerData.currentWalletBalance) < Number(this.checkoutData.nowPayableAmount)) {
+          this.depositAmount = (Number(this.checkoutData.nowPayableAmount) - Number(this.customerData.currentWalletBalance)).toFixed(2);
+          this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+          this.walletMode = false;
+          this.onlineMode = true;
+          this.setPaymentModeValidators();
+        } else {
+          this.depositAmount = (Number(0));
+          this.paidFromWallet = (Number(this.checkoutData.nowPayableAmount) - Number(this.depositAmount)).toFixed(2);
+          this.onlineMode = false;
+          this.walletMode = true;
+        }
+      } else {
+        this.depositAmount = this.checkoutData.nowPayableAmount;
+        this.onlineOfflineMode = true;
+        this.setPaymentModeValidators();
+      }
+    }
   }
 
   getStates() {
@@ -452,8 +478,8 @@ export class CheckoutCustomerComponent implements OnInit {
     }
   }
 
-  sameAddress(event: MatCheckbox) {
-    if (event) {
+  sameAddress(value) {
+    if (value) {
       this.isSameAddress = true;
       this.shippingCityList = this.cityList;
       this.checkoutCustomerForm.patchValue({
@@ -579,7 +605,9 @@ export class CheckoutCustomerComponent implements OnInit {
       blockId: this.finalOrderData.blockId,
       totalInitialAmount: this.checkoutData.nowPayableAmount,
       paymentMode: this.otpForm.controls.paymentMode.value,
-      amountToBeAdded: ''
+      amountToBeAdded: '',
+      vleId: '',
+      vleSession: '',
     }
 
     if (this.walletMode) {
@@ -588,8 +616,25 @@ export class CheckoutCustomerComponent implements OnInit {
       verifyOTPData.amountToBeAdded = this.depositAmount;
     }
 
+    let edwaarSessionData = JSON.parse(sessionStorage.getItem('edwaar-session'));
+    if (edwaarSessionData) {
+      verifyOTPData.vleId = edwaarSessionData.vleId;
+      verifyOTPData.vleSession = edwaarSessionData.vleSession;
+      verifyOTPData.paymentMode = 'partnerWallet';
+    }
+
     this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       console.log(res);
+      if (this.merchantPaymentDetails.paymentGateway == 'edwaar') {
+        this.edwaarDetails = res.data.response;
+        let inputElement: HTMLElement = this.submitForm.nativeElement as HTMLElement;
+        if (this.edwaarDetails) {
+          setTimeout(function () { inputElement.click() });
+        }
+        this.ref.detectChanges();
+        return;
+      }
+
       if (this.walletMode) {
         const placeOrderData = {
           customerId: this.finalOrderData.customerId,

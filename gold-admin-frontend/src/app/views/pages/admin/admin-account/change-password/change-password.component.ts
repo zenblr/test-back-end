@@ -79,7 +79,8 @@ export class ChangePasswordComponent implements OnInit {
   logout() {
     this.authService.logout().pipe(
       map(res => {
-        localStorage.clear()
+        localStorage.clear();
+        sessionStorage.clear();
         this.router.navigate(['/auth/login'])
       }), catchError(err => {
         throw err

@@ -60,6 +60,7 @@ export class OrderCancelDialogComponent implements OnInit {
       nextStatus: ['', Validators.required],
       amountTransferTo: ['', Validators.required],
     });
+    // this.cancelForm.valueChanges.subscribe(val => console.log(val));
   }
 
   get controls() {
@@ -86,6 +87,10 @@ export class OrderCancelDialogComponent implements OnInit {
     }
     this.cancelForm.patchValue(data);
     this.cancelData = value;
+    if (this.cancelData.merchantPaymentConfig.paymentGateway == 'edwaar') {
+      this.cancelForm.controls.amountTransferTo.patchValue('bankAccount');
+      this.tranferValue('bankAccount');
+    }
     this.chRef.detectChanges();
   }
 
@@ -137,8 +142,7 @@ export class OrderCancelDialogComponent implements OnInit {
     });
     if (value == 'bankAccount') {
       this.bankFields = true;
-    }
-    else {
+    } else {
       this.bankFields = false;
     }
     this.setValidation(value);
@@ -153,6 +157,11 @@ export class OrderCancelDialogComponent implements OnInit {
       ...this.cancelForm.value,
       cancellationCharges: Number(this.controls.cancellationCharges.value),
     }
+
+    if (this.cancelData.merchantPaymentConfig.paymentGateway == 'edwaar') {
+      data.amountTransferTo = 'partnerWallet';
+    }
+
     this.orderService.updateCancelOrder(this.orderId, data).subscribe(
       res => {
         this.toastr.successToastr("Order Cancelled Successfully");
