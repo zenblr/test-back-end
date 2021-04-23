@@ -226,7 +226,7 @@ export class CheckoutCustomerComponent implements OnInit {
           mobileNumber: res.customerDetails.mobileNumber,
           email: res.customerDetails.email,
           kycRequired: res.kycRequired,
-          customerId: res.customerDetails.id
+          customerId: res.customerDetails.id,
         });
         this.pan.userName.firstName = res.customerDetails.firstName
         this.pan.userName.lastName = res.customerDetails.lastName
@@ -343,7 +343,9 @@ export class CheckoutCustomerComponent implements OnInit {
               panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
               panCardNumber: res.customerDetails.panCardNumber,
               nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
-              panImg: res.customerDetails.panImg
+              panImg: res.customerDetails.panImg,
+              dateOfBirth: res.customerDetails.dateOfBirth
+
             });
             break;
           case 'pending':
@@ -351,7 +353,9 @@ export class CheckoutCustomerComponent implements OnInit {
               panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
               panCardNumber: res.customerDetails.panCardNumber,
               nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
-              panImg: res.customerDetails.panImg
+              panImg: res.customerDetails.panImg,
+              dateOfBirth: res.customerDetails.dateOfBirth
+
             });
             this.controls['panCardNumber'].enable();
             break;
@@ -365,7 +369,9 @@ export class CheckoutCustomerComponent implements OnInit {
           panCardFileId: res.customerDetails.kycDetails ? res.customerDetails.kycDetails.panCardFileId : null,
           panCardNumber: res.customerDetails.panCardNumber,
           nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
-          panImg: res.customerDetails.panImg
+          panImg: res.customerDetails.panImg,
+          dateOfBirth:res.customerDetails.dateOfBirth
+
         });
       } else {
         this.controls.panCardNumber.enable()
