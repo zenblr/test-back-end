@@ -91,7 +91,8 @@
                                 <td>{{data.paymentRecievedDate ? (data.paymentRecievedDate | date:'dd MMM yyyy') : '-'}}
                                 </td>
                                 <td>{{data.orderemistatus.statusName | titlecase}}</td>
-                                <td *ngIf="data.orderStatusId != 1 && data.orderStatusId != 15 && data.orderStatusId != 17">
+                                <td
+                                    *ngIf="data.orderStatusId != 1 && data.orderStatusId != 15 && data.orderStatusId != 17">
                                     <button type="button" class="btn btn-outline"
                                         (click)="printEmiReceipt(data.id)">Print EMI Receipt</button>
                                 </td>
@@ -117,7 +118,7 @@
         <div class="row">
             <div class="col-6 pl-4">
                 <form [formGroup]="paymentForm">
-                    <ng-container *ngIf="!walletMode">
+                    <ng-container *ngIf="orderData?.merchantDetails?.paymentGateway == 'razorpay' && !walletMode">
                         <div class="row py-3"
                             *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 15 || orderData.orderCurrentStatus.id == 3">
                             <div class="col-4 offset-2 align-self-center">
@@ -159,3 +160,31 @@
         </div>
     </kt-portlet-footer>
 </kt-portlet>
+
+<!-- Edwaar Payment Redirect Form -->
+<ng-container>
+    <div class="d-none">
+        <form ngNoForm method="POST" action="{{edwaarDetails?.url}}">
+            <input type="hidden" name="vle_id" [value]="edwaarDetails?.body?.vle_id">
+            <input type="hidden" name="partner_key" [value]="edwaarDetails?.body?.partner_key">
+            <input type="hidden" name="partner_code" [value]="edwaarDetails?.body?.partner_code">
+            <input type="hidden" name="hash" [value]="edwaarDetails?.body?.hash">
+            <input type="hidden" name="vle_session" [value]="edwaarDetails?.body?.vle_session">
+            <input type="hidden" name="order_id" [value]="edwaarDetails?.body?.order_id">
+            <input type="hidden" name="total_txn_amount" [value]="edwaarDetails?.body?.total_txn_amount">
+            <input type="hidden" name="txn_ref_no" [value]="edwaarDetails?.body?.txn_ref_no">
+            <input type="hidden" name="customer_unique_id" [value]="edwaarDetails?.body?.customer_unique_id">
+            <input type="hidden" name="customer_name" [value]="edwaarDetails?.body?.customer_name">
+            <input type="hidden" name="customer_mobile" [value]="edwaarDetails?.body?.customer_mobile">
+            <input type="hidden" name="emi_info" [value]="edwaarDetails?.body?.emi_info">
+            <input type="hidden" name="emiId" [value]="edwaarDetails?.body?.emiId">
+            <input type="hidden" name="orderId" [value]="edwaarDetails?.body?.orderId">
+            <input type="hidden" name="brokerUniqueId" [value]="edwaarDetails?.body?.brokerUniqueId">
+            <input type="hidden" name="customerId" [value]="edwaarDetails?.body?.customerId">
+            <input type="hidden" name="transactionId" [value]="edwaarDetails?.body?.transactionId">
+            <input type="hidden" name="paymentMode" [value]="edwaarDetails?.body?.paymentMode">
+            <input type="hidden" name="callback_url" [value]="edwaarDetails?.body?.callback_url">
+            <button #submitForm type="submit" id="formsubmit">{{'submit'}}</button>
+        </form>
+    </div>
+</ng-container>
