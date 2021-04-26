@@ -182,6 +182,7 @@ export class UserDetailsComponent implements OnInit {
         if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
           this.userPersonalService.panType.next(res.customerInfo.panType)
+          this.controls.panType.disable()
         }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
         if (this.controls.moduleId.value == 1) {
