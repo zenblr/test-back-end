@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
 					vleId: JSON.parse(this.cookieService.get('vleId')),
 				}
 				sessionStorage.setItem('edwaar-session', JSON.stringify(sessionData));
-				this.cookieService.deleteAll();
+				this.cookieService.deleteAll('/');
 				this.menuAsideService.loadMenu();
 				this.ref.detectChanges()
 				setTimeout(() => {
