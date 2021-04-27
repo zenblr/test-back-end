@@ -13,6 +13,14 @@
                         {{element?.orderBy?.userUniqueId ? element?.orderBy?.userUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="brokerInfo">
+                    <mat-header-cell *matHeaderCellDef>Broker Information</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.orderBy?.firstName || element?.orderBy?.lastName ?
+                        (element?.orderBy?.firstName + ' ' + element?.orderBy?.lastName | titlecase) :
+                        '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
