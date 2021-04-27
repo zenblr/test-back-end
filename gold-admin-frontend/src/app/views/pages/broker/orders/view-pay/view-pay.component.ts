@@ -46,13 +46,14 @@ export class ViewPayComponent implements OnInit {
   ngOnInit() {
     this.orderId = this.route.snapshot.params.id;
     this.getOrderDetails();
-    this.initForm()
+    this.initForm();
   }
 
   initForm() {
     this.paymentForm = this.fb.group({
-      paymentMode: ['', [Validators.required]],
+      paymentMode: [''],
     });
+    this.paymentForm.disable();
     this.paymentForm.valueChanges.subscribe(val => console.log(val))
   }
 
@@ -89,26 +90,44 @@ export class ViewPayComponent implements OnInit {
         });
       }
     }
-    if (this.orderData.customerDetails.currentWalletBalance) {
-      if (Number(this.orderData.customerDetails.currentWalletBalance) < Number(this.emiValue)) {
-        this.depositAmount = (Number(this.emiValue) - Number(this.orderData.customerDetails.currentWalletBalance)).toFixed(2);
-        this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
-        this.walletMode = false;
-        this.onlineMode = true;
-      } else {
-        this.depositAmount = (Number(0));
-        this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
-        this.onlineMode = false;
-        this.walletMode = true;
-        this.paymentForm.controls.paymentMode.setValidators([]),
-          this.paymentForm.controls.paymentMode.updateValueAndValidity()
-      }
+    if (this.emi.length) {
+      this.paymentForm.enable();
     } else {
-      this.onlineOfflineMode = true;
+      this.paymentForm.controls.paymentMode.patchValue('');
+      this.paymentForm.disable();
+    }
+    if (this.orderData.merchantDetails.paymentGateway == 'razorpay') {
+      if (this.orderData.customerDetails.currentWalletBalance) {
+        if (Number(this.orderData.customerDetails.currentWalletBalance) < Number(this.emiValue)) {
+          this.depositAmount = (Number(this.emiValue) - Number(this.orderData.customerDetails.currentWalletBalance)).toFixed(2);
+          this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
+          this.walletMode = false;
+          this.onlineMode = true;
+          this.setPaymentModeValidators();
+        } else {
+          this.depositAmount = (Number(0));
+          this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
+          this.onlineMode = false;
+          this.walletMode = true;
+        }
+      } else {
+        this.onlineOfflineMode = true;
+        this.setPaymentModeValidators();
+      }
     }
   }
 
+  setPaymentModeValidators() {
+    this.paymentForm.controls.paymentMode.setValidators([Validators.required]),
+      this.paymentForm.controls.paymentMode.updateValueAndValidity()
+  }
+
   getEmiAmount() {
+    if (this.paymentForm.invalid) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
     let params = {
       emiId: this.emi,
       paymentMode: this.paymentForm.controls.paymentMode.value,
