@@ -22,7 +22,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
     let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId, form60Image, isCityEdit } = req.body
     var date = dateOfBirth
-
+    updateKycStatusInAugmontDB = false
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
         return { status: 404, success: false, message: `Status confirm is not there in status table` }
@@ -272,8 +272,8 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                     await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
 
                     await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
-
-                    let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+                    updateKycStatusInAugmontDB = true
+                    // let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
                     // await createKyc(customer)
 
                     await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
@@ -310,7 +310,11 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
         //pending
         if (isFromCustomerWebsite == true) {
             await sms.sendMessageForKycPending(getCustomerInfo.mobileNumber, getCustomerInfo.customerUniqueId);
+        }
 
+        if (updateKycStatusInAugmontDB) {
+            let customer = await models.customer.findOne({ where: { id: customerId } })
+            await createKyc(customer)
         }
         return { status: 200, success: true, message: `Success`, customerId, customerKycId: kycInfo.id }
 
@@ -468,6 +472,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
             , 'panCardNumber', 'internalBranchId', 'mobileNumber'],
     })
+    updateKycStatusInAugmontDB = false
 
     //change
     if (moduleId == 1) {
@@ -814,8 +819,8 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
-                let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                // await createKyc(customer)
+                updateKycStatusInAugmontDB = true
+
 
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
             }
@@ -823,6 +828,10 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         }
     })
 
+    if (updateKycStatusInAugmontDB) {
+        let customer = await models.customer.findOne({ where: { id: customerId } })
+        await createKyc(customer)
+    }
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } });
     let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
@@ -1579,7 +1588,7 @@ let kycPersonalDetail = async (req) => {
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-
+    updateKycStatusInAugmontDB = false
     let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (moduleId == 1) {
@@ -1841,8 +1850,7 @@ let kycPersonalDetail = async (req) => {
                 /////////////////////
 
                 await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
-                let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-                // await createKyc(customer)
+
                 await models.customerEKycDetails.update({ aadharAndPanNameScore }, { where: { customerId } });
                 await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, moduleName, "Approved")
 
@@ -1855,6 +1863,11 @@ let kycPersonalDetail = async (req) => {
         }
 
     })
+
+    if (updateKycStatusInAugmontDB) {
+        customer = await models.customer.findOne({ where: { id: customerId } })
+        await createKyc(customer)
+    }
 
     let customerKycReview;
     if (moduleId == 1) {
