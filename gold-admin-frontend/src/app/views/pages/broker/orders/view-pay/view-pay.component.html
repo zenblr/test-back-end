@@ -154,7 +154,7 @@
                 <button
                     *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15"
                     type="button" [type]="'submit'" class="btn btn-outline my-3" (click)="getEmiAmount()"
-                    [disabled]="emi.length == 0">Pay
+                    [disabled]="emi.length == 0" [ngClass]="emi.length == 0 ? 'cursor-not-allowed' : 'kt-pointer'">Pay
                     EMI</button>
             </div>
         </div>

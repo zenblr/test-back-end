@@ -107,13 +107,11 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (!(this.depositInfo.transactionData.depositStatus == 'pending')) {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
-		}
 
-		if (this.depositInfo.transactionData.depositStatus == 'completed') {
-			this.formFieldEnableFlag = true;
-		}
-
-		else {
+			if (this.depositInfo.transactionData.depositStatus == 'completed') {
+				this.formFieldEnableFlag = true;
+			}
+		} else {
 			this.controls.approvalDate.enable();
 			this.controls.depositStatus.enable();
 		}
