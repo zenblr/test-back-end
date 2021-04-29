@@ -237,7 +237,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
     let { kycStatusFromOperationalTeam, reasonFromOperationalTeam, customerId, customerKycId, moduleId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, userType } = req.body
     let checkPanCard = await models.customer.findOne({ where: { id: customerId } })
     //change
-
+    let addKyc;
     if (moduleId == 1) {
 
         let checkCceVerified = await models.customerKyc.findOne({ where: { customerId, isVerifiedByCce: true } })
@@ -356,14 +356,16 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 }
                 if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                    // let checkKycComplete = await createKyc(checkPanCard)
-
+                    addKyc = true
                     // if (!checkKycComplete.success) {
                     //     t.rollback()
                     //     return res.status(400).json({ message: checkKycComplete.message })
                     // }
                 }
             });
+            if(addKyc){
+                let checkKycComplete = await createKyc(checkPanCard);
+            }
 
             let cusMobile = getMobileNumber.mobileNumber
 
