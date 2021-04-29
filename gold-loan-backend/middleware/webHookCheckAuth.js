@@ -6,7 +6,6 @@ module.exports = async (req, res, next) => {
     const token = await req.headers.authorization.split(" ")[1];
     try {
         const secretKey = await models.internalIntegrationApi.getSecretKey();
-
         const decoded = await jwt.verify(token, secretKey.secretKey);
         req.data = decoded;
 

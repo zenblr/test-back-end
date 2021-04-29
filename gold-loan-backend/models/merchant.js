@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: true,
             field: 'status'
         },
+        ssoRedirectOn:{
+            type:DataTypes.TEXT,
+            field:'sso_redirect_on'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             defaultValue: true,

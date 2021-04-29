@@ -105,6 +105,8 @@ exports.getDepositData = async (req, res) => {
         data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD");
         if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
           data.atomTxnId = deposit.razorpayPaymentId;
+        } else if ((deposit.paymentType).toLowerCase() == 'cheque') {
+          data.atomTxnId = (deposit.chequeNumber).toLowerCase();
         } else {
           data.atomTxnId = deposit.bankTransactionUniqueId;
         }
@@ -433,6 +435,8 @@ exports.getDepositDataOfPrevious = async (req, res) => {
         data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
         if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
           data.atomTxnId = deposit.razorpayPaymentId;
+        } else if ((deposit.paymentType).toLowerCase() == 'cheque') {
+          data.atomTxnId = (deposit.chequeNumber).toLowerCase();
         } else {
           data.atomTxnId = deposit.bankTransactionUniqueId;
         }

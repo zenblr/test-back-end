@@ -8,6 +8,7 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 var multiparty = require('multiparty');
 var atob = require('atob');
 let uniqid = require('uniqid');
+const errorLogger = require('../../utils/errorLogger');
 exports.singleSignOnBroker = async (req, res, next) => {
     try {
 
@@ -29,7 +30,6 @@ exports.singleSignOnBroker = async (req, res, next) => {
         let token = newFields.token[0];
         var fields = token.split('.');
         const decoded = JSON.parse(atob(`${fields[1]}`));
-        console.log(decoded)
         if (!decoded) {
             return res.status(401).send({ message: 'Unauthorized' });
         }
@@ -51,6 +51,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
         if (!decode.brokerId) {
             return res.status(400).send({ message: 'brokerId key is required' });
         }
+        // if(!decode.vleSession) {
+        //     return res.status(400).send({ message: 'vleSession key is required' });
+        // }
+        let vleSession = decode.vleSession;
         let skuCode = decode.skuCode;
         let brokerId = decode.brokerId;
         let mobileNumber = decode.brokerMobileNumber;
@@ -80,7 +84,6 @@ exports.singleSignOnBroker = async (req, res, next) => {
         }
         //check state city
         if (merchantData) {
-            console.log(merchantData)
             if (merchantData.status != true) {
                 return res.status(401).send({ message: 'Merchant account is deactivated' });
             }
@@ -111,10 +114,11 @@ exports.singleSignOnBroker = async (req, res, next) => {
                     let defaultFind = await getTokenRolePermission(checkUser)
 
                     if (defaultFind.status) {
-                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                        let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                         res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
+                        res.cookie('vleSession',`${vleSession}`);
                         res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
-                        // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                        res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                         res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                         res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                         res.redirect(`${process.env.SINGLE_SIGN_ON}`);
@@ -241,10 +245,11 @@ exports.singleSignOnBroker = async (req, res, next) => {
                 let defaultFind = await getTokenRolePermission(userInfo)
 
                 if (defaultFind.status) {
-                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView')
+                    let permissions = defaultFind.permissions.filter(data => data.description == 'customerView' || data.description == 'orderView' || data.description == 'productView' || data.description == 'refundDetailsView' || data.description == 'refundDetailsEdit')
                     res.cookie(`Token`, `${JSON.stringify(defaultFind.Token)}`);
                     res.cookie(`RedirectOn`, `${JSON.stringify(redirectOn)}`);
-                    // res.cookie(`modules`, `${JSON.stringify(defaultFind.modules)}`);
+                    res.cookie('vleSession',`${vleSession}`);
+                    res.cookie(`vleId`, `${JSON.stringify(brokerId)}`);
                     res.cookie(`permissions`, `${JSON.stringify(permissions)}`);
                     res.cookie(`userDetails`, `${JSON.stringify(defaultFind.userDetails)}`);
                     res.redirect(`${process.env.SINGLE_SIGN_ON}`);
@@ -258,7 +263,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
         }
 
     } catch (err) {
-        console.log(err)
+        errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
         if (err.name) {
             if (err.message) {
                 return res.status(401).send({ message: err.message });
@@ -341,7 +346,8 @@ async function getTokenRolePermission(checkUser) {
         roleId: userRoleId,
         roleName: roleName,
         userTypeId: checkUser.userTypeId,
-        internalBranchId: null
+        internalBranchId: null,
+        ssoRedirect : true,
     },
         JWT_SECRETKEY, {
         expiresIn: JWT_EXPIRATIONTIME

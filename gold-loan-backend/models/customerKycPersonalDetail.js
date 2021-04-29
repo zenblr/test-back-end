@@ -18,13 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
-            ,
             allowNull: false
         },
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',
-            ,
             allowNull: false
         },
         dateOfBirth: {

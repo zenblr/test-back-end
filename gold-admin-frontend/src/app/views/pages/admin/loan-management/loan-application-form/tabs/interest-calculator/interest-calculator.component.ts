@@ -328,7 +328,7 @@ export class InterestCalculatorComponent implements OnInit {
       paymentFrequency: [null, [Validators.required]],
       totalFinalInterestAmt: [],
       unsecuredInterestRate: [],
-      interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      interestRate: [, [Validators.required]],
       processingCharge: [, Validators.required],
       unsecuredSchemeId: [],
       securedLoanAmount: [],
