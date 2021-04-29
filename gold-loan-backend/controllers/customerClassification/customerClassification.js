@@ -818,7 +818,7 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
     }
 }
 
-let createOrUpdateDigiKycApplied = (status, customerId, moduleId, t) => {
+let createOrUpdateDigiKycApplied = async(status, customerId, moduleId, t) => {
 
     let checkDigiKyc = await models.digiKycApplied.findOne({ where: { customerId } })
     if (checkDigiKyc) {
