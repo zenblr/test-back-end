@@ -2055,11 +2055,13 @@ let digiOrEmiKyc = async (req) => {
 let applyDigiKyc = async (req) => {
 
     let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age, isPanVerified, firstName, lastName, moduleId } = req.body
+    let customer
+
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
     let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
 
-    let customer = await models.customer.findOne({ where: { id: customerId } })
+    customer = await models.customer.findOne({ where: { id: customerId } })
     // let moduleId
     if (customer.moduleId) {
         moduleId = customer.moduleId
@@ -2089,7 +2091,6 @@ let applyDigiKyc = async (req) => {
     }
 
     let customerFullName = firstName + " " + lastName
-    let customer
     await sequelize.transaction(async (t) => {
 
         if (isPanVerified) {
