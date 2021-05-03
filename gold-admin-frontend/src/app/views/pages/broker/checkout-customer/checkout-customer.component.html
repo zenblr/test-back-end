@@ -457,7 +457,7 @@
                                         style="border-radius: 15px;" alt="" />
                                     <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                         class="kt-pointer remove-icon" (click)="editPan.click()"
-                                        *ngIf="controls?.panImg?.value && existingCustomerData?.customerDetails?.digiKycApplied?.status != 'approved'">
+                                        *ngIf="controls?.panImg?.value &&  isPanEditAble">
                                     <input type="file" class="d-none" accept="image/*,application/pdf" #editPan
                                         (input)="validateImage($event)">
                                     <div class="iframeWrapper" (click)="preview(controls?.panImg?.value)">

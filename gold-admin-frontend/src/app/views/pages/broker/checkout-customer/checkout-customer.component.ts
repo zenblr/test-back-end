@@ -48,7 +48,7 @@ export class CheckoutCustomerComponent implements OnInit {
   isSameAddress: boolean = false;
   pan: any = { name: { firstName: '', lastName: '' }, userName: { firstName: '', lastName: '' } };
   internalBranchId: any;
-  isPanEditAble: boolean = false;
+  isPanEditAble: boolean = true;
   formData: any;
   depositAmount: any;
   paidFromWallet: any;
@@ -342,6 +342,7 @@ export class CheckoutCustomerComponent implements OnInit {
               dateOfBirth: res.customerDetails.dateOfBirth
 
             });
+            this.isPanEditAble = false;
             break;
           case 'pending':
             this.checkoutCustomerForm.patchValue({
@@ -353,6 +354,8 @@ export class CheckoutCustomerComponent implements OnInit {
 
             });
             this.controls['panCardNumber'].enable();
+            this.isPanEditAble = true;
+
             break;
           default:
             break;
@@ -365,7 +368,7 @@ export class CheckoutCustomerComponent implements OnInit {
           panCardNumber: res.customerDetails.panCardNumber,
           nameOnPanCard: res.customerDetails.firstName + ' ' + res.customerDetails.lastName,
           panImg: res.customerDetails.panImg,
-          dateOfBirth:res.customerDetails.dateOfBirth
+          dateOfBirth: res.customerDetails.dateOfBirth
 
         });
       } else {
@@ -572,24 +575,26 @@ export class CheckoutCustomerComponent implements OnInit {
     }
 
     console.log(generateOTPData)
+    
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
-      if (res.message == 'KYC Pending') {
+      this.isPanEditAble = false
 
-        this.router.navigate(['/broker/shop'])
-        this.toastr.errorToastr("Your KYC is pending")
-
-      } else {
         console.log(res);
         this.finalOrderData = res;
         // const msg = 'OTP has been sent successfully.';
         this.toastr.successToastr(res.message);
         this.ref.detectChanges()
-      }
     },
       error => {
         console.log(error.error.message);
         const msg = error.error.message;
-        this.toastr.errorToastr(msg);
+        if (error.error.message == 'KYC Pending') {
+
+          this.router.navigate(['/broker/shop'])
+          this.toastr.errorToastr("Your KYC is pending")
+
+        } else
+          this.toastr.errorToastr(msg);
       });
   }
 
