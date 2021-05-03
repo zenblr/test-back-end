@@ -2055,11 +2055,13 @@ let digiOrEmiKyc = async (req) => {
 let applyDigiKyc = async (req) => {
 
     let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age, isPanVerified, firstName, lastName, moduleId } = req.body
+    let customer
+
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
     let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
 
-    let customer = await models.customer.findOne({ where: { id: customerId } })
+    customer = await models.customer.findOne({ where: { id: customerId } })
     // let moduleId
     if (customer.moduleId) {
         moduleId = customer.moduleId
@@ -2089,7 +2091,6 @@ let applyDigiKyc = async (req) => {
     }
 
     let customerFullName = firstName + " " + lastName
-
     await sequelize.transaction(async (t) => {
 
         if (isPanVerified) {
@@ -2104,9 +2105,8 @@ let applyDigiKyc = async (req) => {
                 await models.customer.update({ digiKycStatus: 'approved', emiKycStatus: 'approved', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
 
             }
-            let customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+            customer = await models.customer.findOne({ where: { id: customerId }, transaction: t })
 
-            let data = createKyc(customer)
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
             // if(!data.success){
             //     t.rollBack()
@@ -2123,7 +2123,10 @@ let applyDigiKyc = async (req) => {
         }
 
     })
+    
     if (isPanVerified) {
+        let data = await createKyc(customer)
+        console.log(data);
         return { status: 200, success: true, message: `KYC Approved` }
 
     } else {

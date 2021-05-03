@@ -178,9 +178,14 @@ export class CheckoutCustomerComponent implements OnInit {
       }
     },
       error => {
-        console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
+        if (error.status === 422) {
+          const msg = 'Please Add Products To Cart';
+          this.toastr.errorToastr(msg);  
+          this.router.navigate(['/broker/cart']);
+        } else {
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        }
       });
   }
 
