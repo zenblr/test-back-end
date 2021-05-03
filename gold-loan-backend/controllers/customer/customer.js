@@ -144,8 +144,29 @@ exports.addCustomer = async (req, res, next) => {
 exports.registerCustomerSendOtp = async (req, res, next) => {
   const { mobileNumber, firstName } = req.body;
 
+  const userTypeId = req.userData.userTypeId;
+  let userId = req.userData.id;
+  let merchantId
+  if (userTypeId == 2 || userTypeId == 3) {
+    if (userTypeId == 3) {
+      let brokerData = await models.broker.findOne({
+        where: { userId, isActive: true },
+      });
+      let merchantData = await models.merchant.findOne({ where: { id: brokerData.merchantId, isActive: true } });
+      userId = merchantData.userId;
+      merchantId = merchantData.id
+    } else {
+      userId = userId;
+      let merchantData = await models.merchant.findOne({ where: { userId: userId, isActive: true } });
+
+      merchantId = merchantData.id;
+    }
+  }else{
+    merchantId = 1;
+  }
+
   let customerExist = await models.customer.findOne({
-    where: { mobileNumber, isActive: true },
+    where: { mobileNumber, isActive: true, merchantId },
   });
 
   if (!check.isEmpty(customerExist)) {

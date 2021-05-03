@@ -16,7 +16,7 @@ let sms = require('../../utils/SMS')
 
 let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service/customerKyc')
 const { pathToBase64 } = require('../../service/fileUpload')
-const { digiOrEmiKyc,createKyc } = require('../../service/customerKyc')
+const { digiOrEmiKyc, createKyc } = require('../../service/customerKyc')
 
 exports.cceKycRating = async (req, res, next) => {
 
@@ -44,7 +44,8 @@ exports.cceKycRating = async (req, res, next) => {
                         await models.customer.update(
                             { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }
                         )
-                        await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
+                        await createOrUpdateDigiKycApplied(kycStatusFromCce, customerId, moduleId, t)
+                        // await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -86,7 +87,8 @@ exports.cceKycRating = async (req, res, next) => {
                             { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }
                         )
 
-                        await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
+                        await createOrUpdateDigiKycApplied(kycStatusFromCce, customerId, moduleId, t)
+                        // await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
 
                     }
 
@@ -143,7 +145,8 @@ exports.cceKycRating = async (req, res, next) => {
                             { digiKycStatus: scrapKycStatusFromCce, emiKycStatus: scrapKycStatusFromCce, kycStatus: scrapKycStatusFromCce, scrapKycStatus: scrapKycStatusFromCce }, { where: { id: customerId }, transaction: t }
                         )
 
-                        await models.digiKycApplied.update({ status: scrapKycStatusFromCce }, { where: { customerId }, transaction: t })
+                        await createOrUpdateDigiKycApplied(scrapKycStatusFromCce, customerId, moduleId, t)
+                        // await models.digiKycApplied.update({ status: scrapKycStatusFromCce }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -190,7 +193,8 @@ exports.cceKycRating = async (req, res, next) => {
                             { digiKycStatus: scrapKycStatusFromCce, emiKycStatus: scrapKycStatusFromCce, kycStatus: scrapKycStatusFromCce, scrapKycStatus: scrapKycStatusFromCce }, { where: { id: customerId }, transaction: t }
                         )
 
-                        await models.digiKycApplied.update({ status: scrapKycStatusFromCce }, { where: { customerId }, transaction: t })
+                        await createOrUpdateDigiKycApplied(scrapKycStatusFromCce, customerId, moduleId, t)
+                        // await models.digiKycApplied.update({ status: scrapKycStatusFromCce }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -268,7 +272,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 await sequelize.transaction(async (t) => {
                     let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
-                    await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+                    await createOrUpdateDigiKycApplied(kycStatusFromOperationalTeam, customerId, moduleId, t)
+                    // await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
 
                     let customerData = await models.customer.findOne({ where: { id: customerId } });
                     if (customerData.scrapKycStatus != 'approved') {
@@ -326,7 +331,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     } else {
                         await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
 
-                        await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+                        await createOrUpdateDigiKycApplied(kycStatusFromOperationalTeam, customerId, moduleId, t)
+                        // await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -425,7 +431,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 } else {
                     let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
-                    await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+                    await createOrUpdateDigiKycApplied(scrapKycStatusFromOperationalTeam, customerId, moduleId, t)
+                    // await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
 
                     await sequelize.transaction(async (t) => {
                         await models.customer.update(
@@ -467,7 +474,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 } else {
                     await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
-                    await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+                    await createOrUpdateDigiKycApplied(scrapKycStatusFromOperationalTeam, customerId, moduleId, t)
+                    // await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
 
                 }
 
@@ -775,8 +783,10 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
                 await models.customer.update(
                     { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }
                 )
+                let moduleId = 1
+                await createOrUpdateDigiKycApplied(kycStatusFromCce, customerId, moduleId, t)
 
-                await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
+                // await models.digiKycApplied.update({ status: kycStatusFromCce }, { where: { customerId }, transaction: t })
             }
 
             await models.customerKyc.update(
@@ -806,4 +816,15 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
         await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
         return res.status(200).json({ message: 'success' })
     }
+}
+
+let createOrUpdateDigiKycApplied = async(status, customerId, moduleId, t) => {
+
+    let checkDigiKyc = await models.digiKycApplied.findOne({ where: { customerId } })
+    if (checkDigiKyc) {
+        await models.digiKycApplied.update({ status: status }, { where: { customerId }, transaction: t })
+    } else {
+        await models.digiKycApplied.create({ status: status, moduleId, customerId }, { transaction: t })
+    }
+    return
 }

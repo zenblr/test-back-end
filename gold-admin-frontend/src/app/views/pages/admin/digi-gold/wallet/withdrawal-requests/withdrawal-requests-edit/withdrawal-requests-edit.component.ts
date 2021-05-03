@@ -126,8 +126,7 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			if (this.withdrawInfo.transactionData.depositStatus == 'completed') {
 				this.formFieldEnableFlag = true;
 			}
-		}
-		else {
+		} else {
 			this.controls.withdrawalStatus.enable();
 			this.controls.withdrawDate.enable();
 			this.controls.utrNumber.enable();
