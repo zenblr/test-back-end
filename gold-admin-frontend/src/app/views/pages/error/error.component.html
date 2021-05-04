@@ -1,0 +1,20 @@
+<div class="container mt-md-5 pt-5 pb-5">
+    <div class="row text-center">
+        <div class="col">
+            <img class="error-img mb-4" src="../../../assets/error-alert.svg" alt="error-image">
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col">
+            <!-- <h1 class="dg-bold text-danger">Error!</h1> -->
+            <div class="dg-semibold py-4">
+                <h4 *ngIf="errorMessage" class="text-danger">{{errorMessage?.message}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col">
+            <!-- <app-button [type]="'button'" [value]="'GO TO HOME'" (action)="redirectToHome()"></app-button> -->
+        </div>
+    </div>
+</div>
