@@ -41,6 +41,7 @@ export class OrderDetailsListComponent implements OnInit {
 	displayedColumns = [
 		"select",
 		"storeId",
+		"brokerInfo",
 		"centerCity",
 		"shippingAddress",
 		"memberId",

@@ -8,6 +8,7 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 var multiparty = require('multiparty');
 var atob = require('atob');
 let uniqid = require('uniqid');
+const errorLogger = require('../../utils/errorLogger');
 exports.singleSignOnBroker = async (req, res, next) => {
     try {
 
