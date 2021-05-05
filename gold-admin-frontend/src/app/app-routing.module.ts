@@ -16,10 +16,6 @@ const routes: Routes = [
 		canActivate: [ReverseAuthGuard]
 	},
 	{
-		path: 'error',
-		loadChildren: () => import('../app/views/pages/error/error.module').then(m => m.ErrorModule),
-	},
-	{
 		path: '',
 		component: BaseComponent,
 		canActivate: [AuthGuard],
