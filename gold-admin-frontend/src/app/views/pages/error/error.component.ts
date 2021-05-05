@@ -15,17 +15,19 @@ export class ErrorComponent implements OnInit {
     private cookieService: CookieService,
   ) {
     if (this.cookieService.get('errorObject')) {
-      console.log(this.cookieService.get('errorObject'))
-      console.log(JSON.parse(this.cookieService.get('errorObject')))
+      console.log(this.cookieService.get('errorObject') + '18')
+      console.log(JSON.parse(this.cookieService.get('errorObject')) + '19')
       const errorObject = JSON.parse(this.cookieService.get('errorObject'))
       localStorage.setItem('error-object', JSON.stringify(errorObject));
-      this.cookieService.deleteAll('/');
+      // this.cookieService.deleteAll('/');
+      console.log(localStorage.getItem('error-object') + '23')
     }
   }
 
   ngOnInit() {
+    console.log(localStorage.getItem('error-object') + '28')
     this.errorMessage = JSON.parse(localStorage.getItem('error-object'));
-    console.log(this.errorMessage)
+    console.log(this.errorMessage + '30')
     // if (!this.errorMessage) {
     //   this.router.navigate(['/']);
     //   return;
