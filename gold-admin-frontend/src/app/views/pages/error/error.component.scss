@@ -1,0 +1,12 @@
+.min-error-height {
+    min-height: 80vh;
+}
+.error-img {
+    max-width: 4rem;
+}
+
+@media only screen and (min-width: 768px) {
+    .error-img {
+        max-width: 5rem;
+    }
+}

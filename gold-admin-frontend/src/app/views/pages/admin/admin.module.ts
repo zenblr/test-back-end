@@ -75,10 +75,9 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./user-management/user-management.module').then(m => m.UserManagementModule)
 					},
 					{
-						path: 'error',
+						path: 'error-log',
 						loadChildren: () => import('./error/error.module').then(m => m.ErrorModule)
 					},
-
 					{
 						path: 'emi-management',
 						loadChildren: () => import('./emi-management/emi-management.module').then(m => m.EMIManagementModule)
@@ -122,6 +121,10 @@ import { AdminComponent } from './admin.component';
 					{
 						path: 'transaction',
 						loadChildren: () => import('./transaction/transaction.module').then(m => m.TransactionModule)
+					},
+					{
+						path: 'error',
+						loadChildren: () => import('../error/error.module').then(m => m.ErrorModule)
 					},
 					// {
 					// 	path: 'applied-kyc-digi-gold',

@@ -114,6 +114,10 @@ const routes: Routes = [
 				path: "refund-details",
 				component: RefundDetailsComponent,
 			},
+      {
+        path: 'error',
+        loadChildren: () => import('../error/error.module').then(m => m.ErrorModule)
+      },
     ],
   },
 ];
