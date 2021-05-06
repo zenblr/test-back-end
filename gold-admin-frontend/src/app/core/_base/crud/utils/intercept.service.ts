@@ -39,7 +39,8 @@ export class InterceptService implements HttpInterceptor {
 					Authorization: `Bearer ${token}`,
 					'Cache-Control': 'no-cache',
 					Pragma: 'no-cache'
-				}
+				},
+				withCredentials: true
 			});
 		}
 
@@ -78,13 +79,13 @@ export class InterceptService implements HttpInterceptor {
 					if (err.status == 401) {
 						localStorage.clear();
 						sessionStorage.clear();
-						this.cookieService.deleteAll();
+						this.cookieService.deleteAll('/');
 						this.router.navigate(['/auth/login']);
 					}
-					if(err.error.message == 'Access denied'){
-						setTimeout(() =>{
+					if (err.error.message == 'Access denied') {
+						setTimeout(() => {
 							this.location.back();
-						},2000)
+						}, 2000)
 					}
 					throw err
 				}
