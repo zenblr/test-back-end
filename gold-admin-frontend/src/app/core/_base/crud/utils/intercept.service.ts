@@ -39,8 +39,7 @@ export class InterceptService implements HttpInterceptor {
 					Authorization: `Bearer ${token}`,
 					'Cache-Control': 'no-cache',
 					Pragma: 'no-cache'
-				},
-				withCredentials: true
+				}
 			});
 		}
 
