@@ -514,7 +514,7 @@
                                 <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Date of Birth</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" aria-label="Date of Birth" placeholder="Date of Birth"
+                                <input type="text" aria-label="Date of Birth" placeholder="Date of Birth" readonly
                                     class="form-control" formControlName="dateOfBirth" [matDatepicker]="picker"
                                     [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid">
                                     <mat-datepicker #picker></mat-datepicker>
