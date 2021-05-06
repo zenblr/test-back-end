@@ -196,11 +196,11 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, });
 };
 
-exports.customerSignUp = async (req, res, next) => {
+exports.customerSignUp = async (req, res, next) => {  
 
   const { mobileNumber, firstName } = req.body;
   let customerExist = await models.customer.findOne({
-    where: { mobileNumber, isActive: true },
+    where: { mobileNumber, isActive: true,  merchantId: 1 },
   });
 
   if (check.isEmpty(customerExist)) {
@@ -233,11 +233,11 @@ exports.customerSignUp = async (req, res, next) => {
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
-    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
+    // let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
 
-    if (checkMerchant == null) {
-      return res.status(400).json({ message: 'Mobile number is not exist' })
-    }
+    // if (checkMerchant == null) {
+    //   return res.status(400).json({ message: 'Mobile number is not exist' })
+    // }
 
     const referenceCode = await createReferenceCode(5);
     let otp;
