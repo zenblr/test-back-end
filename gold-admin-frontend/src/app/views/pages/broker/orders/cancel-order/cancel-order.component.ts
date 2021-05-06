@@ -35,7 +35,7 @@ export class CancelOrderComponent implements OnInit {
     this.shopService.getCancelDetails(this.orderId).subscribe(res => {
       this.orderData = res;
       this.formInitialize();
-      if (this.orderData.merchantPaymentConfig.paymentGateway == 'edwaar') {
+      if (this.orderData.merchantPaymentConfig.paymentGateway == 'edwaar' || this.orderData.merchantDetail.id != 1) {
         this.selectPaymentOption((this.sharedService.sellPaymentOptionList.filter(e => e.value == 'bankAccount')[0]));
       }
     })

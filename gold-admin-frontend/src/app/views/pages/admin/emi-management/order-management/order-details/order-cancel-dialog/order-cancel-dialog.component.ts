@@ -3,6 +3,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../../../partials/components/toastr/toastr.component';
 import { ActivatedRoute, Router } from "@angular/router";
 import { OrderDetailsService } from '../../../../../../../core/emi-management/order-management';
+import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-order-cancel-dialog',
@@ -87,7 +88,7 @@ export class OrderCancelDialogComponent implements OnInit {
     }
     this.cancelForm.patchValue(data);
     this.cancelData = value;
-    if (this.cancelData.merchantPaymentConfig.paymentGateway == 'edwaar') {
+    if (this.cancelData.merchantPaymentConfig.paymentGateway == 'edwaar' || this.cancelData.merchantDetail.id != 1) {
       this.cancelForm.controls.amountTransferTo.patchValue('bankAccount');
       this.tranferValue('bankAccount');
     }

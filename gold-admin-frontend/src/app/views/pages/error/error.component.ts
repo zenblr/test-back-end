@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'kt-error',
@@ -13,21 +14,20 @@ export class ErrorComponent implements OnInit {
   constructor(
     private router: Router,
     private cookieService: CookieService,
+    private route: ActivatedRoute,
   ) {
     if (this.cookieService.get('errorObject')) {
-      console.log(this.cookieService.get('errorObject') + '18')
-      console.log(JSON.parse(this.cookieService.get('errorObject')) + '19')
       const errorObject = JSON.parse(this.cookieService.get('errorObject'))
       localStorage.setItem('error-object', JSON.stringify(errorObject));
-      // this.cookieService.deleteAll('/');
-      console.log(localStorage.getItem('error-object') + '23')
+      this.cookieService.deleteAll('/');
     }
   }
 
   ngOnInit() {
-    console.log(localStorage.getItem('error-object') + '28')
-    this.errorMessage = JSON.parse(localStorage.getItem('error-object'));
-    console.log(this.errorMessage + '30')
+    if (this.route.snapshot.queryParams.message) {
+      this.errorMessage = CryptoJS.AES.decrypt(this.route.snapshot.queryParams.message.trim(), 'merchantCallback').toString(CryptoJS.enc.Utf8);
+    }
+    // this.errorMessage = JSON.parse(localStorage.getItem('error-object'));
     // if (!this.errorMessage) {
     //   this.router.navigate(['/']);
     //   return;
