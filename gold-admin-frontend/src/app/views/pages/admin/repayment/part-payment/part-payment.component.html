@@ -119,7 +119,7 @@
                                     Field Required
                                 </mat-error>
                                 <mat-error *ngIf="partAmount.errors?.valueZero && partAmount.touched">
-                                    Amount should be greater than zero                                </mat-error>
+                                    Amount should be atleast <span class="currency">₹</span> 1                                </mat-error>
                             </td>
                         </tr>
                     </tbody>
@@ -159,7 +159,7 @@
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
                 <div class="col-8 text-center">
-                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="partAmountContinue();partAmount.disable()"></kt-button>
+                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="partAmountContinue();"></kt-button>
                     <span class="kt-padding-5"></span>
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                     <span class="kt-padding-5"></span>

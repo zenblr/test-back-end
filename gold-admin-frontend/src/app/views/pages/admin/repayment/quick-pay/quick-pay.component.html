@@ -125,7 +125,7 @@
                                     </mat-error>
                                     <mat-error *ngIf="payableAmt.errors?.valueZero && payableAmt.touched">
                                         <small class="text-danger" >
-                                            Amount should be greater than zero
+                                            Amount should be atleast <span class="currency">₹</span> 1
                                         </small>
                                     </mat-error>
                                 </td>

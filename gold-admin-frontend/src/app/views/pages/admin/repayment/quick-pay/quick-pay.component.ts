@@ -85,8 +85,8 @@ export class QuickPayComponent implements OnInit {
   }
 
   payment() {
-    if (this.payableAmt.invalid || this.payableAmt.value <= 0) {
-      if (this.payableAmt.value <= 0) {
+    if (this.payableAmt.invalid || this.payableAmt.value < 1) {
+      if (this.payableAmt.value < 1) {
         this.payableAmt.setErrors({ valueZero: true })
       }
       this.payableAmt.markAllAsTouched()

@@ -72,8 +72,8 @@ export class PartPaymentComponent implements OnInit {
 
   partAmountContinue() {
     // console.log(this.partAmount)
-    if (this.partAmount.invalid || this.partAmount.value <= 0) {
-      if (this.partAmount.value <= 0) {
+    if (this.partAmount.invalid || this.partAmount.value < 1) {
+      if (this.partAmount.value < 1) {
         this.partAmount.setErrors({ valueZero: true })
       }
       this.partAmount.markAllAsTouched()
@@ -85,6 +85,7 @@ export class PartPaymentComponent implements OnInit {
     }
     this.partPaymentService.getPayableAmount(data).pipe(map(res => {
       this.payableAmountSummary = res.data
+      this.partAmount.disable()
       // console.log(this.payableAmountSummary)
       this.ref.detectChanges()
       this.scrollToBottom()
