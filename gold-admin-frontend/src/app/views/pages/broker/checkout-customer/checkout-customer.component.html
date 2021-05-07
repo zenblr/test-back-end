@@ -408,7 +408,7 @@
                             </div>
                             <div class="col-8">
                                 <input type="text" aria-label="PAN Card Number" placeholder="PAN Card Number"
-                                    class="form-control" formControlName="panCardNumber"
+                                    class="form-control" formControlName="panCardNumber" readonly
                                     [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                     maxlength="10" style="text-transform: uppercase;">
                                 <mat-error
@@ -430,7 +430,7 @@
                             </div>
                             <div class="col-8">
                                 <input type="text" aria-label="PAN Card Holder Name" placeholder="PAN Card Holder Name"
-                                    class="form-control" formControlName="nameOnPanCard"
+                                    class="form-control" formControlName="nameOnPanCard" readonly
                                     [class.isError]="controls.nameOnPanCard.touched && controls.nameOnPanCard.invalid">
                                 <mat-error
                                     *ngIf=" controls.nameOnPanCard.errors?.required && controls.nameOnPanCard.touched">
@@ -514,7 +514,7 @@
                                 <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Date of Birth</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" aria-label="Date of Birth" placeholder="Date of Birth"
+                                <input type="text" aria-label="Date of Birth" placeholder="Date of Birth" readonly
                                     class="form-control" formControlName="dateOfBirth" [matDatepicker]="picker"
                                     [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid">
                                     <mat-datepicker #picker></mat-datepicker>
