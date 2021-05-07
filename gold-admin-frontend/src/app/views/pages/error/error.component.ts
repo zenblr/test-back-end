@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'kt-error',
@@ -24,8 +23,8 @@ export class ErrorComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.queryParams.message) {
-      this.errorMessage = CryptoJS.AES.decrypt(this.route.snapshot.queryParams.message.trim(), 'merchantCallback').toString(CryptoJS.enc.Utf8);
+    if (this.route.snapshot.queryParams.m) {
+      this.errorMessage = atob(this.route.snapshot.queryParams.m);
     }
     // this.errorMessage = JSON.parse(localStorage.getItem('error-object'));
     // if (!this.errorMessage) {
