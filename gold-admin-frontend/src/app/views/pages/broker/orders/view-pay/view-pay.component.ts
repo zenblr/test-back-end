@@ -103,23 +103,29 @@ export class ViewPayComponent implements OnInit {
           this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
           this.walletMode = false;
           this.onlineMode = true;
-          this.setPaymentModeValidators();
+          this.setPaymentModeValidators('require');
         } else {
           this.depositAmount = (Number(0));
           this.paidFromWallet = (Number(this.emiValue) - Number(this.depositAmount)).toFixed(2);
           this.onlineMode = false;
           this.walletMode = true;
+          this.setPaymentModeValidators('');
         }
       } else {
         this.onlineOfflineMode = true;
-        this.setPaymentModeValidators();
+        this.setPaymentModeValidators('require');
       }
     }
   }
 
-  setPaymentModeValidators() {
-    this.paymentForm.controls.paymentMode.setValidators([Validators.required]),
-      this.paymentForm.controls.paymentMode.updateValueAndValidity()
+  setPaymentModeValidators(type) {
+    if (type) {
+      this.paymentForm.controls.paymentMode.setValidators([Validators.required]),
+        this.paymentForm.controls.paymentMode.updateValueAndValidity()
+    } else {
+      this.paymentForm.controls.paymentMode.setValidators([]),
+        this.paymentForm.controls.paymentMode.updateValueAndValidity()
+    }
   }
 
   getEmiAmount() {

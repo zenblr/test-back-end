@@ -20,7 +20,7 @@ export class PageConfig {
 					page: { title: "Show Feedback", desc: "" },
 				},
 			},
-			error: {
+			'error-log': {
 				page: { title: "Error Logs", desc: "" },
 			},
 			masters: {
@@ -500,9 +500,11 @@ export class PageConfig {
 					page: { title: "All Customers", desc: '' }
 				}
 			},
-
 			"global-map": {
 				page: { title: "Global Map", desc: "" },
+			},
+			'error': {
+				page: { title: "Error", desc: "" },
 			},
 		},
 		'broker': {
@@ -550,6 +552,9 @@ export class PageConfig {
 				id: {
 					page: { title: "Order Received", desc: "" },
 				}
+			},
+			'error': {
+				page: { title: "Error", desc: "" },
 			},
 		}
 	};

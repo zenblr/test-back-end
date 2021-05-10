@@ -1,0 +1,26 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row kt-padding-t-10 kt-padding-b-10 text-center align-items-center min-error-height">
+            <div class="col">
+                <div class="row kt-margin-t-15">
+                    <div class="col">
+                        <img class="error-img mb-4" src="../../../../assets/media/icons/error-alert.svg"
+                            alt="error-image">
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col">
+                        <div class="dg-semibold py-4">
+                            <h4 *ngIf="errorMessage" class="text-danger">{{errorMessage}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col">
+                        <kt-button [type]="'button'" [value]="'GO TO HOME'" (action)="redirectToHome()"></kt-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

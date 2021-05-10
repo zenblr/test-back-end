@@ -544,7 +544,7 @@ export class MenuConfig {
 										},
 										{
 											title: "Error Logs",
-											page: "/admin/error",
+											page: "/admin/error-log",
 											permission: !(this.userType === 4)
 										},
 										{

@@ -265,7 +265,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				// localStorage.clear();
 				localStorage.removeItem('UserDetails')
 				sessionStorage.clear();
-				this.cookieService.deleteAll();
+				this.cookieService.deleteAll('/');
 				this.sharedService.role.next(null);
 				if (res.redirect) {
                     window.location.href = res.url;

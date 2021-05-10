@@ -822,8 +822,8 @@ export class CheckoutCustomerComponent implements OnInit {
       // if (res.data.isPanVerified)
       this.controls.isPanVerified.patchValue(res.data.isPanVerified)
       // this.resetOnPanChange = false
-      this.controls.panCardNumber.disable()
-      this.controls.nameOnPanCard.disable()
+      // this.controls.panCardNumber.disable()
+      // this.controls.nameOnPanCard.disable()
       console.log(res.data.dob)
       // this.controls.lastName.disable()
     })

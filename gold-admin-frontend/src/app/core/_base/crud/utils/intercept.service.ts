@@ -78,13 +78,13 @@ export class InterceptService implements HttpInterceptor {
 					if (err.status == 401) {
 						localStorage.clear();
 						sessionStorage.clear();
-						this.cookieService.deleteAll();
+						this.cookieService.deleteAll('/');
 						this.router.navigate(['/auth/login']);
 					}
-					if(err.error.message == 'Access denied'){
-						setTimeout(() =>{
+					if (err.error.message == 'Access denied') {
+						setTimeout(() => {
 							this.location.back();
-						},2000)
+						}, 2000)
 					}
 					throw err
 				}

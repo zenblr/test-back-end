@@ -15,7 +15,7 @@ const routes: Routes = [
 		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
 		canActivate: [ReverseAuthGuard]
 	},
-	{ 
+	{
 		path: '',
 		component: BaseComponent,
 		canActivate: [AuthGuard],
@@ -46,12 +46,12 @@ const routes: Routes = [
 					desc: 'Looks like you don\'t have permission to access for requested page.<br> Please, contact administrator'
 				}
 			},
-			{ path: 'error/:type', component: ErrorPageComponent },
+			// { path: 'error/:type', component: ErrorPageComponent },
 			{ path: '', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] },
 			{ path: '**', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] }
 		]
 	},
-	{ path: '**', redirectTo: 'error/403', pathMatch: 'full' },
+	{ path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({

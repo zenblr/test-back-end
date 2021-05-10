@@ -54,7 +54,6 @@ export class AppComponent implements OnInit, OnDestroy {
 		private cookieService: CookieService,
 		private menuAsideService: MenuAsideService
 	) {
-
 		if (this.cookieService.check('test')) {
 			console.log(this.cookieService.check('test'))
 		}
