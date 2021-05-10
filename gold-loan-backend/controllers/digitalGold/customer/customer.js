@@ -149,7 +149,8 @@ exports.updateCustomerDetails = async (req, res) => {
     await sequelize.transaction(async (t) => {
       await models.customer.update(
         {
-          firstName, lastName, mobileNumber, email, pinCode,
+          // firstName, lastName, 
+          mobileNumber, email, pinCode,
           stateId, cityId, customerAddress: address, dateOfBirth, gender, isActive: true
         },
         { where: { id }, transaction: t }
