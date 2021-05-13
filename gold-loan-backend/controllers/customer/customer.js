@@ -1159,12 +1159,14 @@ exports.signUpCustomer = async (req, res) => {
   if (data.error) {
     return res.status(404).json({ message: data.message });
   } else {
-    const result = await createCustomer(data.data)
-    if (!result.isSuccess) {
-      await models.customerLogger.destroy({ where: { customerId: data.customerDetails.id } });
-      let check = await models.customer.destroy({ where: { id: data.customerDetails.id } })
-      console.log(check)
-      return res.status(422).json({ message: `Customer not created` });
+    if (data.data) {
+      const result = await createCustomer(data.data)
+      if (!result.isSuccess) {
+        await models.customerLogger.destroy({ where: { customerId: data.customerDetails.id } });
+        let check = await models.customer.destroy({ where: { id: data.customerDetails.id } })
+        console.log(check)
+        return res.status(422).json({ message: `Customer not created` });
+      }
     }
     return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
   }
