@@ -115,6 +115,8 @@ module.exports = async (req, res, next) => {
             "/api/customer/app/jewellery-release/part-release",
             "/api/customer/app/contact-us",
             "/api/customer/app/partner-us",
+            "/api/digital-gold/rates/get-test-rates",
+
             // http://localhost:4200/api/customer/app/partner
         ];
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
