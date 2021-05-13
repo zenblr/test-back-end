@@ -76,7 +76,7 @@ exports.addCustomer = async (req, res, next) => {
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'ADMIN_PANEL' } })
   const customerUniqueId = uniqid.time().toUpperCase();
 
-  await sequelize.transaction(async (t) => {
+  let data = await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
       { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image, merchantId: 1 },
       { transaction: t }
@@ -124,19 +124,25 @@ exports.addCustomer = async (req, res, next) => {
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
       // applied
-      await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
 
     }
 
-    const result = await createCustomer(data)
+    // const result = await createCustomer(data)
+    // if (!result.isSuccess) {
+    //   t.rollback()
+    //   return res.status(422).json({ err: result.message });
+    // }
 
-    if (!result.isSuccess) {
-      t.rollback()
-      return res.status(422).json({ err: result.message });
-    }
-
-
+    return { data, customerDetails: customer }
   });
+
+  const result = await createCustomer(data.data)
+  if (!result.isSuccess) {
+    await models.digiKycApplied.destroy({ where: { id: data.customerDetails.id } })
+    await models.customer.destroy({ where: { id: data.customerDetails.id } })
+    return res.status(422).json({ message: `Customer not created` });
+  }
+  await sms.sendMessageForKycPending(data.customerDetails.mobileNumber, data.customerDetails.customerUniqueId);
   return res.status(200).json({ message: `Customer created` });
 };
 
@@ -161,7 +167,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
       merchantId = merchantData.id;
     }
-  }else{
+  } else {
     merchantId = 1;
   }
 
@@ -196,11 +202,11 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, });
 };
 
-exports.customerSignUp = async (req, res, next) => {  
+exports.customerSignUp = async (req, res, next) => {
 
   const { mobileNumber, firstName } = req.body;
   let customerExist = await models.customer.findOne({
-    where: { mobileNumber, isActive: true,  merchantId: 1 },
+    where: { mobileNumber, isActive: true, merchantId: 1 },
   });
 
   if (check.isEmpty(customerExist)) {
@@ -1061,7 +1067,9 @@ exports.signUpCustomer = async (req, res) => {
 
       } else {
 
-        return res.status(404).json({ message: "This Mobile number already Exists" });
+        // return res.status(404).json({ message: "This Mobile number already Exists" });
+        return { error: true, message: "This Mobile number already Exists" }
+
       }
     }
 
@@ -1113,22 +1121,13 @@ exports.signUpCustomer = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    // const result = await models.axios({
-    //   method: 'POST',
-    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //     'Authorization': `Bearer ${merchantData.accessToken}`,
-    //   },
-    //   data: data
-    // });
 
-    const result = await createCustomer(data)
+    // const result = await createCustomer(data)
 
-    if (!result.isSuccess) {
-      t.rollback()
-      return res.status(422).json({ err: result.message });
-    }
+    // if (!result.isSuccess) {
+    //   t.rollback()
+    //   return res.status(422).json({ err: result.message });
+    // }
 
     Token = jwt.sign({
       id: customer.dataValues.id,
@@ -1154,10 +1153,23 @@ exports.signUpCustomer = async (req, res) => {
       expiryDate: expiryTime,
       createdDate: createdTime
     }, { transaction: t });
-    return { Token }
+    return { Token, data, customerDetails: customer }
   })
 
-  return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
+  if (data.error) {
+    return res.status(404).json({ message: data.message });
+  } else {
+    if (data.data) {
+      const result = await createCustomer(data.data)
+      if (!result.isSuccess) {
+        await models.customerLogger.destroy({ where: { customerId: data.customerDetails.id } });
+        let check = await models.customer.destroy({ where: { id: data.customerDetails.id } })
+        console.log(check)
+        return res.status(422).json({ message: `Customer not created` });
+      }
+    }
+    return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
+  }
 
 
 }

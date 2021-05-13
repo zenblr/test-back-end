@@ -17,7 +17,17 @@ exports.getGoldSilverRate =async (req,res)=>{
                 return res.status(200).send({message:"success",rate});
             }else{
                 rate = await getRates();
-                return res.status(200).send({message:"success",rate});
+                let errorCheck = JSON.stringify(rate)
+                console.log(rate, "error", errorCheck);
+
+                if( errorCheck.includes("502 Bad Gateway")){
+                    return res.status(503).send({ message:"Rates not found"});
+                }
+                else{
+                    return res.status(200).send({message:"success",rate: rate});
+
+                }
+                // console.log(errorCheck, typeof errorCheck, typeof rate);
             }
         });
     }catch(err){

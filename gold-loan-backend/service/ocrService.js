@@ -368,7 +368,7 @@ let getOcrLocal = async (idProofType, index, number) => {
 }
 
 let insertInExternalApiLogger = async (apiType, userId, customerId, api, request, response, status) => {
-    models.externalApiLogger.create({
+    await models.externalApiLogger.create({
         apiType, userId, customerId, api, request, response, status
     });
     return;

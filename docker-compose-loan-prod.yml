@@ -3,6 +3,7 @@ services:
     web:
       build: ./gold-loan-backend/
       container_name: gold-loan-nodejs-prod
+      restart: always
       image: maishafruits/maisha:node_loan_production
       environment:
         - NODE_ENV=production

@@ -6,7 +6,6 @@ const {getGoldSilverRate} = require('../../controllers/digitalGold/goldSilverRat
 const checkRolePermission = require('../../middleware/checkRolesPermissions');
 const customerCheckAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
 
-
 route.get('/', wrapper(getGoldSilverRate));
 
 module.exports = route; // EXPORTING ALL ROUTES
