@@ -142,7 +142,10 @@ exports.addCustomer = async (req, res, next) => {
     await models.customer.destroy({ where: { id: data.customerDetails.id } })
     return res.status(422).json({ message: `Customer not created` });
   }
-  await sms.sendMessageForKycPending(data.customerDetails.mobileNumber, data.customerDetails.customerUniqueId);
+  if (panCardNumber != null && panImage != null && statusId == 1) {
+    await sms.sendMessageForKycPending(data.customerDetails.mobileNumber, data.customerDetails.customerUniqueId);
+  }
+
   return res.status(200).json({ message: `Customer created` });
 };
 
