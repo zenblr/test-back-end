@@ -432,7 +432,7 @@ exports.getDepositDataOfPrevious = async (req, res) => {
         data.approvedDate = moment(moment(deposit.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
         data.depositCreationDate = moment(moment(deposit.paymentReceivedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
         data.Manual = 0;
-        data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
+        data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD");
         if (deposit.paymentType == 'upi' || deposit.paymentType == 'netbanking' || deposit.paymentType == 'wallet' || deposit.paymentType == 'card') {
           data.atomTxnId = deposit.razorpayPaymentId;
         } else if ((deposit.paymentType).toLowerCase() == 'cheque') {
@@ -451,14 +451,18 @@ exports.getDepositDataOfPrevious = async (req, res) => {
         // singledata.push(DepositNewData[1])
         // console.log(singledata)
         await dataTransfer(DepositNewData, connectionString, startDateNew, endDateNew, whereClauseString);
+        return res.status(200).json({ message: 'success' })
       } else {
         console.log("no data found");
+        return res.status(200).json({ message: 'no data found' })
       }
     } else {
       console.log("connection fail");
+      return res.status(400).json({ message: 'connection fail' })
     }
   } catch (err) {
     console.log(err);
+    return res.status(400).json({ message: err })
   }
 
 

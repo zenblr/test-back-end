@@ -15,8 +15,8 @@ exports.getWithdrawData = async (req, res) => {
 
   dateObj.setDate(dateObj.getDate() - 1);
   let moduleName = 'digigold'
-    // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
-    const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
+  // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+  const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
 
   var config = {
     user: getCredential.serverUserName,
@@ -148,7 +148,7 @@ exports.getDepositDataCron = async (req, res) => {
       var dateObj = new Date(cronData.date);
       dateObj.setDate(dateObj.getDate() - 1);
       // const getCredential = await models.navisionDbConfig.findOne();
-    const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
+      const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
 
 
       var config = {
@@ -319,116 +319,124 @@ exports.getDepositDataCron = async (req, res) => {
 
 
 exports.getWithdrawPreviousData = async (req, res) => {
-  // async function getDepositData() {
-      var dateObject = new Date();
+  try {
+    // async function getDepositData() {
+    var dateObject = new Date();
 
-      var dateObj =  dateObject.setDate(dateObject.getDate() - 1);
-      let moduleName = 'digigold'
-      // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
+    var dateObj = dateObject.setDate(dateObject.getDate() - 1);
+    let moduleName = 'digigold'
+    // const getCredential = await models.navisionDbConfig.getNavisionDbConfig(moduleName);
     const getCredential = await models.navisionDbConfig.findOne({ where: { moduleName: moduleName } })
 
-    
-      var config = {
-        user: getCredential.serverUserName,
-        password: getCredential.serverPassword,
-        server: getCredential.serverIp,
-        database: getCredential.serverDbName
-      };
-     
-      console.log(config)
-      let connectionString = await sql.connect(config);
-      console.log("connectionString",connectionString)
-      let withdrawNewData = [];
-      let withdrawDetail;
-      let whereClause;
-      let whereClauseString;
-    
-     
-  
 
-      // let endDateNew = moment(dateObj).endOf('day');
-      // let startDateNew = moment(dateObj).startOf('day');
-      let endDateNew = moment(moment(dateObj).utcOffset("+05:30").endOf('day'));
-      let startDateNew = moment(moment(dateObj).utcOffset("+05:30").startOf('day'));
-      console.log(endDateNew, startDateNew)
-      if (connectionString) {
-  
-        // const result = await connectionString.query`DELETE FROM [AGTPL$Online Withdraw]`;
-        //  const result = await connectionString.query`DROP TABLE [AGTPL$Online Withdraw]`;
-        // console.log(result); 
-        // return
+    var config = {
+      user: getCredential.serverUserName,
+      password: getCredential.serverPassword,
+      server: getCredential.serverIp,
+      database: getCredential.serverDbName
+    };
 
-        // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
-        // console.log(creatDepositTable);
-        
+    console.log(config)
+    let connectionString = await sql.connect(config);
+    console.log("connectionString", connectionString)
+    let withdrawNewData = [];
+    let withdrawDetail;
+    let whereClause;
+    let whereClauseString;
 
-        // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
-        // console.log(x);
-      
-          whereClause = {
-            depositApprovedDate: { [Op.lt]: dateObj },
-            orderTypeId: {[Op.in]: [5]},
-            depositStatus: {[Op.in]: ['completed']}
+
+
+
+    // let endDateNew = moment(dateObj).endOf('day');
+    // let startDateNew = moment(dateObj).startOf('day');
+    let endDateNew = moment(moment(dateObj).utcOffset("+05:30").endOf('day'));
+    let startDateNew = moment(moment(dateObj).utcOffset("+05:30").startOf('day'));
+    console.log(endDateNew, startDateNew)
+    if (connectionString) {
+
+      // const result = await connectionString.query`DELETE FROM [AGTPL$Online Withdraw]`;
+      //  const result = await connectionString.query`DROP TABLE [AGTPL$Online Withdraw]`;
+      // console.log(result); 
+      // return
+
+      // let creatDepositTable = await connectionString.query`CREATE TABLE [AGTPL$Online Withdraw] ([Withdraw ID] nvarchar(100) NOT NULL, [User Account Id] nvarchar(100),[Withdraw Date] datetime,[User Type] nvarchar(40),[User Account State] nvarchar(20),[Withdraw Amount] decimal(17), [Withdraw Bank] nvarchar(200),[Withdraw Branch] nvarchar(200),[Withdraw IFSC] nvarchar(100),[Withdraw Account] nvarchar(100),[Atom Txn Id] nvarchar(200),[Mode of Payment] nvarchar(100),  [Withdraw TransactionId] nvarchar(200),[processed] tinyint,[Chq No_] nvarchar(200),[User Id] nvarchar(100),[Sell ID] nvarchar(100),[Manual] tinyint,[Creation Date] datetime nvarchar(100),PRIMARY KEY ([Withdraw ID]));`
+      // console.log(creatDepositTable);
+
+
+      // const x = await connectionString.query`SELECT * FROM [AGTPL$Online Deposite Nimap]`;
+      // console.log(x);
+
+      whereClause = {
+        depositApprovedDate: { [Op.lt]: dateObj },
+        orderTypeId: { [Op.in]: [5] },
+        depositStatus: { [Op.in]: ['completed'] }
+      }
+      whereClauseString = `{depositApprovedDate: { [Op.between] : [${startDateNew}, ${endDateNew}] }, orderTypeId: {[Op.in]: [5]}, depositStatus: {[Op.in]: ['completed']}}`
+
+      const includeArray = [
+        {
+          model: models.customer,
+          as: 'customer',
+          attributes: ['customerUniqueId'],
+          include: {
+            model: models.state,
+            as: 'state'
           }
-          whereClauseString = `{depositApprovedDate: { [Op.between] : [${startDateNew}, ${endDateNew}] }, orderTypeId: {[Op.in]: [5]}, depositStatus: {[Op.in]: ['completed']}}`
-    
-        const includeArray = [
-          {
-            model: models.customer,
-            as: 'customer',
-            attributes: ['customerUniqueId'],
-            include: {
-              model: models.state,
-              as: 'state'
-            }
-          }
-        ];
-    
-        withdrawDetail = await models.walletTransactionDetails.findAll({
-          where: whereClause,
-          include: includeArray,
-          
-        });
-    
-    console.log("withdrawDetailwithdrawDetail",withdrawDetail.length)
-        for (let withdraw of withdrawDetail) {
-          data = {};
-          data.withdrawId = withdraw.transactionUniqueId;
-          data.userAccountId = `${getCredential.prefix}${withdraw.customer.customerUniqueId}`;
-          data.withdrawDate = moment(moment(withdraw.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
-          data.userType = "Augmont";
-          data.userAccountState = withdraw.customer.state.stateCode;
-          data.withdrawAmount = withdraw.transactionAmount;
-          data.withdrawBank = withdraw.bankName; 
-          data.withdrawBranch = withdraw.branchName;
-          data.withdrawIfsc = withdraw.ifscCode;
-          data.withdrawAccount = withdraw.accountNumber; 
-          data.atomTxnId = withdraw.bankTransactionUniqueId;
-          data.modeOfPayment = "";
-          data.withdrawTransactionId = withdraw.transactionUniqueId;
-          data.processed = 0;
-          data.chqNo = "";
-          data.userId = 0;
-          data.sellId = "";
-          data.Manual = 0;
-          data.creationDate =  moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD");
-          // data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
-          withdrawNewData.push(data);
         }
-        console.log("withdrawNewDatawithdrawNewData",withdrawNewData.length)
-        // return
-        if (withdrawNewData.length != 0) {
+      ];
+
+      withdrawDetail = await models.walletTransactionDetails.findAll({
+        where: whereClause,
+        include: includeArray,
+
+      });
+
+      console.log("withdrawDetailwithdrawDetail", withdrawDetail.length)
+      for (let withdraw of withdrawDetail) {
+        data = {};
+        data.withdrawId = withdraw.transactionUniqueId;
+        data.userAccountId = `${getCredential.prefix}${withdraw.customer.customerUniqueId}`;
+        data.withdrawDate = moment(moment(withdraw.depositApprovedDate).utcOffset("+05:30")).format("YYYY-MM-DD");
+        data.userType = "Augmont";
+        data.userAccountState = withdraw.customer.state.stateCode;
+        data.withdrawAmount = withdraw.transactionAmount;
+        data.withdrawBank = withdraw.bankName;
+        data.withdrawBranch = withdraw.branchName;
+        data.withdrawIfsc = withdraw.ifscCode;
+        data.withdrawAccount = withdraw.accountNumber;
+        data.atomTxnId = withdraw.bankTransactionUniqueId;
+        data.modeOfPayment = "";
+        data.withdrawTransactionId = withdraw.transactionUniqueId;
+        data.processed = 0;
+        data.chqNo = "";
+        data.userId = 0;
+        data.sellId = "";
+        data.Manual = 0;
+        data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD");
+        // data.creationDate = moment(moment().utcOffset("+05:30")).format("YYYY-MM-DD HH:mm:ss");
+        withdrawNewData.push(data);
+      }
+      console.log("withdrawNewDatawithdrawNewData", withdrawNewData.length)
+      // return
+      if (withdrawNewData.length != 0) {
 
         //   let singledata = []
         // singledata.push(withdrawNewData[1])
         // console.log(singledata)
 
-          await dataTransfer(withdrawNewData, connectionString, startDateNew, endDateNew, whereClauseString);
-        } else {
-          console.log("no data found");
-        }
-      }else{
-      console.log("connection fail");
+        await dataTransfer(withdrawNewData, connectionString, startDateNew, endDateNew, whereClauseString);
+        return res.status(200).json({ message: 'success' })
+      } else {
+        console.log("no data found");
+        return res.status(400).json({ message: 'no data found' })
       }
-    
+    } else {
+      console.log("connection fail");
+      return res.status(400).json({ message: 'connection fail' })
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ message: err })
+  }
+
 }
