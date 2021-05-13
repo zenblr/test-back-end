@@ -8,9 +8,9 @@ const getMerchantData = require('../controllers/auth/getMerchantData');
 exports.getGoldSilverRatetest = async (req, res) => {
 
     const merchantData = await getMerchantData();
-
+    let number = Number(req.query.hit)
     var requestArray =
-        Array(100).fill({
+        Array(number).fill({
             url: `${process.env.DIGITALGOLDAPI}/merchant/v1/rates`,
             method: 'GET',
             headers: {
