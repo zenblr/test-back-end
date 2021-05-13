@@ -1,5 +1,6 @@
 const getMerchantData = require('../controllers/auth/getMerchantData');
 const models = require('../models')
+let { createExternalApiLogger } = require('../service/externalApiLogger')
 const qs = require('qs');
 
 let postMerchantOrder = async (data) => {
@@ -81,6 +82,8 @@ let createCustomer = async (data) => {
         }
     } catch (err) {
         console.log(err)
+        let urlData = `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`;
+        await createExternalApiLogger("digi Gold", 1, null, urlData, null, JSON.stringify(err), "error");
         return { isSuccess: false, message: err.message }
     }
 
