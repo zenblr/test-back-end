@@ -138,8 +138,8 @@ exports.addCustomer = async (req, res, next) => {
 
   const result = await createCustomer(data.data)
   if (!result.isSuccess) {
-    await models.customer.destroy({ where: { id: data.customerDetails.id } })
     await models.digiKycApplied.destroy({ where: { id: data.customerDetails.id } })
+    await models.customer.destroy({ where: { id: data.customerDetails.id } })
     return res.status(422).json({ message: `Customer not created` });
   }
   await sms.sendMessageForKycPending(data.customerDetails.mobileNumber, data.customerDetails.customerUniqueId);
@@ -1067,7 +1067,9 @@ exports.signUpCustomer = async (req, res) => {
 
       } else {
 
-        return res.status(404).json({ message: "This Mobile number already Exists" });
+        // return res.status(404).json({ message: "This Mobile number already Exists" });
+        return { error: true, message: "This Mobile number already Exists" }
+
       }
     }
 
@@ -1119,15 +1121,6 @@ exports.signUpCustomer = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    // const result = await models.axios({
-    //   method: 'POST',
-    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //     'Authorization': `Bearer ${merchantData.accessToken}`,
-    //   },
-    //   data: data
-    // });
 
     // const result = await createCustomer(data)
 
@@ -1163,12 +1156,18 @@ exports.signUpCustomer = async (req, res) => {
     return { Token, data, customerDetails: customer }
   })
 
-  const result = await createCustomer(data.data)
-  if (!result.isSuccess) {
-    await models.customer.destroy({ where: { id: data.customerDetails.id } })
-    return res.status(422).json({ message: `Customer not created` });
+  if (data.error) {
+    return res.status(404).json({ message: data.message });
+  } else {
+    const result = await createCustomer(data.data)
+    if (!result.isSuccess) {
+      await models.customerLogger.destroy({ where: { customerId: data.customerDetails.id } });
+      let check = await models.customer.destroy({ where: { id: data.customerDetails.id } })
+      console.log(check)
+      return res.status(422).json({ message: `Customer not created` });
+    }
+    return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
   }
-  return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
 
 
 }
